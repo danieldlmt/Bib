@@ -29,7 +29,9 @@ logs <- data.frame(sistema=c("Allegro", "SDL"), caminho = c('~/bib/log_allegro.R
 * **QP2**  A equipe de desenvolvimento de bibliotecas multiplataforma é formada majoritariamente por desenvolvedores generalistas ou especialistas em plataformas?  
 
 **QP2.1**  A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?
-           
+
+**QP2.2**  Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?        
+
 * **QP3** - Os desenvolvedores de bibliotecas multiplataforma são majoritariamente especialistas em plataformas de um determinado tipo de dispositivo ou trabalham com plataformas de mais de um tipo de dispositivo? 
 
 **QP3.1**  Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo? 
@@ -191,39 +193,103 @@ cat("\n\n###### Consideramos nesta analise as plataformas suportadas pela biblio
   #source( '~/bib/analisetemporal.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
   load (as.character(logs$ws_analisetemporal[it]))
   
-    cat ("\n\n#### QP - A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?\n")
+    cat ("\n\n#### QP2.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?\n")
   plot(dev_all_time2$iteracao, dev_all_time2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n(Sem janela, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,100),ylab="Porcentagem")  
-    
+  
+ cat("\n\n")
+ print(dev_all_time2_porc_level)
+  cat("\n\n")
+ print(dev_all_time2_porc_trend)
+ 
   plot(dev_all_time2$iteracao, dev_all_time2$n, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n(Sem janela, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,max(qtd_dev$n_dev)+10),ylab="Desenvolvedor")
   lines(qtd_dev$iteracao,qtd_dev$n_dev,col="green")
-  
-   cat("\n\n#### subQP - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
+
+   cat("\n\n")
+ print(dev_all_time2_n_level)
+  cat("\n\n")
+ print(dev_all_time2_n_trend)
+    
+   cat("\n\n#### QP2.2 - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
     plot(dev_gen_time2$iteracao,dev_gen_time2$porcentage,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Porcentagem",ylim=c(0,100))
     lines(dev_gen_time3$iteracao,dev_gen_time3$porcentage,col="green")
     lines(dev_gen_time4$iteracao,dev_gen_time4$porcentage,col="red")
     lines(dev_gen_time5$iteracao,dev_gen_time5$porcentage,col="blue")
     legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
-    
+ 
+  cat("\n\n#### 2\n")
+ print(dev_gen_time2_porc_level)
+  cat("\n\n")
+ print(dev_gen_time2_porc_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time3_porc_level)
+  cat("\n\n")
+ print(dev_gen_time3_porc_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time4_porc_level)
+  cat("\n\n")
+ print(dev_gen_time4_porc_trend)
+ 
+   cat("\n\n#### 5\n")
+ print(dev_gen_time5_porc_level)
+  cat("\n\n")
+ print(dev_gen_time5_porc_trend)
+ 
         plot(dev_gen_time2$iteracao,dev_gen_time2$n,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Desenvolvedor",ylim=c(0,max(qtd_dev$n_dev)+10))
     lines(dev_gen_time3$iteracao,dev_gen_time3$n,col="green")
     lines(dev_gen_time4$iteracao,dev_gen_time4$n,col="red")
     lines(dev_gen_time5$iteracao,dev_gen_time5$n,col="blue")
     lines(qtd_dev$iteracao,qtd_dev$n_dev,col="darkslateblue", type="b",pch=20)
     legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
+ 
+   cat("\n\n#### 2\n")
+ print(dev_gen_time2_n_level)
+  cat("\n\n")
+ print(dev_gen_time2_n_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time3_n_level)
+  cat("\n\n")
+ print(dev_gen_time3_n_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time4_n_level)
+  cat("\n\n")
+ print(dev_gen_time4_n_trend)
+ 
+   cat("\n\n#### 5\n")
+ print(dev_gen_time5_n_level)
+  cat("\n\n")
+ print(dev_gen_time5_n_trend)
     
-    cat ("\n\n#### QP - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
+    
+    
+       
+    cat ("\n\n#### QP3.1 - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
    plot(devicetype_time2$iteracao, devicetype_time2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,100), ylab="Porcentagem")
+  cat("\n\n")
+ print(devicetype_time2_porc_level)
+  cat("\n\n")
+ print(devicetype_time2_porc_trend)
    
       plot(devicetype_time2$iteracao, devicetype_time2$developer, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,max(qtd_dev$n_dev)+10), ylab="Desenvolvedor")
       lines(qtd_dev$iteracao,qtd_dev$n_dev,col="green")
 
+      
+  cat("\n\n")
+ print(devicetype_time2_n_level)
+  cat("\n\n")
+ print(devicetype_time2_n_trend)
+ 
   cat("\n")
 
 ########
 ########
 ########   
   cat ("\n\n#### Análise temporal com janela deslizante\n")
-  cat ("\n#### Janela de 12 semanas\n")
   rm(list = ls()[!ls() %in% c("logs","it","data")])
   #source( '~/bib/analisetemporaljanela.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
   load (as.character(logs$ws_analisetemporaljanela[it]))
@@ -234,32 +300,94 @@ cat("\n\n###### Consideramos nesta analise as plataformas suportadas pela biblio
 ########   
   cat ("\n\n#### Janela de 24 semanas\n")
   
-    cat ("\n\n#### QP - A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?\n")
+    cat ("\n\n#### QP2.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?\n")
   plot(dev_all_time24_2$iteracao, dev_all_time24_2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,100),ylab="Porcentagem")
+  
+    cat("\n\n")
+ print(dev_all_time24_2_porc_level)
+  cat("\n\n")
+ print(dev_all_time24_2_porc_trend)
   
    plot(dev_all_time24_2$iteracao, dev_all_time24_2$n, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,max(qtd_dev24$n_dev)+10),ylab="Desenvolvedor")
    lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="green")
-  
-   cat("\n\n#### subQP - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
+
+       cat("\n\n")
+ print(dev_all_time24_2_n_level)
+  cat("\n\n")
+ print(dev_all_time24_2_n_trend)
+     
+   cat("\n\n#### QP2.2 - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
     plot(dev_gen_time24_2$iteracao,dev_gen_time24_2$porcentage,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Porcentagem",ylim=c(0,100))
     lines(dev_gen_time24_3$iteracao,dev_gen_time24_3$porcentage,col="green")
     lines(dev_gen_time24_4$iteracao,dev_gen_time24_4$porcentage,col="red")
     lines(dev_gen_time24_5$iteracao,dev_gen_time24_5$porcentage,col="blue")
     legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
-    
+
+      cat("\n\n#### 2\n")
+ print(dev_gen_time24_2_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_2_porc_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time24_3_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_3_porc_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time24_4_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_4_porc_trend)
+ 
+   cat("\n\n#### 5\n")
+ print(dev_gen_time24_5_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_5_porc_trend)
+ 
         plot(dev_gen_time24_2$iteracao,dev_gen_time24_2$n,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Desenvolvedor",ylim=c(0,max(qtd_dev24$n_dev)+10))
     lines(dev_gen_time24_3$iteracao,dev_gen_time24_3$n,col="green")
     lines(dev_gen_time24_4$iteracao,dev_gen_time24_4$n,col="red")
     lines(dev_gen_time24_5$iteracao,dev_gen_time24_5$n,col="blue")
     lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="darkslateblue", type="b",pch=20)
     legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
-    
-    cat ("\n\n#### QP - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
+
+          cat("\n\n#### 2\n")
+ print(dev_gen_time24_2_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_2_n_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time24_3_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_3_n_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time24_4_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_4_n_trend)
+ 
+    cat("\n\n#### 5\n")
+ print(dev_gen_time24_5_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_5_n_trend)
+ 
+        
+    cat ("\n\n#### QP3.1 - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
    plot(devicetype_time24_2$iteracao, devicetype_time24_2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,100), ylab="Porcentagem")    
+           cat("\n\n")
+ print(devicetype_time24_2_porc_level)
+  cat("\n\n")
+ print(devicetype_time24_2_porc_trend)
  
       plot(devicetype_time24_2$iteracao, devicetype_time24_2$developer, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,max(qtd_dev24$n_dev)+10), ylab="Desenvolvedor")   
       lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="green")
-      
+  
+          cat("\n\n")
+ print(devicetype_time24_2_n_level)
+  cat("\n\n")
+ print(devicetype_time24_2_n_trend)
+          
   cat ("\n\n#### Rastreamento dos desenvolvedores")
   cat ("\n\n Selecionamos os desenvolvedores que comitaram nas primeiras 24 semanas do periodo de análise e verificamos o numero de plataformas que eles fizeram trabalharam em cada janela de tempo\n")
     cat ("\n\n As plataformas consideradas foram: win, iphone, linux, macos, e android\n")
