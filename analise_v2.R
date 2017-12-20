@@ -9,7 +9,7 @@ library(stringr)
 ###############################
 #logs <- data.frame(sistema=c("Allegro", "SDL"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R'))
 #source('~/bib/log_SDL.R')
-source('~/bib/log_allegro.R')
+#source('~/bib/log_allegro.R')
 
 ########################################
 ########################################
@@ -18,7 +18,10 @@ source('~/bib/log_allegro.R')
 #######################################
 #######################################
 #######################################
-
+logs <- data.frame(sistema=c("Allegro", "SDL"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData')  )
+for (it in 1:length(logs$sistema)){
+  rm(list = ls()[!ls() %in% c("logs","it")])
+  source(as.character(logs$caminho[it]) )
 
 
 ######################################
@@ -50,7 +53,7 @@ source('~/bib/log_allegro.R')
 
 # distribuicao de plataformas que modificaram apenas um diretorio 
     platform3 <- platform %>% filter(n_plat==1)
-    platform3 <-platform3 %>% select(platform) %>% group_by(platform) %>% summarise( n = n() )
+    platform3 <-platform3 %>% select(platform) %>% group_by(platform) %>% summarise( n = n() ) %>% filter(!platform=="Independente")
     platform3 <-platform3 %>% mutate( porcentage = n*100/sum(n))
 
 # verificacao de modificacao do diretorio independente nos commits que modificaram mais de um diretorio 
@@ -263,7 +266,9 @@ max.len <- max (nrow(independente),nrow(android),nrow(linux),nrow(android),nrow(
 # fim QP4
 ########################
 ########################
-  
+      save.image(as.character(logs$ws_analise[it]))
+}
+
   
 
 ########################################
