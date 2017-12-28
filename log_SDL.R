@@ -75,4 +75,6 @@ for (i in 1:dim(plats)[1]){
   data$platform <- ifelse(data$platform=="Outros" & grepl(plats[i,1],data$path),paste("", plats[i,2], sep=""),data$platform)
 }
 
+data <- data %>% filter(platform=="Independente" |platform=="Windows"|platform=="Linux"|platform=="macOS"|platform=="Android"|platform=="iPhone" )
+
 remove(MakefileAndroid,MakefileiOS,MakefileLinux,MakefilemacOS, Makefiles, MakefileWindows,plats, max.len, i)
