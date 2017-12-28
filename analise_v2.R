@@ -51,16 +51,13 @@ for (it in 1:length(logs$sistema)){
       mutate (porcentage = round(n_rev/sum(n_rev) * 100, 1) ) %>%
       arrange(n_plat)
 
-# distribuicao de plataformas que modificaram apenas um diretorio 
-    platform3 <- platform %>% filter(n_plat==1)
-    platform3 <-platform3 %>% select(platform) %>% group_by(platform) %>% summarise( n = n() ) %>% filter(!platform=="Independente")
-    platform3 <-platform3 %>% mutate( porcentage = n*100/sum(n))
-
 # verificacao de modificacao do diretorio independente nos commits que modificaram mais de um diretorio 
     platform4 <- platform %>% filter(!platform=="Independente")
     porcentage_independente <- sum( str_detect(platform4$platform,"Independente") ) * 100 / nrow(platform4) 
     
-    
+    n_independente <- sum(platform$n_plat==1 & platform$platform=="Independente" )
+    n_especifico_total <- sum(platform$platform!="Independente")
+    n_esp_ind_total <- sum(platform$n_plat>1 & is.element("Independente", platform$platform))
 
 # numero de vezes que cada arquivo foi modificado
     files <- data %>% group_by(path) %>% summarise( qtd = n() ) %>%  arrange(qtd)
@@ -105,10 +102,20 @@ max.len <- max (nrow(independente),nrow(android),nrow(linux),nrow(android),nrow(
     authors3 <- authors3 %>% mutate( tipo = if_else( n_platform > 1 ,  "gen" , if_else( n_platform == 1 , "esp", NA_character_)) )
 
 # numero total de modificacoes realizadas em cada plataforma
-    os_summary <- data.frame(n_commit = c(sum(android$android),sum(linux$linux),sum(win$win),sum(iphone$iphone),sum(macosx$macosx)), n_dev = c(nrow(android),nrow(linux),nrow(win),nrow(iphone),nrow(macosx)), row.names= c('android', 'linux', 'win', 'iphone', 'macosx'))
+    os_summary <- data.frame(n_commit = c(sum(android$android),sum(linux$linux),sum(win$win),sum(iphone$iphone),sum(macosx$macosx)), n_dev = c(nrow(android),nrow(linux),nrow(win),nrow(iphone),nrow(macosx)), row.names= c('Android', 'Linux', 'Windows', 'iPhone', 'macOS'))
     os_summary2 <- as.data.frame( t(os_summary))    
-    os_summary3 <- data.frame(n_commit = c(sum(android$android)+sum(linux$linux)+sum(win$win)+sum(iphone$iphone)+sum(macosx$macosx),sum(independente$independente)), row.names= c('especifico', 'independente'))
+    os_summary3 <- as.data.frame(t(data.frame(independente=as.integer(n_independente),ambos=as.integer(n_esp_ind_total),especifico=as.integer(n_especifico_total),row.names = "n_commit")))
+
+# distribuicao de modificacoes entre as plataformas
+    platform3 <- platform %>% filter(n_plat==1)
+    platform3 <-platform3 %>% select(platform) %>% group_by(platform) %>% summarise( n = n() ) %>% filter(!platform=="Independente")
+    #platform3 <-platform3 %>% mutate( porcentage = n*100/sum(n))
+    rownames(platform3)<-platform3$platform
+    platform3<-merge(os_summary, platform3, by="row.names")
+    platform3<- data.frame(platform=platform3$platform ,mod_total=platform3$n_commit,mod_uma=platform3$n,row.names = platform3$platform)
+    platform3<- platform3 %>% mutate(moduma_modtotal=mod_uma*100/mod_total , modtotal_summodtotal=mod_total*100/sum(mod_total))
     
+        
 # graph - relacao entre numero de plataformas e arquivos modificados em um commit   
     graf1 <- platform %>% select (n_plat,n_files) %>% group_by(n_plat) %>% summarise(n_files= sum(n_files)/n())
     
