@@ -284,6 +284,10 @@ dev_gen_time3 <- dev_gen_time %>% select(n_platform,iteracao,porcentage,n) %>% f
 dev_gen_time4 <- dev_gen_time %>% select(n_platform,iteracao,porcentage,n) %>% filter(n_platform==4)
 dev_gen_time5 <- dev_gen_time %>% select(n_platform,iteracao,porcentage,n) %>% filter(n_platform==5)
 
+dev_gen_med <- dev_gen_time %>% select(n_platform,iteracao,n) %>% group_by(iteracao) %>% summarise(n_platform=mean(n_platform), n=sum(n) )
+dev_gen_med_level <- kpss.test(dev_gen_med$n, null =  "Level") 
+dev_gen_med_trend <- kpss.test(dev_gen_med$n, null =  "Trend") 
+
 dev_gen_time2_n_level <- kpss.test(dev_gen_time2$n, null =  "Level") 
 dev_gen_time2_n_trend <- kpss.test(dev_gen_time2$n, null =  "Trend") 
 dev_gen_time2_porc_level <- kpss.test(dev_gen_time2$porcentage, null =  "Level") 

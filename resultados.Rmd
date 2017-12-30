@@ -212,6 +212,12 @@ cat("\n\n###### Consideramos nesta analise as plataformas suportadas pela biblio
  print(dev_all_time2_n_trend)
     
    cat("\n\n#### QP2.2 - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
+    plot(dev_gen_med$iteracao,dev_gen_med$n_platform,type="l",main="Evolução do número médio de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col ="darkgreen", xlab="Tempo", ylab="Média de plataforma")
+           cat("\n\n#### 2\n")
+ print(dev_gen_med_level)
+  cat("\n\n")
+ print(dev_gen_med_trend)
+   
     plot(dev_gen_time2$iteracao,dev_gen_time2$porcentage,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Porcentagem",ylim=c(0,100))
     lines(dev_gen_time3$iteracao,dev_gen_time3$porcentage,col="green")
     lines(dev_gen_time4$iteracao,dev_gen_time4$porcentage,col="red")
@@ -319,6 +325,12 @@ cat("\n\n###### Consideramos nesta analise as plataformas suportadas pela biblio
  print(dev_all_time24_2_n_trend)
      
    cat("\n\n#### QP2.2 - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
+       plot(dev_gen_med24$iteracao,dev_gen_med24$n_platform,type="l",main="Evolução do número médio de plataformas \ndos desenvolvedores generalistas ao longo do tempo\n(janela 24 semanas)", col ="darkgreen", xlab="Tempo", ylab="Média de plataforma")
+         cat("\n\n#### 2\n")
+ print(dev_gen_med24_level)
+  cat("\n\n")
+ print(dev_gen_med24_trend)
+   
     plot(dev_gen_time24_2$iteracao,dev_gen_time24_2$porcentage,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Porcentagem",ylim=c(0,100))
     lines(dev_gen_time24_3$iteracao,dev_gen_time24_3$porcentage,col="green")
     lines(dev_gen_time24_4$iteracao,dev_gen_time24_4$porcentage,col="red")

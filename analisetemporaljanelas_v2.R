@@ -481,8 +481,10 @@ list_plats <- c("Windows","iPhone","Linux","macOS","Android")
     dev_gen_time24_4 <- dev_gen_time24 %>% select(n_platform,iteracao,porcentage,n) %>% filter(n_platform==4)
     dev_gen_time24_5 <- dev_gen_time24 %>% select(n_platform,iteracao,porcentage,n) %>% filter(n_platform==5)
 
-    
-    
+    dev_gen_med24 <- dev_gen_time24 %>% select(n_platform,iteracao,n) %>% group_by(iteracao) %>% summarise(n_platform=mean(n_platform), n=sum(n) )
+    dev_gen_med24_level <- kpss.test(dev_gen_med24$n, null =  "Level") 
+    dev_gen_med24_trend <- kpss.test(dev_gen_med24$n, null =  "Trend") 
+        
     dev_gen_time24_2_n_level <- kpss.test(dev_gen_time24_2$n, null =  "Level") 
     dev_gen_time24_2_n_trend <- kpss.test(dev_gen_time24_2$n, null =  "Trend") 
     dev_gen_time24_2_porc_level <- kpss.test(dev_gen_time24_2$porcentage, null =  "Level") 
