@@ -56,7 +56,7 @@ for (it in 1:length(logs$sistema)){
     porcentage_independente <- sum( str_detect(platform4$platform,"Independente") ) * 100 / nrow(platform4) 
     
     n_independente <- sum(platform$n_plat==1 & platform$platform=="Independente" )
-    n_especifico_total <- sum(platform$platform!="Independente")
+    n_especifico_total <- sum(platform$n_plat==1 & platform$platform!="Independente")
     n_esp_ind_total <- sum(platform$n_plat>1 & is.element("Independente", platform$platform))
 
 # numero de vezes que cada arquivo foi modificado
