@@ -85,7 +85,7 @@ for (it in 1:length(logs$sistema)){
 ########
   cat ("\n\n##### QP1.1 Qual plataforma é modificada com mais frequência?.\n")
     cat ("\n\n##### Contamos a quantidade de vezes que o código específico de cada plataforma é modificado.\n")
-  barplot(os_summary$n_commit, names.arg = row.names(os_summary) , main="Número de modificações em cada plataforma", xlab = "Plataforma", ylab = "Número de modificações")
+  barplot(os_summary$n_commit, names.arg = row.names(os_summary) ,col=rainbow(5), main="Número de modificações em cada plataforma", xlab = "Plataforma", ylab = "Número de modificações")
 ########
 ############################### QP2 ##################################
 ########
@@ -316,8 +316,9 @@ cat("\n\n###### Consideramos nesta analise as plataformas suportadas pela biblio
   cat("\n\n")
  print(dev_all_time24_2_porc_trend)
   
-   plot(dev_all_time24_2$iteracao, dev_all_time24_2$n, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,max(qtd_dev24$n_dev)+10),ylab="Desenvolvedor")
+   plot(dev_all_time24_2$iteracao, dev_all_time24_2$n, col="darkslateblue", type="l",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,max(qtd_dev24$n_dev)+10),ylab="Desenvolvedor")
    lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="green")
+ legend('topright', c("Quant. de generalistas","Quant. total"), lty=1, col=c('darkslateblue', 'green'), bty='n', cex=.75)
 
        cat("\n\n")
  print(dev_all_time24_2_n_level)
@@ -394,8 +395,9 @@ cat("\n\n###### Consideramos nesta analise as plataformas suportadas pela biblio
   cat("\n\n")
  print(devicetype_time24_2_porc_trend)
  
-      plot(devicetype_time24_2$iteracao, devicetype_time24_2$developer, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,max(qtd_dev24$n_dev)+10), ylab="Desenvolvedor")   
+      plot(devicetype_time24_2$iteracao, devicetype_time24_2$developer, col="darkslateblue", type="l",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,max(qtd_dev24$n_dev)+10), ylab="Desenvolvedor")   
       lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="green")
+  legend('topright', c("Quant. de ambos (desktop e mobile)","Quant. total"), lty=1, col=c('darkslateblue', 'green'), bty='n', cex=.75)
   
           cat("\n\n")
  print(devicetype_time24_2_n_level)
