@@ -104,7 +104,7 @@ max.len <- max (nrow(independente),nrow(android),nrow(linux),nrow(android),nrow(
 # numero total de modificacoes realizadas em cada plataforma
     os_summary <- data.frame(n_commit = c(sum(android$android),sum(linux$linux),sum(win$win),sum(iphone$iphone),sum(macosx$macosx)), n_dev = c(nrow(android),nrow(linux),nrow(win),nrow(iphone),nrow(macosx)), row.names= c('Android', 'Linux', 'Windows', 'iPhone', 'macOS'))
     os_summary2 <- as.data.frame( t(os_summary))    
-    os_summary3 <- as.data.frame(t(data.frame(independente=as.integer(n_independente),ambos=as.integer(n_esp_ind_total),especifico=as.integer(n_especifico_total),row.names = "n_commit")))
+    os_summary3 <- as.data.frame(t(data.frame(independente=as.integer(n_independente),especifico=as.integer(n_especifico_total),ambos=as.integer(n_esp_ind_total),row.names = "n_commit")))
 
 # distribuicao de modificacoes entre as plataformas
     platform3 <- platform %>% filter(n_plat==1)

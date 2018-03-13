@@ -1,0 +1,468 @@
+---
+title: "Caracterização do desenvolvimento de bibliotecas multiplataforma"
+author: "Daniel Moreira, Rodrigo Rocha"
+date: "August 31, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+<style type="text/css"> 
+.table {    width: 40%; margin: 0px auto; }
+.caption {    text-align: center; padding-bottom: 40px;}
+.figure {width: 70%; margin: 0px auto;}
+img {text-align: center; display: block;margin-left: auto;margin-right: auto; margin: 0px auto; }
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(dplyr)
+
+logs <- data.frame(sistema=c("Allegro", "SDL"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData')  )
+
+```
+
+# Questões de pesquisa
+* **QP1** -  Como é a distribuição das tarefas de manutenção entre o código independente e específico de plataforma? 
+      
+**QP1.1** Qual plataforma é modificada com mais frequência?
+     
+* **QP2**  A equipe de desenvolvimento de bibliotecas multiplataforma é formada majoritariamente por desenvolvedores generalistas ou especialistas em plataformas?  
+
+**QP2.1**  A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?
+
+**QP2.2**  Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?        
+
+* **QP3** - Os desenvolvedores de bibliotecas multiplataforma são majoritariamente especialistas em plataformas de um determinado tipo de dispositivo ou trabalham com plataformas de mais de um tipo de dispositivo? 
+
+**QP3.1**  Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo? 
+
+* **QP4** -  Existem relações entre os conjuntos de plataformas que os desenvolvedores dão suporte? 
+
+**QP4.1** Com quantas plataformas cada desenvolvedor trabalha?
+
+**QP4.2** Dos desenvolvedores que trabalham com uma plataforma, como é a distribuição de plataformas?
+
+**QP4.3** Dos desenvolvedores que trabalham com mais de uma plataforma, qual a porcentagem de desenvolvedores que trabalham com o código independente e outras plataformas?
+
+* **QP5** -  Existem relações entre os conjuntos de plataformas modificadas em um commit? 
+
+**QP5.1** Quantas plataformas são modificadas em conjunto em um commit?
+
+**QP5.2** Dos commits que modificaram uma plataforma, como é a distribuição de plataformas?
+
+**QP5.3** Dos commits que modificaram mais de uma plataforma, qual a porcentagem de commits que modificaram o código independente junto com o código específico de alguma plataforma?
+
+
+
+
+# Resultados - Análise quantitativa
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+
+for (it in 1:length(logs$sistema)){
+  aux<-it
+  cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
+  rm(list = ls()[!ls() %in% c("logs","it")])
+  #source(as.character(logs$caminho[it]) , verbose=FALSE)
+  #source( '~/bib/analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_analise[it]))
+########
+########
+########
+
+
+    
+
+########
+############################### QP1 ###################################
+########  
+  cat ("\n\n#### QP1 - Como é a distribuição de tarefas de manutenção entre o código independente e específico de plataforma?\n")
+  
+    cat ("\n\n#####Especifico -> Soma da quantidade de vezes que o código específico de cada plataforma é modificado.\n")
+        cat ("\n\n#####Independente -> Quantidade de vezes que o codigo independente é modificado sozinho\n")
+        cat ("\n\n#####especifico -> Quantidade de vezes que o codigo especifico de uma ou mais plataformas é modificado \n")
+        cat ("\n\n#####ambos -> Quantidade de vezes que o codigo especifico e independente de uma ou mais plataformas sao modificados em conjunto\n")
+par(mar=c(5.1, 5, 4.1, 2.1)) 
+ barplot(os_summary3$n_commit, names.arg =c("Cód. independente","Cód. específico","Ambos") ,  col=c("blue","orange","darkgreen"), ylab = "Número de modificações", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  #allegro
+  legend(0.7, os_summary3$n_commit[1]/2, "          ",yjust = 0.5,       xjust = 0.5)
+  legend(1.9, os_summary3$n_commit[2]/2, "          ",yjust = 0.5,       xjust = 0.5)
+  legend(3.1, os_summary3$n_commit[3]/2 , "          ",yjust = 0.5,       xjust = 0.5)
+  text(0.7,os_summary3$n_commit[1]/2,os_summary3$n_commit[1],cex=1.7)
+  text(1.9,os_summary3$n_commit[2]/2,os_summary3$n_commit[2],cex=1.7)
+  text(3.1,os_summary3$n_commit[3]/2,os_summary3$n_commit[3],cex=1.7)
+#sdl
+  legend(0.7, os_summary3$n_commit[1]/2, "          ",yjust = 0.5,       xjust = 0.5)
+  legend(1.9, os_summary3$n_commit[2]/2, "          ",yjust = 0.5,       xjust = 0.5)
+  legend(3.1, os_summary3$n_commit[3]/2 , "          ",yjust = 0.5,       xjust = 0.5)
+  text(0.7,os_summary3$n_commit[1]/2,os_summary3$n_commit[1],cex=1.7)
+  text(1.9,os_summary3$n_commit[2]/2,os_summary3$n_commit[2],cex=1.7)
+  text(3.1,os_summary3$n_commit[3]/2,os_summary3$n_commit[3],cex=1.7)
+  ########
+  cat ("\n\n##### QP1.1 Qual plataforma é modificada com mais frequência?.\n")
+    cat ("\n\n##### Contamos a quantidade de vezes que o código específico de cada plataforma é modificado.\n")
+    par(mar=c(5.1, 5, 4.1, 2.1)) 
+  barplot(os_summary$n_commit, names.arg = row.names(os_summary) ,col=rainbow(5), cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7, xlab = "Plataforma", ylab = "Número de modificações")
+  #allegro
+   legend(0.7,os_summary$n_commit[1]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+  legend(1.92,os_summary$n_commit[2],"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+   legend(3.1,os_summary$n_commit[3]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+    legend(4.3,os_summary$n_commit[4]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+     legend(5.5,os_summary$n_commit[5]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+     
+     text(0.7,os_summary$n_commit[1]/2,os_summary$n_commit[1],cex=1.7)
+     text(1.92,os_summary$n_commit[2],os_summary$n_commit[2],cex=1.7)
+     text(3.1,os_summary$n_commit[3]/2,os_summary$n_commit[3],cex=1.7)
+     text(4.3,os_summary$n_commit[4]/2,os_summary$n_commit[4],cex=1.7)
+     text(5.5,os_summary$n_commit[5]/2,os_summary$n_commit[5],cex=1.7)
+  
+  #sdl
+ legend(0.7,os_summary$n_commit[1]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+  legend(1.92,os_summary$n_commit[2]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+   legend(3.1,os_summary$n_commit[3]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+    legend(4.3,os_summary$n_commit[4]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+     legend(5.5,os_summary$n_commit[5]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+     
+     text(0.7,os_summary$n_commit[1]/2,os_summary$n_commit[1],cex=1.7)
+     text(1.92,os_summary$n_commit[2]/2,os_summary$n_commit[2],cex=1.7)
+     text(3.1,os_summary$n_commit[3]/2,os_summary$n_commit[3],cex=1.7)
+     text(4.3,os_summary$n_commit[4]/2,os_summary$n_commit[4],cex=1.7)
+     text(5.5,os_summary$n_commit[5]/2,os_summary$n_commit[5],cex=1.7)
+
+########
+############################### QP2 ##################################
+########
+  cat ("\n\n#### QP2 - A equipe de desenvolvimento de bibliotecas multiplataforma é formada majoritariamente por desenvolvedores generalistas ou especialistas em plataformas?\n")
+      cat ("\n\n##### esp -> desenvolvedores que trabalham apenas com uma plataforma.\n")
+      cat ("\n\n##### gen -> desenvolvedores que trabalham com mais de uma plataforma.\n")
+      cat ("\n\n##### NA -> desenvolvedores que tranbalham apenas com o código independente.\n")      
+        print(kable(devall))
+
+          cat ("\n\n##### QP2.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende  a tornar-se mais generalista ou especialita em plataformas ao lonto do tempo?\n")
+          
+          
+          
+########
+###################################### QP3 ############################
+########  
+  cat ("\n#### QP3 - Os desenvolvedores de bibliotecas multiplataforma são especialistas em plataformas de um determinado tipo de dispositivo ou trabalham com plataformas de mais de um tipo de dispositivo?\n")
+      cat ("\n\n##### None -> desenvolvedores que tranbalham apenas com o código independente.\n") 
+      cat ("\n\n##### Desktop -> desenvolvedores que tranbalham apenas com o código plataformas de dispositivos desktop\n")  
+      cat ("\n\n##### Mobile -> desenvolvedores que tranbalham apenas com o código plataformas de dispositivos mobile\n") 
+      cat ("\n\n##### Both -> desenvolvedores que tranbalham com o código plataformas de dispositivos mobile e desktop\n") 
+  print(kable(devicetype))
+  
+  cat ("\n\n##### QP3.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende  a tornar-se mais generalista ou especialita em dipositivos ao lonto do tempo?\n")
+            
+########
+################################### QP4
+######## 
+  cat ("\n#### QP4 - Existem    relações   entre   os conjuntos de plataformas que os desenvolvedores suportam?\n")
+  print(kable(head (rules_dev_inspect, n=10L)))
+  cat("\n###### Afinidade (desenvolvedor)")
+  print ( kable ( afi_dev ) )
+  cat("\n")
+  image(afi_dev,axes=F)
+  mtext(text=row.names(afi_dev), side=2, line=0.3, at=seq(0,1,0.2), las=1, cex=0.8)
+  mtext(text=row.names(afi_dev), side=1, line=0.3, at=seq(0,1,0.2), las=2, cex=0.8)
+
+  cat("\n\n###### Crosstable entre as plataformas (count) (desenvolvedor)\n")
+  print ( kable ( Crosstable_dev_count ) )
+  
+  cat("\n\n###### Crosstable entre as plataformas (support) (desenvolvedor)\n")
+  print ( kable ( Crosstable_dev_support ) )
+  
+        cat ("\n\n##### QP4.1 - Qual a quantidade de plataformas que os desenvolvedores dão suporte?\n")
+              cat ("\n\n##### Consideramos as plataformas Windows, Linux, macOS, iPhone e Android nesta contagem.\n")
+      barplot(authors3_plats$n, names.arg = authors3_plats$n_platform, xlab = "Número de plataformas", ylab = "Número de desenvolvedores", col=heat.colors(5), main="Número de plataformas que os desenvolvedores dão suporte") 
+
+        
+        cat ("\n\n##### QP4.2 - Dos desenvolvedores   que trabalham com uma plataforma, como é a distribuição das plataformas?\n")
+        barplot(devesp, main="Quantidade de desenvolvedores especialistas de cada plataforma", xlab = "Plataforma", col=rainbow(5), ylab = "Número de desenvolvedores")
+       
+        
+        cat ("\n\n##### QP4.3 - Dos desenvolvedores generalistas, qual a quantidade de plataformas que eles dão suporte?\n")
+        print(kable(devgen))
+  
+  
+########
+########################## QP5 ##############################
+########   
+  cat ("\n#### QP5 - Existem  relações   entre   os conjuntos   de   plataformas modificadas em um commit?\n")
+cat("\n\n###### Consideramos nesta analise as plataformas suportadas pela biblioteca e o código independente é interpretado como uma plataforma.\n")
+  print(kable(head (rules_commit_inspect, n=10L ))) 
+  cat("\n###### Afinidade (commit)")
+  print ( kable ( afi_commit ) )
+  cat("\n")
+  image(afi_commit,axes=F)
+  mtext(text=row.names(afi_commit), side=2, line=0.3, at=seq(0,1,0.2), las=1, cex=0.8)
+  mtext(text=row.names(afi_commit), side=1, line=0.3, at=seq(0,1,0.2), las=2, cex=0.8)
+
+  cat("\n\n###### Crosstable entre as plataformas (count) (commit)\n")
+  print ( kable ( Crosstable_commit_count ) )
+  
+  cat("\n\n###### Crosstable entre as plataformas (support) (commit)\n")
+  print ( kable ( Crosstable_commit_support ) )
+
+  
+  cat ("\n#### QP5.1 - Quantas plataformas são modificadas em conjunto em uma tarefa de manutenção?\n")
+  print (kable(platform2,col.names = c("Platform", "Commit", "%"),  align = c('r', 'r', 'r'))  )
+  
+    cat ("\n##### QP5.2 - Dos commits que modificaram uma plataforma, como é a distribuição de plataformas?\n")
+      cat ("\n##### Distribuição de plataformas dos commits que modificaram apenas o código especifico de uma plataforma\n")
+      print (kable(platform3,col.names = c("Platform", "Mod. Total", "Mod. uma", "moduma_modtotal", "modtotal_summodtotal"),  align = c('r', 'r', 'r', 'r', 'r'))  )
+  
+      cat ("\n##### QP5.3 - Qual a porcentagem de commits que modificaram o código independente junto com algum código específico de plataforma? \n")
+            cat ("\n##### Neste calculo de porcentagem consideramos como denominador o número total de commits que modificaram o código específico de alguma \n")
+            cat ("\n Total de commits: ")
+            print(nrow(platform)) 
+            cat ("\n Total de commits que modificaram o código específico de pelo menos uma plataforma (Denominador): ")
+            print(nrow(platform4)) 
+            cat ("\n Porcentagem: ")
+  print(porcentage_independente)   
+########
+########
+######## 
+ 
+  
+  
+  
+  
+  
+  
+  
+   
+  
+  cat ("\n#### Análise temporal\n")
+  rm(list = ls()[!ls() %in% c("logs","it","data")])
+  #source( '~/bib/analisetemporal.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_analisetemporal[it]))
+  
+    cat ("\n\n#### QP2.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?\n")
+  plot(dev_all_time2$iteracao, dev_all_time2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n(Sem janela, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,100),ylab="Porcentagem")  
+  
+ cat("\n\n")
+ print(dev_all_time2_porc_level)
+  cat("\n\n")
+ print(dev_all_time2_porc_trend)
+ 
+  plot(dev_all_time2$iteracao, dev_all_time2$n, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n(Sem janela, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,max(qtd_dev$n_dev)+10),ylab="Desenvolvedor")
+  lines(qtd_dev$iteracao,qtd_dev$n_dev,col="green")
+
+   cat("\n\n")
+ print(dev_all_time2_n_level)
+  cat("\n\n")
+ print(dev_all_time2_n_trend)
+    
+   cat("\n\n#### QP2.2 - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
+    plot(dev_gen_med$iteracao,dev_gen_med$n_platform,type="l",main="Evolução do número médio de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col ="darkgreen", xlab="Tempo", ylab="Média de plataforma",ylim=c(0,5))
+           cat("\n\n#### 2\n")
+ print(dev_gen_med_level)
+  cat("\n\n")
+ print(dev_gen_med_trend)
+   
+    plot(dev_gen_time2$iteracao,dev_gen_time2$porcentage,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Porcentagem",ylim=c(0,100))
+    lines(dev_gen_time3$iteracao,dev_gen_time3$porcentage,col="green")
+    lines(dev_gen_time4$iteracao,dev_gen_time4$porcentage,col="red")
+    lines(dev_gen_time5$iteracao,dev_gen_time5$porcentage,col="blue")
+    legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
+ 
+  cat("\n\n#### 2\n")
+ print(dev_gen_time2_porc_level)
+  cat("\n\n")
+ print(dev_gen_time2_porc_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time3_porc_level)
+  cat("\n\n")
+ print(dev_gen_time3_porc_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time4_porc_level)
+  cat("\n\n")
+ print(dev_gen_time4_porc_trend)
+ 
+   cat("\n\n#### 5\n")
+ print(dev_gen_time5_porc_level)
+  cat("\n\n")
+ print(dev_gen_time5_porc_trend)
+ 
+        plot(dev_gen_time2$iteracao,dev_gen_time2$n,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Desenvolvedor",ylim=c(0,max(qtd_dev$n_dev)+10))
+    lines(dev_gen_time3$iteracao,dev_gen_time3$n,col="green")
+    lines(dev_gen_time4$iteracao,dev_gen_time4$n,col="red")
+    lines(dev_gen_time5$iteracao,dev_gen_time5$n,col="blue")
+    lines(qtd_dev$iteracao,qtd_dev$n_dev,col="darkslateblue", type="b",pch=20)
+    legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
+ 
+   cat("\n\n#### 2\n")
+ print(dev_gen_time2_n_level)
+  cat("\n\n")
+ print(dev_gen_time2_n_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time3_n_level)
+  cat("\n\n")
+ print(dev_gen_time3_n_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time4_n_level)
+  cat("\n\n")
+ print(dev_gen_time4_n_trend)
+ 
+   cat("\n\n#### 5\n")
+ print(dev_gen_time5_n_level)
+  cat("\n\n")
+ print(dev_gen_time5_n_trend)
+    
+    
+    
+       
+    cat ("\n\n#### QP3.1 - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
+   plot(devicetype_time2$iteracao, devicetype_time2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,100), ylab="Porcentagem")
+  cat("\n\n")
+ print(devicetype_time2_porc_level)
+  cat("\n\n")
+ print(devicetype_time2_porc_trend)
+   
+      plot(devicetype_time2$iteracao, devicetype_time2$developer, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,max(qtd_dev$n_dev)+10), ylab="Desenvolvedor")
+      lines(qtd_dev$iteracao,qtd_dev$n_dev,col="green")
+
+      
+  cat("\n\n")
+ print(devicetype_time2_n_level)
+  cat("\n\n")
+ print(devicetype_time2_n_trend)
+ 
+  cat("\n")
+
+########
+########
+########   
+  cat ("\n\n#### Análise temporal com janela deslizante\n")
+  rm(list = ls()[!ls() %in% c("logs","it","data")])
+  #source( '~/bib/analisetemporaljanela.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_analisetemporaljanela[it]))
+  
+
+########
+########
+########   
+  cat ("\n\n#### Janela de 24 semanas\n")
+  
+    cat ("\n\n#### QP2.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?\n")
+  plot(dev_all_time24_2$iteracao, dev_all_time24_2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,100),ylab="Porcentagem")
+  
+    cat("\n\n")
+ print(dev_all_time24_2_porc_level)
+  cat("\n\n")
+ print(dev_all_time24_2_porc_trend)
+  
+   plot(dev_all_time24_2$iteracao, dev_all_time24_2$n, col="darkslateblue", type="l",pch=20, main="Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)", xlab="Tempo", ylim=c(0,max(qtd_dev24$n_dev)+10),ylab="Desenvolvedor")
+   lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="green")
+ legend('topright', c("Quant. de generalistas","Quant. total"), lty=1, col=c('darkslateblue', 'green'), bty='n', cex=.75)
+
+       cat("\n\n")
+ print(dev_all_time24_2_n_level)
+  cat("\n\n")
+ print(dev_all_time24_2_n_trend)
+     
+   cat("\n\n#### QP2.2 - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
+       plot(dev_gen_med24$iteracao,dev_gen_med24$n_platform,type="l",main="Evolução do número médio de plataformas \ndos desenvolvedores generalistas ao longo do tempo\n(janela 24 semanas)", col ="darkgreen", xlab="Tempo", ylab="Média de plataforma",ylim=c(0,5))
+         cat("\n\n#### 2\n")
+ print(dev_gen_med24_level)
+  cat("\n\n")
+ print(dev_gen_med24_trend)
+   
+    plot(dev_gen_time24_2$iteracao,dev_gen_time24_2$porcentage,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Porcentagem",ylim=c(0,100))
+    lines(dev_gen_time24_3$iteracao,dev_gen_time24_3$porcentage,col="green")
+    lines(dev_gen_time24_4$iteracao,dev_gen_time24_4$porcentage,col="red")
+    lines(dev_gen_time24_5$iteracao,dev_gen_time24_5$porcentage,col="blue")
+    legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
+
+      cat("\n\n#### 2\n")
+ print(dev_gen_time24_2_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_2_porc_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time24_3_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_3_porc_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time24_4_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_4_porc_trend)
+ 
+   cat("\n\n#### 5\n")
+ print(dev_gen_time24_5_porc_level)
+  cat("\n\n")
+ print(dev_gen_time24_5_porc_trend)
+ 
+        plot(dev_gen_time24_2$iteracao,dev_gen_time24_2$n,type="l",main="Evolução do número de plataformas \ndos desenvolvedores generalistas ao longo do tempo", col = "yellow", xlab="Tempo", ylab="Desenvolvedor",ylim=c(0,max(qtd_dev24$n_dev)+10))
+    lines(dev_gen_time24_3$iteracao,dev_gen_time24_3$n,col="green")
+    lines(dev_gen_time24_4$iteracao,dev_gen_time24_4$n,col="red")
+    lines(dev_gen_time24_5$iteracao,dev_gen_time24_5$n,col="blue")
+    lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="darkslateblue", type="b",pch=20)
+    legend('topright', c("2 plataformas","3 plataformas","4 plataformas","5 plataformas"), lty=1, col=c('yellow', 'green', 'red',' blue'), bty='n', cex=.75)
+
+          cat("\n\n#### 2\n")
+ print(dev_gen_time24_2_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_2_n_trend)
+
+   cat("\n\n#### 3\n")
+ print(dev_gen_time24_3_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_3_n_trend)
+  
+ 
+   cat("\n\n#### 4\n")
+ print(dev_gen_time24_4_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_4_n_trend)
+ 
+    cat("\n\n#### 5\n")
+ print(dev_gen_time24_5_n_level)
+  cat("\n\n")
+ print(dev_gen_time24_5_n_trend)
+ 
+        
+    cat ("\n\n#### QP3.1 - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
+   plot(devicetype_time24_2$iteracao, devicetype_time24_2$porcentage, col="darkslateblue", type="b",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,100), ylab="Porcentagem")    
+           cat("\n\n")
+ print(devicetype_time24_2_porc_level)
+  cat("\n\n")
+ print(devicetype_time24_2_porc_trend)
+ 
+      plot(devicetype_time24_2$iteracao, devicetype_time24_2$developer, col="darkslateblue", type="l",pch=20, main="Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile", xlab="Tempo",ylim=c(0,max(qtd_dev24$n_dev)+10), ylab="Desenvolvedor")   
+      lines(qtd_dev24$iteracao,qtd_dev24$n_dev,col="green")
+  legend('topright', c("Quant. de ambos (desktop e mobile)","Quant. total"), lty=1, col=c('darkslateblue', 'green'), bty='n', cex=.75)
+  
+          cat("\n\n")
+ print(devicetype_time24_2_n_level)
+  cat("\n\n")
+ print(devicetype_time24_2_n_trend)
+          
+  cat ("\n\n#### Rastreamento dos desenvolvedores")
+  cat ("\n\n Selecionamos os desenvolvedores que comitaram nas primeiras 24 semanas do periodo de análise e verificamos o numero de plataformas que eles fizeram trabalharam em cada janela de tempo\n")
+    cat ("\n\n As plataformas consideradas foram: win, iphone, linux, macos, e android\n")
+        cat ("\n\n Filtrei alguns desenvolvedores com poucos commits pq o plot.ts so aceita matriz de ate 10 colunas\n")
+ plot.ts(devs_inicio24,ylab="Plataforma",xlab="Tempo", main="Rastreamento do numero de plataformas")
+########
+########
+########   
+ 
+  cat("\n")
+  cat ("\n-------------------------------------------------------------------------")
+  cat ("\n-------------------------------------------------------------------------")
+  cat("\n")
+}
+
+```
+
+
+
