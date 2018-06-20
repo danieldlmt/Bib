@@ -24,7 +24,7 @@
 20,qsa,QNX,1,
 21,pandora,Pandora,1,
 22,vivante,Indeterminada,1,gpu
-23,darwin,Darwin,1,
+23,darwin,macOS,1,
 24,arts,Linux,1,
 25,fusionsound,Independente,1,analog real time synthesizer
 26,pulseaudio,Independente,1,multiplataforma
