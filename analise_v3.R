@@ -18,7 +18,7 @@ library(stringr)
 #######################################
 #######################################
 #######################################
-logs <- data.frame(sistema=c("Allegro", "SDL"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData')  )
+logs <- data.frame(sistema=c("Allegro", "SDL","SFML","Coco2dx"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R', '~/bib/log_SFML.R', '~/bib/log_coco2dx.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData', '~/bib/analise_SFML.RData', '~/bib/analise_coco2dx.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData', '~/bib/analisetemporal_SFML.RData', '~/bib/analisetemporal_coco2dx.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData', '~/bib/analisetemporaljanela_SFML.RData', '~/bib/analisetemporaljanela_coco2dx.RData')  )
 for (it in 1:length(logs$sistema)){
   rm(list = ls()[!ls() %in% c("logs","it")])
   source(as.character(logs$caminho[it]) )
@@ -32,12 +32,9 @@ for (it in 1:length(logs$sistema)){
     summarise(n_plat = n_distinct(platform), platform = paste(unique(platform), collapse=", "), author=unique(author), n_line_add=max(n_line_add),n_line_del=max(n_line_del)) %>%
     arrange(rev)
   
-# nova variavel para analise de calculo do conhecimento do desenvolvedor
-  platform_new <- data %>%
-    select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
-    group_by(author,platform) %>%
-    summarise(n_line_add=sum(n_line_add),n_line_del=sum(n_line_del), commits=n_distinct(rev),files=n_distinct(path), first=min(as.POSIXct(date)),last=max(as.POSIXct(date))) 
+
   
+   
   # lista de arquivos modificados em cada commit
   file_list <- data %>%
     select(rev, path) %>%
@@ -106,7 +103,54 @@ for (it in 1:length(logs$sistema)){
   authors3 <- authors3 %>% filter( !(is.na(independente) & n_platform == 0))
   ##adiciona coluna desenvolvedor especialista e generalista ()
   authors3 <- authors3 %>% mutate( tipo = if_else( n_platform > 1 ,  "gen" , if_else( n_platform == 1 , "esp", NA_character_)) )
+  authors3_aux<- authors3 %>% select(author ,tipo)
+
+  ###########################################################3
+  ##########################################################
   
+  # nova variavel para analise de calculo do conhecimento do desenvolvedor
+  platform_new <- data %>%
+    select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
+    group_by(author,platform) %>%
+    summarise(n_line_add=sum(n_line_add),n_line_del=sum(n_line_del), commits=n_distinct(rev),files=n_distinct(path), first=min(as.POSIXct(date)),last=max(as.POSIXct(date))) 
+  #niveis de conhecimento
+  prob<- c(0.10,0.25,0.75)
+  thresholds <- platform_new %>%
+    group_by(platform) %>%
+    summarise(
+      min_n_line_add = quantile(n_line_add, prob[1]),
+      min_n_line_del = quantile(n_line_del, prob[1]),
+      min_commits = quantile(commits, prob[1]),
+      min_files = quantile(files, prob[1]),
+      mid_n_line_add = quantile(n_line_add, prob[2]),
+      mid_n_line_del = quantile(n_line_del, prob[2]),
+      mid_commits = quantile(commits, prob[2]),
+      mid_files = quantile(files, prob[2]),
+      max_n_line_add = quantile(n_line_add, prob[3]),
+      max_n_line_del = quantile(n_line_del, prob[3]),
+      max_commits = quantile(commits, prob[3]),
+      max_files = quantile(files, prob[3])      )
+  
+  platform_new <- platform_new %>% mutate(knowledge = 2 ) %>% 
+    inner_join(authors3_aux, by="author")%>%
+    inner_join(thresholds, by="platform") %>% 
+    mutate(knowledge= if_else( n_line_add<min_n_line_add | n_line_del<min_n_line_del | commits<min_commits | files<min_files, 1,
+                               if_else( n_line_add>=max_n_line_add & n_line_del>=max_n_line_del & commits>=max_commits & files>=max_files,3,2 )
+    )        )
+  
+  
+  
+  ##########################################################3
+  #########################################################
+  
+  
+  
+  
+  
+  
+  
+  
+    
   # numero total de modificacoes realizadas em cada plataforma
   os_summary <- data.frame(n_commit = c(sum(android$android),sum(linux$linux),sum(win$win),sum(iphone$iphone),sum(macosx$macosx)), n_dev = c(nrow(android),nrow(linux),nrow(win),nrow(iphone),nrow(macosx)), row.names= c('Android', 'Linux', 'Windows', 'iPhone', 'macOS'))
   os_summary2 <- as.data.frame( t(os_summary))    
