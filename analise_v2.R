@@ -243,9 +243,12 @@ for (it in 1:length(logs$sistema)){
     select(device,nivel)%>%
     group_by(device,nivel)%>%
     summarise(n=n())
-    devicetype_new <-devicetype_new%>%
-    mutate(porc = round(n/sum(devicetype_new$n) * 100, 1))
   
+    devicetype_new2 <-devicetype_new%>%
+    mutate(device2=if_else(device=="Desktop, Independente","Desktop",if_else(device=="Independente, Mobile", "Mobile", if_else(device=="Desktop, Independente, Mobile","Desktop e Mobile", if_else(device=="Desktop, Mobile", "Desktop e Mobile", if_else(device=="Independente, Mobile","Mobile",device))))))%>%
+      group_by(device2,nivel)%>%
+      summarise(n=sum(n))%>%
+    mutate(porc = round(n/sum(devicetype_new$n) * 100, 1))
 
   ##########################################################3
   #########################################################
