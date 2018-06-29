@@ -129,6 +129,7 @@ platform_new <- platform_new %>% mutate(knowledge = 2 ) %>%
 dev_all_time24<-data.frame(tipo=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
 dev_gen_time24<-data.frame(n_platform=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
 dev_all_time24_new<-data.frame(tipo=NA,nivel=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
+dev_all_time24_new_hist<-data.frame(author=NA,tipo=NA,nivel=NA,iteracao=NA, date_left=NA, date_right=NA)
 #dev_all_time36<-data.frame(tipo=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
 #dev_gen_time36<-data.frame(n_platform=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
 
@@ -141,6 +142,9 @@ dev_all_time24_new<-data.frame(tipo=NA,nivel=NA,n=NA, porcentage=NA,iteracao=NA,
 
 devicetype_time24 <- data.frame(developer=NA, dispositivo="")
 devicetype_time24 <- devicetype_time24 %>% mutate(porcentage= (developer/sum(developer))*100, tipo = "todos", iteracao = NA, date_left = as.POSIXct( date_left), date_right = as.POSIXct( date_right ))
+
+devicetype_time24_new<-data.frame(device=NA,nivel=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
+devicetype_time24_new_hist<-data.frame(author=NA,device=NA,nivel=NA,iteracao=NA, date_left=NA, date_right=NA)
 
 #devicetype_time36 <- data.frame(developer=NA, dispositivo="")
 #devicetype_time36 <- devicetype_time36 %>% mutate(porcentage= (developer/sum(developer))*100, tipo = "todos", iteracao = NA, date_left = as.POSIXct( date_left), date_right = as.POSIXct( date_right ))
@@ -330,11 +334,21 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
           select(author,knowledge,tipo)%>%
           group_by(author)%>%
           summarise(knowledge=mean(knowledge), tipo=unique(tipo))%>%
-          mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))%>%
+          mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))
+        
+        devall_new_aux2<-devall_new_aux%>%
+          select(author,tipo,nivel)%>%
+          mutate(iteracao = j, date_left = as.POSIXct( date_left), date_right = as.POSIXct( date_right ), nivel= paste(tipo,"-",nivel)) 
+        
+        dev_all_time24_new_hist <- bind_rows(dev_all_time24_new_hist, devall_new_aux2)
+        
+          devall_new_aux <-devall_new_aux%>%  
           select(tipo,nivel)%>%
           group_by(tipo,nivel)%>%
-          summarise(n=n())%>%
-          mutate(porcentage = round(n/sum(n) * 100, 1), iteracao = j, date_left = as.POSIXct( date_left), date_right = as.POSIXct( date_right )) 
+          summarise(n=n())
+          
+          devall_new_aux <-devall_new_aux%>%  
+          mutate(porcentage = round(n/sum(devall_new_aux$n) * 100, 1), iteracao = j, date_left = as.POSIXct( date_left), date_right = as.POSIXct( date_right )) 
 
          dev_all_time24_new <- bind_rows(dev_all_time24_new, devall_new_aux)
         
@@ -385,6 +399,33 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
         
         devicetype_time24 <- rbind(devicetype_time24, devicetype_aux)
         
+        #novo calculo de conhecimento para dispositivos
+        devicetype_new_aux <-platform_new%>%
+          select(author,knowledge,platform)%>%
+          mutate(device=if_else(platform=="iPhone","Mobile",if_else(platform=="Android","Mobile", if_else(platform=="Independente","Independente","Desktop"))))%>%
+          select(author,knowledge,device)%>%
+          group_by(author, device)%>%
+          summarise(knowledge=mean(knowledge))%>%
+          group_by(author)%>%
+          summarise(device=paste(unique(device), collapse=", "), knowledge=mean(knowledge))%>%
+          mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))
+        
+        
+        devicetype_new_aux2<-devicetype_new_aux%>%
+          select(author,device,nivel)%>%
+          mutate(iteracao = j, date_left = as.POSIXct( date_left), date_right = as.POSIXct( date_right ), nivel2= paste(device,"-",nivel)) 
+        
+        devicetype_time24_new_hist <- bind_rows(devicetype_time24_new_hist, devicetype_new_aux2)      
+        
+        
+        devicetype_new_aux <-devicetype_new_aux%>%
+          select(device,nivel)%>%
+          group_by(device,nivel)%>%
+          summarise(n=n())
+        devicetype_new_aux<-devicetype_new_aux%>% mutate(porcentage = round(n/sum(n) * 100, 1), iteracao = j, date_left = as.POSIXct( date_left), date_right = as.POSIXct( date_right )) 
+        
+        devicetype_time24_new <- bind_rows(devicetype_time24_new, devicetype_new_aux)
+        
         
         ################################
         # fim qp2
@@ -417,6 +458,37 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
     # evolucao dos desenvolvedores que trabalham com dispositivos desktop e mobile ao longo do tempo
     devicetype_time24_2 <- devicetype_time24 %>%  filter( dispositivo == "Both" ) 
 
+    
+    
+    dev_all_time24_new_genpouco <- dev_all_time24_new %>% filter( tipo == "gen"& nivel=="pouco" )
+    dev_all_time24_new_genmedio <- dev_all_time24_new %>% filter( tipo == "gen"& nivel=="médio" )
+    dev_all_time24_new_genmuito <- dev_all_time24_new %>% filter( tipo == "gen"& nivel=="muito" )
+    dev_all_time24_new_esppouco <- dev_all_time24_new %>% filter( tipo == "esp"& nivel=="pouco" )
+    dev_all_time24_new_espmedio <- dev_all_time24_new %>% filter( tipo == "esp"& nivel=="médio" )
+    dev_all_time24_new_espmuito <- dev_all_time24_new %>% filter( tipo == "esp"& nivel=="muito" )
+    
+    devicetype_time24_new_ipouco <-devicetype_time24_new %>% filter( device =="Independente" & nivel=="pouco" )
+    devicetype_time24_new_imedio <-devicetype_time24_new %>% filter( device =="Independente" & nivel=="médio" )
+    devicetype_time24_new_imuito <-devicetype_time24_new %>% filter( device =="Independente" & nivel=="muito" )
+    
+    devicetype_time24_new_d <-devicetype_time24_new %>% filter( device =="Desktop" & nivel=="pouco" )
+    
+    devicetype_time24_new_m <- devicetype_time24_new %>% filter( device =="Mobile" & nivel=="pouco" )
+    
+    devicetype_time24_new_impouco <-devicetype_time24_new %>% filter( device =="Independente, Mobile" &nivel=="pouco"  )
+    devicetype_time24_new_immedio <-devicetype_time24_new %>% filter(device =="Independente, Mobile" &nivel=="médio"  )
+    devicetype_time24_new_immuito <-devicetype_time24_new %>% filter(device =="Independente, Mobile" &nivel=="muito"  )
+    
+    devicetype_time24_new_id<-devicetype_time24_new %>% filter( str_detect(device,"Desktop") & str_detect(device,"Independente") &nivel=="pouco"  )
+    
+    devicetype_time24_new_imd<-devicetype_time24_new %>% filter( str_detect(device,"Mobile") & str_detect(device,"Independente")& str_detect(device,"Desktop") &nivel=="pouco"  )
+    
+    devicetype_time24_new_md<-devicetype_time24_new %>% filter( str_detect(device,"Desktop") &nivel=="pouco"  )
+
+    
+    #agrupamento das combinações de conhecimento de dispositivos
+    devicetype_time24_new_hist2<- devicetype_time24_new_hist%>%mutate(device= if_else(device=="Desktop, Independente","Desktop",if_else(device=="Desktop, Independente, Mobile", "Desktop e Mobile", if_else(device=="Independente, Mobile", "Mobile",if_else(device=="Desktop, Mobile","Desktop e Mobile",device) ))),nivel3= paste(device,"-",nivel)) 
+    
     
       #rastreamento de desenvolvedores (contagem de plataformas)
  #   devs_inicio12<-devs_inicio12[,order(as.numeric( colnames(devs_inicio12) ))]

@@ -17,6 +17,7 @@ img {text-align: center; display: block;margin-left: auto;margin-right: auto; ma
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 library(dplyr)
+library(ggplot2)
 logs <- data.frame(sistema=c("Allegro", "SDL","SFML","Coco2dx"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R', '~/bib/log_SFML.R', '~/bib/log_coco2dx.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData', '~/bib/analise_SFML.RData', '~/bib/analise_coco2dx.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData', '~/bib/analisetemporal_SFML.RData', '~/bib/analisetemporal_coco2dx.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData', '~/bib/analisetemporaljanela_SFML.RData', '~/bib/analisetemporaljanela_coco2dx.RData')  )
 
 ```
@@ -145,10 +146,35 @@ for (it in 1:length(logs$sistema)){
   z<-lm(porcentage~iteracao,data=dev_all_time24_2)
   abline(z,col="orange")
   
+  
+      print("<div align='center'>")
+    cat ("\n\n#### Evolução dos desenvolvedores ao longo do tempo para cada nivel de conhecimento \n( janela 24 semanas, iteracao de 4 semanas)\n")
+    print("</div>")
+    g <- ggplot(dev_all_time24_new_hist, aes(iteracao)) + scale_fill_brewer(palette = "Spectral")
+   print (  g + geom_histogram(aes(fill=nivel),col="black", size=.1) )
+
+  
+
+      print("<div align='center'>")
+    cat ("\n\n#### Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)\n")
+    print("</div>")
+  par(mar=c(5.1, 5, 4.1, 2.1))   
+plot (dev_all_time24_new_genmedio$iteracao,dev_all_time24_new_genmedio$porcentage,type="l",pch=20, ylim=c(0,100), col="black",xlab = "Tempo (semanas)", ylab = "% de generalistas")
+lines(dev_all_time24_new_genmuito$iteracao,dev_all_time24_new_genmuito$porcentage, col="green",type="l",pch=20)
+legend("topright", legend=c("médio", "muito"),col=c("black", "green"),lty=1,inset = 0.02)
+
+  
+    
+      print("<div align='center'>")
+    cat ("\n\n#### Evolução dos desenvolvedores generalistas ao longo do tempo \n( janela 24 semanas, iteracao de 4 semanas)\n")
+    print("</div>")
+  
+  plot (dev_all_time24_new_genmedio$iteracao,dev_all_time24_new_genmedio$n,type="l", col="blue",xlab = "Tempo (semanas)", ylab = "Qtd. de desenvolvedores")
+lines(dev_all_time24_new_genmuito$iteracao,dev_all_time24_new_genmuito$n, col="green")
 
  
    cat("\n\n#### QP2.2 - Dos desenvolvedores generalistas, eles tendem a trabalhar com mais plataformas ao longo do tempo?\n")
-       plot(dev_gen_med24$iteracao,dev_gen_med24$n_platform,type="l",main="Evolução do número médio de plataformas \ndos desenvolvedores generalistas ao longo do tempo\n(janela 24 semanas)", col ="darkgreen", xlab="Tempo", ylab="Média de plataforma",ylim=c(0,5))
+       plot(dev_gen_med24$iteracao,dev_gen_med24$n_platform,type="l",main="Evolução do número médio de plataformas \ndos desenvolvedores generalistas ao longo do tempo\n(janela 24 semanas)", col ="darkgreen", xlab="Tempo (semanas)", ylab="Média de plataforma",ylim=c(0,5))
 
         cat ("\n\n#### QP3.1 - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
         print("<div align='center'>")
@@ -162,6 +188,17 @@ for (it in 1:length(logs$sistema)){
            cat("\n\n")
 
 
+        print("<div align='center'>")
+         cat ("\n\n#### Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile \n( janela 24 semanas, iteracao de 4 semanas)\n")
+         print("</div>")
+         g <- ggplot(devicetype_time24_new_hist2, aes(iteracao)) + scale_fill_brewer(palette = "Spectral")
+       
+       print ( g + geom_histogram(aes(fill=nivel3),col="black", size=.1) )
+         
+         
+         
+         
+         
   cat("\n")
   cat ("\n-------------------------------------------------------------------------")
   cat ("\n-------------------------------------------------------------------------")

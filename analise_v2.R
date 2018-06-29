@@ -188,7 +188,8 @@ for (it in 1:length(logs$sistema)){
     mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))%>%
     select(tipo,nivel)%>%
     group_by(tipo,nivel)%>%
-    summarise(n=n())%>%
+    summarise(n=n())
+  devall_new <-devall_new%>%
     mutate(porc = round(n/sum(devall_new$n) * 100, 1))
   
     
@@ -241,7 +242,8 @@ for (it in 1:length(logs$sistema)){
     mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))%>%
     select(device,nivel)%>%
     group_by(device,nivel)%>%
-    summarise(n=n())%>%
+    summarise(n=n())
+    devicetype_new <-devicetype_new%>%
     mutate(porc = round(n/sum(devicetype_new$n) * 100, 1))
   
 
@@ -299,62 +301,15 @@ for (it in 1:length(logs$sistema)){
   # inicio QP3
   ########################
   ########################
-  #Regra de associação 
-  # [todos] numero de modificacoes por plataforma de cada desenvolvedor  
-  authors4 <- authors3 %>% select(android,linux,win, iphone,macosx,independente) 
-  authors4[colnames(authors4)][is.na(authors4[colnames(authors4)])] <- 0
-  authors5 <- ifelse(authors4>0, 1, 0)
-  capture.output(rules_dev_apriori  <-  apriori(authors5,parameter=list(support=0.12,confidence=0.8,minlen=1,maxlen=10, target="rules"), appearance=NULL, control = list(verbose = FALSE))  )
-  capture.output(rules_dev_inspect <- inspect(sort(rules_dev_apriori, by = "support")))
-  
-  # Afinidade
-  afi_dev <- affinity(authors5) 
-  
-  # Crosstable entre as plataformas (desenvolvedores)
-  authors5_trans <- as(authors5, "transactions")
-  # Parametro count
-  Crosstable_dev_count <- crossTable(authors5_trans, measure="count", sort=TRUE)
-  # Parametro support
-  Crosstable_dev_support <- crossTable(authors5_trans, measure="support", sort=TRUE)
-  
+
+
   ########################
   ########################
   # fim QP3
   ########################
   ########################
   
-  
-  ########################
-  ########################
-  # inicio QP4
-  ########################
-  ########################
-  
-  # Regra de associacao
-  commits <- as.data.frame.matrix(xtabs(~ rev + platform, data=data[c('platform', 'rev')]))
-  commits <- commits %>% select (Android, Linux, Windows, iPhone, macOS, Independente)  %>%  filter (  !(rowSums(commits) == 0) )
-  rownames(commits)<-NULL
-  commits<- ifelse(commits>0, 1, 0)
-  
-  capture.output(rules_commit_apriori <-  apriori(commits,parameter=list(support=0.0015,confidence=0.8,minlen=1,maxlen=10)))
-  capture.output( rules_commit_inspect <-  inspect(sort(rules_commit_apriori, by = "support"))) 
-  
-  # Afinidade
-  afi_commit <- affinity(commits) 
-  
-  # Crosstable entre as plataformas (commit)
-  commits_trans <- as(commits, "transactions")
-  # parametro count
-  Crosstable_commit_count <- crossTable(commits_trans, measure="count", sort=TRUE)
-  # parametro support
-  Crosstable_commit_support <- crossTable(commits_trans, measure="support", sort=TRUE)
-  
-  
-  ########################
-  ########################
-  # fim QP4
-  ########################
-  ########################
+
   save.image(as.character(logs$ws_analise[it]))
 }
 
