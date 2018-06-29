@@ -31,10 +31,7 @@ for (it in 1:length(logs$sistema)){
     group_by(rev) %>%
     summarise(n_plat = n_distinct(platform), platform = paste(unique(platform), collapse=", "), author=unique(author), n_line_add=max(n_line_add),n_line_del=max(n_line_del)) %>%
     arrange(rev)
-  
-  
-  
-  
+
   # lista de arquivos modificados em cada commit
   file_list <- data %>%
     select(rev, path) %>%
@@ -188,13 +185,12 @@ for (it in 1:length(logs$sistema)){
     select(author,knowledge,tipo)%>%
     group_by(author)%>%
     summarise(knowledge=mean(knowledge), tipo=unique(tipo))%>%
-    select(knowledge,tipo)%>%
-    group_by(knowledge,tipo)%>%
-    summarise(n=n())%>%
     mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))%>%
-    select(nivel,tipo,n)%>%
-    group_by(nivel,tipo)%>%
-    summarise(n=sum(n))
+    select(tipo,nivel)%>%
+    group_by(tipo,nivel)%>%
+    summarise(n=n())%>%
+    mutate(porc = round(n/sum(devall_new$n) * 100, 1))
+  
     
   
   devgen <- authors3%>% 
@@ -245,7 +241,8 @@ for (it in 1:length(logs$sistema)){
     mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))%>%
     select(device,nivel)%>%
     group_by(device,nivel)%>%
-    summarise(n=n())
+    summarise(n=n())%>%
+    mutate(porc = round(n/sum(devicetype_new$n) * 100, 1))
   
 
   ##########################################################3
