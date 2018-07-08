@@ -106,7 +106,7 @@ for (it in 1:length(logs$sistema)){
       cat ("\n\n##### NA -> desenvolvedores que tranbalham apenas com o código independente.\n")      
         print(kable(devall))
         
-        print(kable(devall_new))
+
 
           cat ("\n\n##### QP2.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende  a tornar-se mais generalista ou especialita em plataformas ao lonto do tempo?\n")
           
@@ -121,8 +121,7 @@ for (it in 1:length(logs$sistema)){
       cat ("\n\n##### Mobile -> desenvolvedores que tranbalham apenas com o código plataformas de dispositivos mobile\n") 
       cat ("\n\n##### Both -> desenvolvedores que tranbalham com o código plataformas de dispositivos mobile e desktop\n") 
   print(kable(devicetype))
-  
- print(kable(devicetype_new2))
+
   
   cat ("\n\n##### QP3.1 - A equipe de desenvolvimento de bibliotecas multiplataforma tende  a tornar-se mais generalista ou especialita em dipositivos ao lonto do tempo?\n")
   
@@ -151,11 +150,6 @@ for (it in 1:length(logs$sistema)){
   abline(z,col="orange")
   
   
-      print("<div align='center'>")
-    cat ("\n\n#### Evolução dos desenvolvedores ao longo do tempo para cada nivel de conhecimento \n( janela 24 semanas, iteracao de 4 semanas)\n")
-    print("</div>")
-    g <- ggplot(dev_all_time24_new_hist, aes(iteracao)) + scale_fill_brewer(palette = "Spectral")
-   print (  g + geom_histogram(aes(fill=nivel),col="black", size=.1) )
 
   
 
@@ -175,16 +169,6 @@ for (it in 1:length(logs$sistema)){
            cat("\n\n")
 
 
-        print("<div align='center'>")
-         cat ("\n\n#### Evolução dos desenvolvedores que trabalham com\n dispositivos desktop e mobile \n( janela 24 semanas, iteracao de 4 semanas)\n")
-         print("</div>")
-         g <- ggplot(devicetype_time24_new_hist2, aes(iteracao)) + scale_fill_brewer(palette = "Spectral")
-       
-       print ( g + geom_histogram(aes(fill=nivel3),col="black", size=.1) )
-         
-         
-         
-         
          
   cat("\n")
   cat ("\n-------------------------------------------------------------------------")

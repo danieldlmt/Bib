@@ -1,0 +1,43 @@
+---
+title: "limiares"
+output: html_document
+---
+
+```{r setup, include=FALSE, results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, warn.conflicts = FALSE)
+library(venn)
+library(stringr)
+library(knitr)
+library(ggplot2)
+logs <- data.frame(sistema=c("Allegro", "SDL","SFML","Coco2dx"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R', '~/bib/log_SFML.R', '~/bib/log_coco2dx.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData', '~/bib/analise_SFML.RData', '~/bib/analise_coco2dx.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData', '~/bib/analisetemporal_SFML.RData', '~/bib/analisetemporal_coco2dx.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData', '~/bib/analisetemporaljanela_SFML.RData', '~/bib/analisetemporaljanela_coco2dx.RData')  )
+load ("analise_allegro.RData")
+```
+
+
+
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+for (it in 1:length(logs$sistema)){
+  aux<-it
+  #cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
+  rm(list = ls()[!ls() %in% c("logs","it")])
+  #source(as.character(logs$caminho[it]) , verbose=FALSE)
+  #source( '~/bib/analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_analisetemporaljanela[it]))
+
+    for (itt in 1:length(prob)){
+         cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
+         cat("\n",  as.character( prob[itt] ) ,"\n")
+         x<-saida_plat_bind%>% filter(prob==prob[itt])      
+
+        print("<div align='center'>")
+        cat ("\n\n#### Evolução dos desenvolvedores ao longo do tempo para cada nivel de conhecimento \n( janela 24 semanas, iteracao de 4 semanas)\n")
+        print("</div>")
+        g <- ggplot(x, aes(iteracao)) + scale_fill_brewer(palette = "Spectral")
+        print (  g + geom_histogram(aes(fill=tipo),col="black", size=.1) )
+        cat("\n")
+  }
+    
+}
+```
+

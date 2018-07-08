@@ -1,6 +1,7 @@
 library(dplyr, warn.conflicts = FALSE)
-library(arules)
+
 library(stringr)
+
 
 ################################
 # Carregamento do log de commits
@@ -40,7 +41,8 @@ for (it in 1:length(logs$sistema)){
     summarise( n_files = n_distinct(path), path = paste(unique(path), collapse=", "))
   
   # upgrade em platform, + numero de arquivos modificados em cada commit
-  platform <- merge(platform,file_list,by="rev")
+  platform <- as.data.frame (merge(platform,file_list,by="rev"))
+  
   
   # quantidade de commits agrupados de acordo com o numero de plataformas
   # por exemplo, 100 commits modificaram 2 plataformas, 40 commits modificaram 3 plataformas...
@@ -102,43 +104,168 @@ for (it in 1:length(logs$sistema)){
   authors3 <- authors3 %>% mutate( tipo = if_else( n_platform > 1 ,  "gen" , if_else( n_platform == 1 , "esp", NA_character_)) )
   authors3_aux<- authors3 %>% select(author ,tipo)
   
+
   ###########################################################3
   ##########################################################
-  
-  # nova variavel para analise de calculo do conhecimento do desenvolvedor em plataformas
   platform_new <- data %>%
     select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
     group_by(author,platform) %>%
-    summarise(n_line_add=sum(n_line_add),n_line_del=sum(n_line_del), commits=n_distinct(rev),files=n_distinct(path), first=min(as.POSIXct(date)),last=max(as.POSIXct(date))) 
-  #niveis de conhecimento
-  prob<- c(0.10,0.25,0.75)
-  thresholds <- platform_new %>%
-    group_by(platform) %>%
-    summarise(
-      min_n_line_add = quantile(n_line_add, prob[1]),
-      min_n_line_del = quantile(n_line_del, prob[1]),
-      min_commits = quantile(commits, prob[1]),
-      min_files = quantile(files, prob[1]),
-      mid_n_line_add = quantile(n_line_add, prob[2]),
-      mid_n_line_del = quantile(n_line_del, prob[2]),
-      mid_commits = quantile(commits, prob[2]),
-      mid_files = quantile(files, prob[2]),
-      max_n_line_add = quantile(n_line_add, prob[3]),
-      max_n_line_del = quantile(n_line_del, prob[3]),
-      max_commits = quantile(commits, prob[3]),
-      max_files = quantile(files, prob[3])      )
+    summarise(n_line_add=sum(n_line_add),
+              n_line_del=sum(n_line_del), 
+              commits=n_distinct(rev),
+              files=n_distinct(path), 
+              first=min(as.POSIXct(date)),
+              last=max(as.POSIXct(date)) ) %>%
+    mutate( ind = if_else(platform == "Independente",1,0))
+ 
+  # Limiares
+    # n_line_add - numero de linhas adicionadas por plataforma de todos os devs
+    # commits - numero de commits por plataforma (incluindo cod. independente) de todos os devs
+  limiares <- platform_new %>% 
+    ungroup() %>%
+    select(n_line_add,commits)
   
-  platform_new <- platform_new %>% mutate(knowledge = 2 ) %>% 
-    inner_join(authors3_aux, by="author")%>%
-    inner_join(thresholds, by="platform") %>% 
-    mutate(knowledge= if_else( n_line_add<min_n_line_add | n_line_del<min_n_line_del | commits<min_commits | files<min_files, 1,
-                               if_else( n_line_add>=max_n_line_add & n_line_del>=max_n_line_del & commits>=max_commits & files>=max_files,3,2 )
-    )        )
+  aux <- platform_new %>%
+    select(author,ind)%>%
+    group_by(author)%>%
+    summarise(independente=max(ind),
+              n_plat = n()-independente)%>%
+    mutate(esp = if_else(n_plat ==1,1,0),
+           gen = if_else(n_plat >1,1,0))%>%
+    select(author, independente, n_plat)
+  
+  platform_new <- platform_new %>% 
+    inner_join(aux, by="author")
+  
+  platform_new$ind <- NULL
+  
+  # aqui precisarei de TRES platform_new
+  # uma para o calculo dos devs especialistas
+  # uma para o calculo dos generalistas tirando as médias dos parametros. 
+  # uma para independente
+  
+  
+  platform_new_gen <- platform_new %>%
+    group_by(author)%>%
+    summarise(platform = paste(platform, collapse = " "), 
+              n_line_add=mean(n_line_add),
+              n_line_del=mean(n_line_del), 
+              commits=mean(commits),
+              files=mean(files), 
+              first=min(as.POSIXct(first)),
+              last=max(as.POSIXct(last)),
+              independente = max(independente),
+              n_plat = max(n_plat)  )%>%
+    filter( n_plat > 1 )
+  
+  platform_new_esp <- platform_new %>%
+    filter(platform != "Independente")
   
   
   
-  ##########################################################3
-  #########################################################
+  platform_new_ind <- platform_new %>% filter(platform == "Independente")
+  
+  
+  
+  # Considerarei 7 tipos de desenvolvedores de acordo com o tipo de codigo fonte que eles trabalham (Independente, Especifico)
+  # Esp - Desenvolvedor que trabalha com apenas uma plataforma
+  # Gen - Desenvolvedor que trabalha com mais de uma plataforma
+  # Ind - Desenvolvedor que trabalha apenas com o codigo independente
+  # Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma
+  # Ind - Esp - Desenvolvedor especialista que tbm trabalha com o codigo independente
+  # Ind - Gen - Desenvolvedor generalista que tbm trabalha com o codigo independente
+  # Ind - Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma e tbm trabalha com o codigo independente
+  
+  # Logica de classificação de desenvovedores
+  # Especialistas
+  # sem restrição de tempo (por causa dos bug fixers)
+  # n_lines_add > limiar ou commits > limiar
+  # limiar um pelin mais alto do que o do generalista
+  # Generalistas
+  # media(n_lines_add) > limiar ou  media(commits) > limiar
+  
+  
+  # vetor de probalidade de limiares
+  prob<- c(0.10,0.20,0.30,0.40,0.50,0.60,0.70)
+  
+  #proposital para opter matrix com 0 elements
+  platform_new_ind_bind <- platform_new_ind%>%filter(author=="")
+  platform_new_gen_bind <- platform_new_gen%>%filter(author=="")
+  platform_new_esp_bind <- platform_new_esp%>%filter(author=="")
+  platform_new_bind <- platform_new_esp%>%filter(author=="")
+  
+  for (itt in 1:length(prob)){
+    #independente 
+    aux <- platform_new_ind%>%
+      filter(n_line_add > quantile(limiares$n_line_add, prob[itt]) ||  commits > quantile(limiares$commits, prob[itt]))%>%
+      mutate(prob = prob[itt], 
+             ind = 1,
+             esp = 0,
+             gen = 0)
+    platform_new_ind_bind<-bind_rows(platform_new_ind_bind, aux)
+    
+    aux <- platform_new_esp %>% 
+      filter(n_line_add > quantile(limiares$n_line_add, prob[itt]*1.3) ||  commits > quantile(limiares$commits, prob[itt]*1.3) ) %>%
+      mutate(prob = prob[itt], 
+             ind = 0,
+             esp = 1,
+             gen = 0 )
+    platform_new_esp_bind<-bind_rows(platform_new_esp_bind, aux)
+    
+    aux <- platform_new_gen %>% filter(limiares$n_line_add > quantile(n_line_add, prob[itt]) ||  commits > quantile(limiares$commits, prob[itt]) ) %>%
+      mutate(prob = prob[itt], 
+             ind = 0,
+             esp = 0,
+             gen = 1 )
+    platform_new_gen_bind<-bind_rows(platform_new_gen_bind, aux)
+  }
+  
+  platform_new_bind<-bind_rows(platform_new_bind, platform_new_ind_bind)
+  platform_new_bind<-bind_rows(platform_new_bind, platform_new_esp_bind)
+  platform_new_bind<-bind_rows(platform_new_bind, platform_new_gen_bind)
+  
+  # adicao da analise mobile desktop para facilitar pra logo 
+  platform_new_bind<-platform_new_bind%>% 
+    rowwise()%>%
+    mutate(mobile = if_else( str_detect(platform,"Iphone|Android"),1,0 ),
+           desktop = if_else( str_detect(platform,"Windows|Linux|macOS"),1,0 ),
+           indd = if_else( str_detect(platform,"Independente"),1,0 ) )
+  
+  platform_new_bind<-platform_new_bind %>% 
+    group_by(author,prob)%>%
+    summarise(ind = max(ind),
+              esp = max(esp),
+              gen = max(gen),
+              mobile = max(mobile),
+              desktop = max(desktop),
+              indd = max(indd))
+  
+  # x1 e x2 sao as variaveis de saida  
+  x1 <- platform_new_bind%>%
+    mutate(tipo = if_else(esp==1&gen==0&ind==0,"esp",
+                          if_else(esp==0&gen==1&ind==0,"gen",
+                                  if_else(esp==0&gen==0&ind==1,"ind",
+                                          if_else(esp==1&gen==0&ind==1,"ind esp",
+                                                  if_else(esp==0&gen==1&ind==1,"ind gen",
+                                                          if_else(esp==1&gen==1&ind==1,"ind esp gen",
+                                                                  if_else(esp==1&gen==1&ind==0,"esp gen","nada") )))))))
+  
+  #%>%
+  # group_by(prob,tipo)%>%     
+  #summarise(n = n())
+  
+  x2 <- platform_new_bind%>%
+    mutate(tipo = if_else(desktop==1&mobile==0&indd==0,"desktop",
+                          if_else(desktop==0&mobile==1&indd==0,"mobile",
+                                  if_else(desktop==0&mobile==0&indd==1,"ind",
+                                          if_else(desktop==1&mobile==0&indd==1,"ind desktop",
+                                                  if_else(desktop==0&mobile==1&indd==1,"ind mobile",
+                                                          if_else(desktop==1&mobile==1&indd==1,"ind desktop mobile",
+                                                                  if_else(desktop==1&mobile==1&indd==0,"desktop mobile","nada") )))))))
+  #%>%
+  # group_by(prob,tipo)%>%     
+  #summarise(n = n())
+  
   
   
   
@@ -181,16 +308,7 @@ for (it in 1:length(logs$sistema)){
     mutate(porcentage = round(n_dev/sum(n_dev) * 100, 1)) 
   colnames(devall) <- c("tipo", "n", "porc_dev")
   
-  devall_new <-platform_new%>%
-    select(author,knowledge,tipo)%>%
-    group_by(author)%>%
-    summarise(knowledge=mean(knowledge), tipo=unique(tipo))%>%
-    mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))%>%
-    select(tipo,nivel)%>%
-    group_by(tipo,nivel)%>%
-    summarise(n=n())
-  devall_new <-devall_new%>%
-    mutate(porc = round(n/sum(devall_new$n) * 100, 1))
+
   
     
   
@@ -227,31 +345,7 @@ for (it in 1:length(logs$sistema)){
   ########################
   
   
-  ###########################################################3
-  ##########################################################
-  
-  #novo calculo de conhecimento para dispositivos
-  devicetype_new <-platform_new%>%
-    select(author,knowledge,platform)%>%
-    mutate(device=if_else(platform=="iPhone","Mobile",if_else(platform=="Android","Mobile", if_else(platform=="Independente","Independente","Desktop"))))%>%
-    select(author,knowledge,device)%>%
-    group_by(author, device)%>%
-    summarise(knowledge=mean(knowledge))%>%
-    group_by(author)%>%
-    summarise(device=paste(unique(device), collapse=", "), knowledge=mean(knowledge))%>%
-    mutate (nivel = if_else(knowledge<1,"pouco",if_else(knowledge>=1&knowledge<2,'médio',"muito")))%>%
-    select(device,nivel)%>%
-    group_by(device,nivel)%>%
-    summarise(n=n())
-  
-    devicetype_new2 <-devicetype_new%>%
-    mutate(device2=if_else(device=="Desktop, Independente","Desktop",if_else(device=="Independente, Mobile", "Mobile", if_else(device=="Desktop, Independente, Mobile","Desktop e Mobile", if_else(device=="Desktop, Mobile", "Desktop e Mobile", if_else(device=="Independente, Mobile","Mobile",device))))))%>%
-      group_by(device2,nivel)%>%
-      summarise(n=sum(n))%>%
-    mutate(porc = round(n/sum(devicetype_new$n) * 100, 1))
 
-  ##########################################################3
-  #########################################################
   
   # [todos] numero de modificacoes por plataforma de cada desenvolvedor  
   authors41 <- authors3 %>% select(android,linux,win, iphone,macosx, n_commit ) 
