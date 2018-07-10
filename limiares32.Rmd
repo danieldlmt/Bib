@@ -10,6 +10,7 @@ library(venn)
 library(stringr)
 library(knitr)
 library(ggplot2)
+library(trend)
 logs <- data.frame(sistema=c("Allegro", "SDL","SFML","Coco2dx"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R', '~/bib/log_SFML.R', '~/bib/log_coco2dx.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData', '~/bib/analise_SFML.RData', '~/bib/analise_coco2dx.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData', '~/bib/analisetemporal_SFML.RData', '~/bib/analisetemporal_coco2dx.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData', '~/bib/analisetemporaljanela_SFML.RData', '~/bib/analisetemporaljanela_coco2dx.RData')  )
 load ("analise_allegro.RData")
 ```
@@ -41,12 +42,32 @@ for (it in 1:length(logs$sistema)){
 
  
   par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100),xlim=c(1,j), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(gen$iteracao,gen$porc,col="green",type = "l" )
   legend("top",c("Especialista", "Generalista"), col=c("red","green"),lty=1)
 
-  
+ esptwo <- mk.test(esp$porc, alternative = c("two.sided"), continuity = TRUE)
+ espup <- mk.test(esp$porc, alternative = c("greater"), continuity = TRUE)
+ espdown <- mk.test(esp$porc, alternative = c("less"), continuity = TRUE)
+ gentwo <- mk.test(gen$porc, alternative = c("two.sided"), continuity = TRUE)
+ genup <- mk.test(gen$porc, alternative = c("greater"), continuity = TRUE)
+ gendown <- mk.test(gen$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(esp = c(as.numeric(esptwo["p.value"]),as.numeric(espup["p.value"]),as.numeric(espdown["p.value"])),
+               gen = c(as.numeric(gentwo["p.value"]),as.numeric(genup["p.value"]),as.numeric(gendown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux))  
         cat("\n")
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -63,12 +84,32 @@ for (it in 1:length(logs$sistema)){
 
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100), xlim=c(1,j),xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(gen$iteracao,gen$porc,col="green",type = "l" )
   legend("top",c("Especialista", "Generalista"), col=c("red","green"),lty=1)
 
-  
-        cat("\n")      
+ esptwo <- mk.test(esp$porc, alternative = c("two.sided"), continuity = TRUE)
+ espup <- mk.test(esp$porc, alternative = c("greater"), continuity = TRUE)
+ espdown <- mk.test(esp$porc, alternative = c("less"), continuity = TRUE)
+ gentwo <- mk.test(gen$porc, alternative = c("two.sided"), continuity = TRUE)
+ genup <- mk.test(gen$porc, alternative = c("greater"), continuity = TRUE)
+ gendown <- mk.test(gen$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(esp = c(as.numeric(esptwo["p.value"]),as.numeric(espup["p.value"]),as.numeric(espdown["p.value"])),
+               gen = c(as.numeric(gentwo["p.value"]),as.numeric(genup["p.value"]),as.numeric(gendown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux))    
+        cat("\n")     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
            cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
          cat("\n",  as.character( "0.3") ,"\n")
@@ -83,12 +124,34 @@ for (it in 1:length(logs$sistema)){
   
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100),xlim=c(1,j), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(gen$iteracao,gen$porc,col="green",type = "l" )
   legend("top",c("Especialista", "Generalista"), col=c("red","green"),lty=1)
 
-  
+   esptwo <- mk.test(esp$porc, alternative = c("two.sided"), continuity = TRUE)
+ espup <- mk.test(esp$porc, alternative = c("greater"), continuity = TRUE)
+ espdown <- mk.test(esp$porc, alternative = c("less"), continuity = TRUE)
+ gentwo <- mk.test(gen$porc, alternative = c("two.sided"), continuity = TRUE)
+ genup <- mk.test(gen$porc, alternative = c("greater"), continuity = TRUE)
+ gendown <- mk.test(gen$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(esp = c(as.numeric(esptwo["p.value"]),as.numeric(espup["p.value"]),as.numeric(espdown["p.value"])),
+               gen = c(as.numeric(gentwo["p.value"]),as.numeric(genup["p.value"]),as.numeric(gendown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux))  
         cat("\n")     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
             cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
          cat("\n",  as.character( "0.4") ,"\n")
@@ -102,12 +165,37 @@ for (it in 1:length(logs$sistema)){
   gen <-gen_bind2%>% filter(prob==0.4)  
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100), xlim=c(1,j),xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(gen$iteracao,gen$porc,col="green",type = "l" )
   legend("top",c("Especialista", "Generalista"), col=c("red","green"),lty=1)
 
-  
+   esptwo <- mk.test(esp$porc, alternative = c("two.sided"), continuity = TRUE)
+ espup <- mk.test(esp$porc, alternative = c("greater"), continuity = TRUE)
+ espdown <- mk.test(esp$porc, alternative = c("less"), continuity = TRUE)
+ gentwo <- mk.test(gen$porc, alternative = c("two.sided"), continuity = TRUE)
+ genup <- mk.test(gen$porc, alternative = c("greater"), continuity = TRUE)
+ gendown <- mk.test(gen$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(esp = c(as.numeric(esptwo["p.value"]),as.numeric(espup["p.value"]),as.numeric(espdown["p.value"])),
+               gen = c(as.numeric(gentwo["p.value"]),as.numeric(genup["p.value"]),as.numeric(gendown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux))  
         cat("\n") 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
          cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
          cat("\n",  as.character( "0.5") ,"\n")
@@ -121,11 +209,21 @@ for (it in 1:length(logs$sistema)){
   gen <-gen_bind2%>% filter(prob==0.5)  
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(esp$iteracao,esp$porc,col="red",type = "l",ylim = c(0,100),xlim=c(1,j), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(gen$iteracao,gen$porc,col="green",type = "l" )
   legend("top",c("Especialista", "Generalista"), col=c("red","green"),lty=1)
 
-  
+   esptwo <- mk.test(esp$porc, alternative = c("two.sided"), continuity = TRUE)
+ espup <- mk.test(esp$porc, alternative = c("greater"), continuity = TRUE)
+ espdown <- mk.test(esp$porc, alternative = c("less"), continuity = TRUE)
+ gentwo <- mk.test(gen$porc, alternative = c("two.sided"), continuity = TRUE)
+ genup <- mk.test(gen$porc, alternative = c("greater"), continuity = TRUE)
+ gendown <- mk.test(gen$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(esp = c(as.numeric(esptwo["p.value"]),as.numeric(espup["p.value"]),as.numeric(espdown["p.value"])),
+               gen = c(as.numeric(gentwo["p.value"]),as.numeric(genup["p.value"]),as.numeric(gendown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux))  
         cat("\n")      
         
 

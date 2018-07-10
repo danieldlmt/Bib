@@ -320,11 +320,11 @@ for (it in 1:length(logs$sistema)){
     mutate(porcentage = round(n/sum(n) * 100, 1)) 
   colnames(devgen) <- c("n_platform", "n_dev_gen", "porc_gen")
   
-  devesp<- authors3%>% 
-    filter (tipo=="esp") %>%
-    select(android,linux,win,iphone,macosx) 
-  devesp <- ifelse(devesp>0, 1, 0)
-  devesp <- colSums(devesp,na.rm=T)
+  #devesp<- authors3%>% 
+   # filter (tipo=="esp") %>%
+  #  select(android,linux,win,iphone,macosx) 
+  #devesp <- ifelse(devesp>0, 1, 0)
+  #devesp <- colSums(devesp,na.rm=T)
   
   
   authors3_plats<-authors3 %>%select(n_platform)%>% filter(n_platform>0) %>%group_by(n_platform) %>%summarise(n = n())

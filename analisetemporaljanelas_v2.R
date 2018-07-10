@@ -306,9 +306,8 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
       
       n_dev<-n_distinct(data_aux$author)
       
-      #Classificacao de desenvolvedores ativos 
-        #Desenvolvedor ativo  - periodo de contribuição minimo de 24 semanas
-        #                     - média de 2 commits a cada seis meses 
+      # Classificacao de desenvolvedores ativos 
+        # periodo de contribuição minimo de 24 semanas
       
       dev_ativo <-   data %>%
         select( author,n_line_add,n_line_del,rev,path,date)%>%
@@ -325,6 +324,23 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
         mutate(media_commit = commits/as.numeric(periodo),
                  porc_line_add= n_line_add*100/sum(n_line_add),
                  porc_line_add_cum = 100*cumsum(n_line_add)/sum(n_line_add))
+      
+      
+  #Como filtrar os desenvolvedores ? (talvez melhor não filtrar)
+      # A case study apache, Mockus 2000
+        # core : 88% line add
+        # non core: rest
+      # Analysis biodiversity, Maltragas 2014, MSR 2014
+        # cluster para agrupar desenvolvedores com perfis similares
+      # Process mining soft rep, ponein 2011
+        # ativos: 1commit/30dias
+      # OSSMETER report, 2014
+        # ativo: 1commit/15dias
+        # inativo: no commit in 3 months but 1 every 6 months
+        # core: people with highest loc changes 
+      
+      
+      
       
         #Plot de porcentagem acumulada
    #   plot(c(1:nrow(dev_ativo)),dev_ativo$porc_line_add_cum, type = "l", ylab = "% de linhas modificadas", xlab= "Numero de desenvolvedores")

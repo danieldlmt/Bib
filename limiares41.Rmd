@@ -10,6 +10,7 @@ library(venn)
 library(stringr)
 library(knitr)
 library(ggplot2)
+library(trend)
 logs <- data.frame(sistema=c("Allegro", "SDL","SFML","Coco2dx"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R', '~/bib/log_SFML.R', '~/bib/log_coco2dx.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData', '~/bib/analise_SFML.RData', '~/bib/analise_coco2dx.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData', '~/bib/analisetemporal_SFML.RData', '~/bib/analisetemporal_coco2dx.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData', '~/bib/analisetemporaljanela_SFML.RData', '~/bib/analisetemporaljanela_coco2dx.RData')  )
 load ("analise_allegro.RData")
 ```
@@ -41,12 +42,32 @@ for (it in 1:length(logs$sistema)){
   mobiledesktop <- desktopmobile_bind%>% filter(prob==0.1)   
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100),xlim=c(1,j), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(desktop$iteracao,desktop$porc,col="green",type = "l" )
   lines(mobiledesktop$iteracao,mobiledesktop$porc,col="black",type = "l" )
   legend("top",c("Mobile", "Desktop", "Desktop Mobile"), col=c("red","green","black"),lty=1)
 
-  
+  if (length(mobile$porc)< 3){
+    mobiletwo<-data.frame(p.value=99)
+     mobileup<-data.frame(p.value=99)
+      mobiledown<-data.frame(p.value=99)
+  }else{
+ mobiletwo <- mk.test(mobile$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobileup <- mk.test(mobile$porc, alternative = c("greater"), continuity = TRUE)
+ mobiledown <- mk.test(mobile$porc, alternative = c("less"), continuity = TRUE)
+  }
+ desktoptwo <- mk.test(desktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ desktopup <- mk.test(desktop$porc, alternative = c("greater"), continuity = TRUE)
+ desktopdown <- mk.test(desktop$porc, alternative = c("less"), continuity = TRUE)
+ mobiledesktoptwo <- mk.test(mobiledesktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobiledesktopnup <- mk.test(mobiledesktop$porc, alternative = c("greater"), continuity = TRUE)
+mobiledesktopdown <- mk.test(mobiledesktop$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(mobile = c(as.numeric(mobiletwo["p.value"]),as.numeric(mobileup["p.value"]),as.numeric(mobiledown["p.value"])),
+               desktop = c(as.numeric(desktoptwo["p.value"]),as.numeric(desktopup["p.value"]),as.numeric(desktopdown["p.value"])),
+               mobiledesktop = c(as.numeric(mobiledesktoptwo["p.value"]),as.numeric(mobiledesktopnup["p.value"]),as.numeric(mobiledesktopdown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux)) 
         cat("\n")
         
         
@@ -57,7 +78,7 @@ for (it in 1:length(logs$sistema)){
         
         
         
-         cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
+         cat("\n\n####",  as.character( logs$sistema[it] ),"\n")
          cat("\n",  as.character( "0.2") ,"\n")
          
          
@@ -71,12 +92,33 @@ for (it in 1:length(logs$sistema)){
   mobiledesktop <- desktopmobile_bind%>% filter(prob==0.2)   
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100), xlim=c(1,j),xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(desktop$iteracao,desktop$porc,col="green",type = "l" )
   lines(mobiledesktop$iteracao,mobiledesktop$porc,col="black",type = "l" )
   legend("top",c("Mobile", "Desktop", "Desktop Mobile"), col=c("red","green","black"),lty=1)
 
-  
+  if (length(mobile$porc)< 3){
+    mobiletwo<-data.frame(p.value=99)
+     mobileup<-data.frame(p.value=99)
+      mobiledown<-data.frame(p.value=99)
+  }else{
+ mobiletwo <- mk.test(mobile$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobileup <- mk.test(mobile$porc, alternative = c("greater"), continuity = TRUE)
+ mobiledown <- mk.test(mobile$porc, alternative = c("less"), continuity = TRUE)
+  }
+
+ desktoptwo <- mk.test(desktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ desktopup <- mk.test(desktop$porc, alternative = c("greater"), continuity = TRUE)
+ desktopdown <- mk.test(desktop$porc, alternative = c("less"), continuity = TRUE)
+ mobiledesktoptwo <- mk.test(mobiledesktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobiledesktopnup <- mk.test(mobiledesktop$porc, alternative = c("greater"), continuity = TRUE)
+mobiledesktopdown <- mk.test(mobiledesktop$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(mobile = c(as.numeric(mobiletwo["p.value"]),as.numeric(mobileup["p.value"]),as.numeric(mobiledown["p.value"])),
+               desktop = c(as.numeric(desktoptwo["p.value"]),as.numeric(desktopup["p.value"]),as.numeric(desktopdown["p.value"])),
+               mobiledesktop = c(as.numeric(mobiledesktoptwo["p.value"]),as.numeric(mobiledesktopnup["p.value"]),as.numeric(mobiledesktopdown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux)) 
         cat("\n")               
  
    
@@ -86,7 +128,9 @@ for (it in 1:length(logs$sistema)){
         
         
         
-                cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
+        
+        
+                cat("\n\n####",  as.character( logs$sistema[it] ) , "\n")
          cat("\n",  as.character( "0.3") ,"\n")
          
          
@@ -100,13 +144,35 @@ for (it in 1:length(logs$sistema)){
   mobiledesktop <- desktopmobile_bind%>% filter(prob==0.3)   
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100), xlim=c(1,j), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(desktop$iteracao,desktop$porc,col="green",type = "l" )
   lines(mobiledesktop$iteracao,mobiledesktop$porc,col="black",type = "l" )
   legend("top",c("Mobile", "Desktop", "Desktop Mobile"), col=c("red","green","black"),lty=1)
 
-  
+  if (length(mobile$porc)< 3){
+    mobiletwo<-data.frame(p.value=99)
+     mobileup<-data.frame(p.value=99)
+      mobiledown<-data.frame(p.value=99)
+  }else{
+ mobiletwo <- mk.test(mobile$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobileup <- mk.test(mobile$porc, alternative = c("greater"), continuity = TRUE)
+ mobiledown <- mk.test(mobile$porc, alternative = c("less"), continuity = TRUE)
+  }
+ desktoptwo <- mk.test(desktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ desktopup <- mk.test(desktop$porc, alternative = c("greater"), continuity = TRUE)
+ desktopdown <- mk.test(desktop$porc, alternative = c("less"), continuity = TRUE)
+ mobiledesktoptwo <- mk.test(mobiledesktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobiledesktopnup <- mk.test(mobiledesktop$porc, alternative = c("greater"), continuity = TRUE)
+mobiledesktopdown <- mk.test(mobiledesktop$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(mobile = c(as.numeric(mobiletwo["p.value"]),as.numeric(mobileup["p.value"]),as.numeric(mobiledown["p.value"])),
+               desktop = c(as.numeric(desktoptwo["p.value"]),as.numeric(desktopup["p.value"]),as.numeric(desktopdown["p.value"])),
+               mobiledesktop = c(as.numeric(mobiledesktoptwo["p.value"]),as.numeric(mobiledesktopnup["p.value"]),as.numeric(mobiledesktopdown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux)) 
         cat("\n") 
+        
+        
         
         
         
@@ -129,15 +195,40 @@ for (it in 1:length(logs$sistema)){
   mobiledesktop <- desktopmobile_bind%>% filter(prob==0.4)   
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100),xlim=c(1,j), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(desktop$iteracao,desktop$porc,col="green",type = "l" )
   lines(mobiledesktop$iteracao,mobiledesktop$porc,col="black",type = "l" )
   legend("top",c("Mobile", "Desktop", "Desktop Mobile"), col=c("red","green","black"),lty=1)
 
-  
+     if (length(mobile$porc)< 3){
+    mobiletwo<-data.frame(p.value=99)
+     mobileup<-data.frame(p.value=99)
+      mobiledown<-data.frame(p.value=99)
+  }else{
+ mobiletwo <- mk.test(mobile$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobileup <- mk.test(mobile$porc, alternative = c("greater"), continuity = TRUE)
+ mobiledown <- mk.test(mobile$porc, alternative = c("less"), continuity = TRUE)
+  }
+ desktoptwo <- mk.test(desktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ desktopup <- mk.test(desktop$porc, alternative = c("greater"), continuity = TRUE)
+ desktopdown <- mk.test(desktop$porc, alternative = c("less"), continuity = TRUE)
+ mobiledesktoptwo <- mk.test(mobiledesktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobiledesktopnup <- mk.test(mobiledesktop$porc, alternative = c("greater"), continuity = TRUE)
+mobiledesktopdown <- mk.test(mobiledesktop$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(mobile = c(as.numeric(mobiletwo["p.value"]),as.numeric(mobileup["p.value"]),as.numeric(mobiledown["p.value"])),
+               desktop = c(as.numeric(desktoptwo["p.value"]),as.numeric(desktopup["p.value"]),as.numeric(desktopdown["p.value"])),
+               mobiledesktop = c(as.numeric(mobiledesktoptwo["p.value"]),as.numeric(mobiledesktopnup["p.value"]),as.numeric(mobiledesktopdown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux)) 
         cat("\n")
         
-        desktopmobile_bind
+        
+        
+        
+        
+        
+        
         
         
         
@@ -155,12 +246,32 @@ for (it in 1:length(logs$sistema)){
   mobiledesktop <- desktopmobile_bind%>% filter(prob==0.5)   
  
    par(mar=c(5.1, 5, 4.1, 2.1)) 
-  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  plot(mobile$iteracao,mobile$porc,col="red",type = "l",ylim = c(0,100),xlim=c(1,j), xlab = "Tempo (semanas)", ylab = "% de desenvolvedores",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
   lines(desktop$iteracao,desktop$porc,col="green",type = "l" )
   lines(mobiledesktop$iteracao,mobiledesktop$porc,col="black",type = "l" )
   legend("top",c("Mobile", "Desktop", "Desktop Mobile"), col=c("red","green","black"),lty=1)
 
-  
+     if (length(mobile$porc)< 3){
+    mobiletwo<-data.frame(p.value=99)
+     mobileup<-data.frame(p.value=99)
+      mobiledown<-data.frame(p.value=99)
+  }else{
+ mobiletwo <- mk.test(mobile$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobileup <- mk.test(mobile$porc, alternative = c("greater"), continuity = TRUE)
+ mobiledown <- mk.test(mobile$porc, alternative = c("less"), continuity = TRUE)
+  }
+ desktoptwo <- mk.test(desktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ desktopup <- mk.test(desktop$porc, alternative = c("greater"), continuity = TRUE)
+ desktopdown <- mk.test(desktop$porc, alternative = c("less"), continuity = TRUE)
+ mobiledesktoptwo <- mk.test(mobiledesktop$porc, alternative = c("two.sided"), continuity = TRUE)
+ mobiledesktopnup <- mk.test(mobiledesktop$porc, alternative = c("greater"), continuity = TRUE)
+mobiledesktopdown <- mk.test(mobiledesktop$porc, alternative = c("less"), continuity = TRUE)
+aux<-data.frame(mobile = c(as.numeric(mobiletwo["p.value"]),as.numeric(mobileup["p.value"]),as.numeric(mobiledown["p.value"])),
+               desktop = c(as.numeric(desktoptwo["p.value"]),as.numeric(desktopup["p.value"]),as.numeric(desktopdown["p.value"])),
+               mobiledesktop = c(as.numeric(mobiledesktoptwo["p.value"]),as.numeric(mobiledesktopnup["p.value"]),as.numeric(mobiledesktopdown["p.value"])),
+               row.names = c("twosided", "greater", "less"))
+ 
+   print(kable(aux)) 
         cat("\n")       
         
         
