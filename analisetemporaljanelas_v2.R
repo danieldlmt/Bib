@@ -261,8 +261,8 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
     
       
       # Limiares
-      # n_line_add - numero de linhas adicionadas por plataforma de todos os devs
-      # commits - numero de commits por plataforma (incluindo cod. independente) de todos os devs
+        # n_line_add - numero de linhas adicionadas por plataforma de todos os devs
+        # commits - numero de commits por plataforma (incluindo cod. independente) de todos os devs
       platform_new <- data %>%
         select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
         group_by(author,platform) %>%
@@ -280,14 +280,15 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
       data_aux <- data%>%
         filter(as.POSIXct(date)>=date_left  & as.POSIXct(date)<date_right )  
       
-      #  remove_outliers <- function(x, na.rm = TRUE) {
-      #    qnt <- quantile(x, probs=c(.25, .75), na.rm = TRUE)
-      #    H <- 1.5 * IQR(x, na.rm = TRUE)
-      #    y <- x
-      #    y[x < (qnt[1] - H)] <- NA
-      #    y[x > (qnt[2] + H)] <- NA
-      #    y
-      #  }        
+      #funcao que nao sei fazer funcinar no r
+        #  remove_outliers <- function(x, na.rm = TRUE) {
+        #    qnt <- quantile(x, probs=c(.25, .75), na.rm = TRUE)
+        #    H <- 1.5 * IQR(x, na.rm = TRUE)
+        #    y <- x
+        #    y[x < (qnt[1] - H)] <- NA
+        #    y[x > (qnt[2] + H)] <- NA
+        #    y
+        #  }        
       qnt <- quantile(limiares$n_line_add, probs=c(.25, .75))
       H <- 1.5 * IQR(limiares$n_line_add, na.rm = TRUE)
       limiar_line <- limiares$n_line_add
@@ -305,6 +306,35 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
       
       n_dev<-n_distinct(data_aux$author)
       
+      #Classificacao de desenvolvedores ativos 
+        #Desenvolvedor ativo  - periodo de contribuição minimo de 24 semanas
+        #                     - média de 2 commits a cada seis meses 
+      
+      dev_ativo <-   data %>%
+        select( author,n_line_add,n_line_del,rev,path,date)%>%
+        group_by(author) %>%
+        summarise(n_line_add=sum(n_line_add),
+                  n_line_del=sum(n_line_del), 
+                  commits=n_distinct(rev),
+                  files=n_distinct(path), 
+                  first=min(as.POSIXct(date)),
+                  last=max(as.POSIXct(date)) )%>%
+        arrange(desc(n_line_add))%>%
+        mutate(periodo = difftime(as.POSIXct(last) ,as.POSIXct(first), units = "weeks"))%>% 
+        filter(as.numeric(periodo)>=24)     %>%
+        mutate(media_commit = commits/as.numeric(periodo),
+                 porc_line_add= n_line_add*100/sum(n_line_add),
+                 porc_line_add_cum = 100*cumsum(n_line_add)/sum(n_line_add))
+      
+        #Plot de porcentagem acumulada
+   #   plot(c(1:nrow(dev_ativo)),dev_ativo$porc_line_add_cum, type = "l", ylab = "% de linhas modificadas", xlab= "Numero de desenvolvedores")
+      
+      #%>%              filter(as.numeric(periodo)>=24 & media>=1/6)
+      
+      
+      
+      
+      #Classificao de devs de acordo com os limiares
       # nova variavel para classificacao do desenvolvedor entre generalista e especialista em plataformas
       platform_new <- data_aux %>%
         select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
