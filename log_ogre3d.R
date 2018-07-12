@@ -21,7 +21,7 @@ data <- data %>%
   mutate(module = gsub('/[^/]+$', '', path)) %>%
   #filter(grepl('([.]c|[.]h)', path))
   filter(grepl('^OgreMain/src*', module)  ) %>%
-  filter(as.Date(date)>as.Date("2010-04-12  00:00:2016-11-05 -0000")) 
+  filter(as.Date(date)>=as.Date("2010-04-12")) 
 #%>%filter(n_line_add>=3)
 
 #########################################3

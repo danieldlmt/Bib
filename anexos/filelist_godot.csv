@@ -1,6 +1,6 @@
 module,platform
 demos/2d/area_input,Independente
-doc/classes,Windows
+doc/classes,Independente
 drivers/alsa,Linux
 drivers/builtin_openssl2,Windows
 drivers/builtin_openssl2/crypto,Windows
@@ -82,12 +82,24 @@ drivers/theoraplayer/src/YUV/libyuv/include/libyuv,Independente
 drivers/theoraplayer/src/YUV/libyuv/src,Independente Windows
 drivers/windows,Windows
 drivers/xaudio2,Windows
-editor/icons,Windows Linux
-editor/icons/dark,Windows Linux
-editor/icons/source,Windows Linux
 misc/dist/docker/scripts,Android
+misc/dist/ios_xcode,iPhone
+misc/dist/ios_xcode/godot_ios,iPhone
+misc/dist/ios_xcode/godot_ios/dylibs,iPhone
+misc/dist/ios_xcode/godot_ios/en.lproj,iPhone
+misc/dist/ios_xcode/godot_ios/Images.xcassets/AppIcon.appiconset,iPhone
+misc/dist/ios_xcode/godot_ios/Images.xcassets/LaunchImage.launchimage,iPhone
+misc/dist/ios_xcode/godot_ios.xcodeproj,iPhone
+misc/dist/ios_xcode/godot_ios.xcodeproj/project.xcworkspace,iPhone
+misc/dist/ios_xcode/godot_ios.xcodeproj/xcshareddata/xcschemes,iPhone
+misc/dist/ios_xcode/godot_xcode,iPhone
+misc/dist/ios_xcode/godot_xcode/godot_ios,iPhone
+misc/dist/ios_xcode/godot_xcode/godot_ios/en.lproj,iPhone
+misc/dist/ios_xcode/godot_xcode/godot_ios/Images.xcassets/AppIcon.appiconset,iPhone
+misc/dist/ios_xcode/godot_xcode/godot_ios.xcodeproj,iPhone
+misc/dist/ios_xcode/godot_xcode/godot_ios.xcodeproj/project.xcworkspace,iPhone
 misc/dist/linux,Linux
-misc/travis,Linux Android
+misc/travis,Android
 modules/chibi,Independente
 modules/enet,Windows
 modules/enet/enet,Windows
@@ -97,7 +109,7 @@ modules/gdnative/include/android,Android
 modules/gridmap,Independente
 modules/gridmap/doc_classes,Independente
 modules/mono/glue/cs_files,Independente
-modules/visual_script/doc_classes,Windows
+modules/visual_script/doc_classes,Independente
 platform/android,Android
 platform/android/export,Android
 platform/android/globals,Android
@@ -252,6 +264,9 @@ platform/android/.old,Android
 platform/android/.old/java,Android
 platform/android/.old/java/res/values,Android
 platform/android/.old/java/src/com/android/godot,Android
+platform/flash/include/EGL,Windows
+platform/flash/include/GL,Windows
+platform/flash/include/GLES,Windows
 platform/haiku,Windows
 platform/iphone,iPhone
 platform/iphone/export,iPhone
@@ -274,14 +289,27 @@ platform/winrt/include/GLSLANG,Windows
 platform/winrt/include/KHR,Windows
 platform/x11,Linux
 platform/x11/export,Linux
-scene/3d,Windows
+scene,Independente
+scene/2d,Independente
+scene/3d,Independente
+scene/animation,Independente
 scene/audio,Independente
-scene/resources/default_theme/source,Windows
+scene/gui,Independente
+scene/io,Independente
+scene/main,Independente
+scene/resources,Independente
+scene/resources/default_theme,Independente
+scene/resources/default_theme/source,Independente
 servers/audio,Independente
 servers/audio/effects,Independente
 tools/dist/docker/scripts,Android
+tools/dist/ios_xcode/godot_xcode,iPhone
+tools/dist/ios_xcode/godot_xcode/godot_ios,iPhone
+tools/dist/ios_xcode/godot_xcode/godot_ios/en.lproj,iPhone
+tools/dist/ios_xcode/godot_xcode/godot_ios/Images.xcassets/AppIcon.appiconset,iPhone
+tools/dist/ios_xcode/godot_xcode/godot_ios.xcodeproj,iPhone
+tools/dist/ios_xcode/godot_xcode/godot_ios.xcodeproj/project.xcworkspace,iPhone
 tools/docker/scripts,Android
-tools/editor/icons/source,Windows Linux
 tools/freetype/freetype/include/freetype/internal/services,Independente
 tools/freetype/freetype/src,Independente
 tools/freetype/freetype/src/autofit,Independente
@@ -304,4 +332,11 @@ tools/freetype/freetype/src/truetype,Independente
 tools/freetype/freetype/src/type1,Independente
 tools/freetype/freetype/src/type42,Independente
 tools/freetype/freetype/src/winfonts,Independente
+tools/ios_xcode_template,iPhone
+tools/ios_xcode_template/godot_ios,iPhone
+tools/ios_xcode_template/godot_ios/en.lproj,iPhone
+tools/ios_xcode_template/godot_iosTests,iPhone
+tools/ios_xcode_template/godot_iosTests/en.lproj,iPhone
+tools/ios_xcode_template/godot_ios.xcodeproj,iPhone
+tools/ios_xcode_template/godot_ios.xcodeproj/project.xcworkspace,iPhone
 tools/ios_xcode_template/godot_ios.xcodeproj/xcuserdata/punto.xcuserdatad/xcschemes,iPhone

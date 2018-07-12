@@ -22,7 +22,7 @@ data <- data %>%
   #filter(grepl('([.]c|[.]h)', path))
   filter(grepl('^gameplay/src/*', module)  ) %>% 
   filter(!str_detect( path,"blackberry"))%>%
-  filter(as.Date(date)>as.Date("2001-04-12  00:00:2016-11-05 -0000")) 
+  filter(as.Date(date)>=as.Date("2001-04-12")) 
 #%>%filter(n_line_add>=3)
 
 #########################################3

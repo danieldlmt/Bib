@@ -1,7 +1,6 @@
 module,platform
 src,Independente Windows
 src/android,Android
-src/gp2xwiz,Independente
 src/iphone,iPhone
 src/linux,Linux
 src/macosx,macOS

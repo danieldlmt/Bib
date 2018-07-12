@@ -22,7 +22,7 @@ data <- data %>%
   mutate(module = gsub('/[^/]+$', '', path)) %>%
   #filter(grepl('([.]c|[.]h)', path))
   filter(!grepl('^thirdparty*', module)  ) 
- # filter(as.Date(date)>as.Date("2014-02-09  00:00:2016-11-05 -0000")) #Godot iniciou com todas as plataformas
+ # filter(as.Date(date)>=as.Date("2014-02-09")) #Godot iniciou com todas as plataformas
 #%>%filter(n_line_add>=3)
 
 #########################################3

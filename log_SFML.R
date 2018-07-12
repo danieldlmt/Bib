@@ -20,7 +20,7 @@ data <- data %>%
   mutate(module = gsub('/[^/]+$', '', path)) %>%
   #filter(grepl('([.]c|[.]h)', path))
   filter(grepl('^src.*', module)  ) %>%
-  filter(as.Date(date)>as.Date("2014-04-20 00:00:2016-11-05 -0000")) 
+  filter(as.Date(date)>=as.Date("2014-04-20 ")) 
 #%>%filter(n_line_add>=3)
 
 #########################################3

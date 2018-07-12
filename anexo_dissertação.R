@@ -12,7 +12,18 @@ library(dplyr, warn.conflicts = FALSE)
       load (as.character(logs$data[it]))
       
       x<-data %>%select(module, platform,path) %>% group_by(module) %>% summarise(platform = paste(unique(platform), collapse=" "),path = paste(unique(path), collapse=", "))
-      x<-x%>% select (module,platform)
+      x<-x%>% select (module,platform) #%>%
+    #    mutate(module = gsub('^[^/]*/[^/]*/[^/]*','',module) ) %>%
+    #    group_by ( module ) %>%
+    #    summarise ( platform = paste ( unique ( platform ) , collapse = " " ) )%>%
+    #    mutate ( platform =  )
+       
+      #sample1= "cocos/platform/android/java/src/org/cocos2dxlib"
+      #grep('^[^/]*/[^/]*/[^/]*','',sample1)
+      #gsub('^(?:[^/]*/){3}','',sample1)
+      #gsub('^([^/]*/[^/]*)/.*$','\1',sample1)
+      
+
       path<-paste("~/bib/anexos/filelist_",tolower(as.character(logs$sistema[it])),".csv",sep = "")
       write.csv(x, file = , path, quote = FALSE,row.names = FALSE)
     }

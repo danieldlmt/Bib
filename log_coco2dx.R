@@ -21,7 +21,7 @@ data <- data %>%
   mutate(module = gsub('/[^/]+$', '', path)) %>%
   #filter(grepl('([.]c|[.]h)', path))
   filter(grepl('^cocos.*', module)  ) %>%
-  filter(as.Date(date)>as.Date("2011-10-01  00:00:2016-11-05 -0000")) 
+  filter(as.Date(date)>=as.Date("2011-10-01")) 
 #%>%filter(n_line_add>=3)
 
 #########################################3

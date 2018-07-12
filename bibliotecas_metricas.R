@@ -45,6 +45,8 @@ library(stringr)
       ativos_porc <- ativos*100/devs
       ativos_lineadd_porc <- sum(dev_ativo$porc_line_add)
       ativos_commit_porc <- sum(dev_ativo$porc_commits)
+      data_inicio <- min(as.POSIXct(data$date))
+      data_ultimo <- max(as.POSIXct(data$date))
       periodo_anos <- as.numeric (difftime(max(as.POSIXct(data$date)),min(as.POSIXct(data$date)),units = "weeks") / 48)
       commits_anos <- commits/periodo_anos
       
@@ -55,7 +57,9 @@ library(stringr)
                           porc_lineadd_devsativos = ativos_lineadd_porc,
                           porc_commits_devsativos = ativos_commit_porc, 
                           periodo_anos = periodo_anos, 
-                          commit_anos = commits_anos  )
+                          commit_anos = commits_anos,
+                          data_inicio = data_inicio,
+                          data_ultimo= data_ultimo)
       
       metricas <-rbind(metricas,aux)
     

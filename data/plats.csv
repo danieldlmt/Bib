@@ -1,22 +1,37 @@
 ,diretorio,plataforma,conferencia,descricao
+100,gp2xwiz,gp2xwiz,1,consoleportatil
+100,editor/, Independente,1,so pra godot
+100,scene/,Independente,1 ,so pra godot
+100,Immediate,Independente,1, so pra godot
+100,Comment,Independente,1, so pra godot
+100,androidwindow,Android,1, SDL
+5,android,Android,1,
 1,windows,Windows,1,
 1,/win/,Windows,1, 
 1,_win,Windows,1
 1,WIN32,Windows,1,
+1,Win32,Windows,1,
+1,glext,Windows,1,
 2,linux,Linux,1,
+2,Linux,Linux,1,
+3,Unix,Independente,1,
+6,ios_mac,Independente,1,
 3,macosx,macOS,1,
 4,macos,macOS,1,
+4,FreeBSD,FreeBSD,1,
+4,OpenBSD,OpenBSD,1
 4,mac/,macOS,1,
 5,OSX,macOS,1,
-5,android,Android,1,
 4,Android,Android,1,
 6,iphone/,iPhone,1, 
 6,iphoneos,iPhone,1,
 6,iPhone,iPhone,1,
-6,ios/iPhone,1,
-6,-ios,1,
-6,iOS,1,
-7,x11,Linux,1,
+6,-ios,iPhone,1,
+6,ios/,iPhone,1,
+6,/ios,iPhone,1,
+6,ios_mac,Independente,1,
+6,iOS,iPhone,1,
+7,x11,Linux,1,,
 7,/x/,Linux,1,
 7,tizen,Linux,1
 8,/dos/,Windows,1,
@@ -35,7 +50,7 @@
 20,qsa,QNX,1,
 21,pandora,Pandora,1,
 22,vivante,Indeterminada,1,gpu
-23,darwin,macOS,1,
+23,darwin,Independente,1, core da apple
 24,arts,Linux,1,
 25,fusionsound,Independente,1,analog real time synthesizer
 26,pulseaudio,Independente,1,multiplataforma
@@ -121,3 +136,4 @@
 106,joystick/,Independente,1,
 107,src/,Independente,1,
 108,Symbian,Symbian,1,
+

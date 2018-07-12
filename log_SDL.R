@@ -23,7 +23,7 @@ data <- read.table(datatemp, sep=";" , header=F, col.names=c('rev', 'author', 'd
 data <- data %>%
   mutate(module = gsub('/[^/]+$', '', path)) %>%
   filter(grepl('^src.*', module)  )%>%
-  filter(as.Date(date)>as.Date("2010-06-10 00:00:2018-11-05 -0000")) 
+  filter(as.Date(date)>=as.Date("2010-06-26")) 
   #%>%filter(n_line_add>=3)
 
 #########################################3

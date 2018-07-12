@@ -1,6 +1,7 @@
 module,platform
 cocos,Android
 cocos/2d,Windows Android
+cocos2d-ios.xcworkspace,iPhone
 cocos/2d/libcocos2d_win10,Windows
 cocos/2d/platform/android,Android
 cocos/2d/platform/android/java,Android
@@ -8,6 +9,8 @@ cocos/2d/platform/android/java/res,Android
 cocos/2d/platform/android/java/.settings,Android
 cocos/2d/platform/android/java/src/org/cocos2dx/lib,Android
 cocos/2d/platform/android/jni,Android
+cocos/2d/platform/ios,iPhone
+cocos/2d/platform/ios/Simulation,iPhone
 cocos/2d/platform/linux,Linux
 cocos/2d/platform/mac,macOS
 cocos/2d/platform/win32,Windows
@@ -18,66 +21,14 @@ cocos/2d/proj.linux,Linux
 cocos/2d/proj.win32,Windows
 cocos/2d/support/user_default,Android
 cocos/2d/win10_props,Windows
-cocos2d-win32.sln,Windows
 cocos2d-win32.vc2008.sln,Windows
 cocos2d-win32.vc2010.sdf.REMOVED.git-id,Windows
 cocos2d-win32.vc2010.sln,Windows
 cocos2d-win32.vc2012.sln,Windows
-cocos2d-win32.vcproj.user,Windows
 cocos/2d/winrt_8.1_props,Windows
 cocos/2d/winrt_props,Windows
-cocos2dx,Android Windows
-cocos2d-x,Android
-cocos2dx/AndroidDebug,Android
-cocos2dx/AndroidDebug/actions,Android
-cocos2dx/AndroidDebug/base_nodes,Android
-cocos2dx/AndroidDebug/cocoa,Android
-cocos2dx/AndroidDebug/effects,Android
-cocos2dx/AndroidDebug/keypad_dispatcher,Android
-cocos2dx/AndroidDebug/label_nodes,Android
-cocos2dx/AndroidDebug/layers_scenes_transitions_nodes,Android
-cocos2dx/AndroidDebug/menu_nodes,Android
-cocos2dx/AndroidDebug/misc_nodes,Android
-cocos2dx/AndroidDebug/particle_nodes,Android
-cocos2dx/AndroidDebug/platform,Android
-cocos2dx/AndroidDebug/platform/android,Android
-cocos2dx/AndroidDebug/platform/android/jni,Android
-cocos2dx/AndroidDebug/script_support,Android
-cocos2dx/AndroidDebug/sprite_nodes,Android
-cocos2dx/AndroidDebug/support,Android
-cocos2dx/AndroidDebug/support/image_support,Android
-cocos2dx/AndroidDebug/support/zip_support,Android
-cocos2dx/AndroidDebug/text_input_node,Android
-cocos2dx/AndroidDebug/textures,Android
-cocos2dx/AndroidDebug/tileMap_parallax_nodes,Android
-cocos2dx/AndroidDebug/touch_dispatcher,Android
-cocos2dx/AndroidRelease,Android
-cocos2dx/AndroidRelease/actions,Android
-cocos2dx/AndroidRelease/base_nodes,Android
-cocos2dx/AndroidRelease/cocoa,Android
-cocos2dx/AndroidRelease/effects,Android
-cocos2dx/AndroidRelease/keypad_dispatcher,Android
-cocos2dx/AndroidRelease/label_nodes,Android
-cocos2dx/AndroidRelease/layers_scenes_transitions_nodes,Android
-cocos2dx/AndroidRelease/menu_nodes,Android
-cocos2dx/AndroidRelease/misc_nodes,Android
-cocos2dx/AndroidRelease/particle_nodes,Android
-cocos2dx/AndroidRelease/platform,Android
-cocos2dx/AndroidRelease/platform/android,Android
-cocos2dx/AndroidRelease/platform/android/jni,Android
-cocos2dx/AndroidRelease/script_support,Android
-cocos2dx/AndroidRelease/sprite_nodes,Android
-cocos2dx/AndroidRelease/support,Android
-cocos2dx/AndroidRelease/support/image_support,Android
-cocos2dx/AndroidRelease/support/zip_support,Android
-cocos2dx/AndroidRelease/text_input_node,Android
-cocos2dx/AndroidRelease/textures,Android
-cocos2dx/AndroidRelease/tileMap_parallax_nodes,Android
-cocos2dx/AndroidRelease/touch_dispatcher,Android
-cocos2d-x/cocoa,macOS
+cocos2dx,Android
 cocos2dx/cocoa,macOS
-cocos2dx/Debug/cocoa,macOS
-cocos2d-x/platform/android,Android
 cocos2dx/platform/android,Android
 cocos2dx/platform/android/java,Android
 cocos2dx/platform/android/java/res,Android
@@ -86,35 +37,10 @@ cocos2dx/platform/android/java/.settings,Android
 cocos2dx/platform/android/java/src_common/org/cocos2dx/lib,Android
 cocos2dx/platform/android/java/src/org/cocos2dx/lib,Android
 cocos2dx/platform/android/jni,Android
-cocos2d-x/platform/android/third_party/iconv,Android
-cocos2dx/platform/android/third_party/iconv,Android
-cocos2d-x/platform/android/third_party/libjpeg,Android Linux Windows
-cocos2dx/platform/android/third_party/libjpeg,Android Linux Windows
-cocos2d-x/platform/android/third_party/libpng,Android
-cocos2dx/platform/android/third_party/libpng,Android
-cocos2d-x/platform/android/third_party/libs,Android
-cocos2dx/platform/android/third_party/libs,Android
-cocos2d-x/platform/android/third_party/libxml2/libxml,Android
-cocos2dx/platform/android/third_party/libxml2/libxml,Android
-cocos2dx/platform/android/third_party/skia/animator,Android
-cocos2dx/platform/android/third_party/skia/core,Android
-cocos2dx/platform/android/third_party/skia/effects,Android
-cocos2dx/platform/android/third_party/skia/graphics,Android
-cocos2dx/platform/android/third_party/skia/images,Android
-cocos2dx/platform/android/third_party/skia/pdf,Android
-cocos2dx/platform/android/third_party/skia/ports,Android
-cocos2dx/platform/android/third_party/skia/svg,Android
-cocos2dx/platform/android/third_party/skia/text,Android
-cocos2dx/platform/android/third_party/skia/utils,Android
-cocos2dx/platform/android/third_party/skia/utils/mac,macOS
-cocos2dx/platform/android/third_party/skia/views,Android
-cocos2dx/platform/android/third_party/skia/xml,Android
-cocos2d-x/platform/iphone,iPhone
-cocos2dx/platform/iphone,iPhone
-cocos2d-x/platform/iphone/third_party/libxml2/libxml,iPhone
-cocos2dx/platform/iphone/third_party/libxml2/libxml,iPhone
-cocos2d-x/platform/iphone/third_party/opengles/GLES,iPhone
-cocos2dx/platform/iphone/third_party/opengles/GLES,iPhone
+cocos2dx/platform/bada/GLES,Windows
+cocos2dx/platform/ios,iPhone
+cocos2dx/platform/ios/FontLabel,iPhone
+cocos2dx/platform/ios/Simulation,iPhone
 cocos2dx/platform/linux,Linux
 cocos2dx/platform/Linux,Linux
 cocos2dx/platform/mac,macOS
@@ -122,10 +48,13 @@ cocos2dx/platform/third_party/airplay/expat/xmlwf,Windows
 cocos2dx/platform/third_party/airplay/libxml2/include,Windows
 cocos2dx/platform/third_party/airplay/libxml2/include/libxml,Windows
 cocos2dx/platform/third_party/airplay/libxml2/lib/mips/linux,Linux
+cocos2dx/platform/third_party/airplay/zlib/contrib/iostream,iPhone
+cocos2dx/platform/third_party/airplay/zlib/contrib/iostream2,iPhone
+cocos2dx/platform/third_party/airplay/zlib/contrib/iostream3,iPhone
 cocos2dx/platform/third_party/airplay/zlib/contrib/minizip,Windows
 cocos2dx/platform/third_party/android/curl,Android
 cocos2dx/platform/third_party/android/iconv,Android
-cocos2dx/platform/third_party/android/libjpeg,Android Linux Windows
+cocos2dx/platform/third_party/android/libjpeg,Android
 cocos2dx/platform/third_party/android/libpng,Android
 cocos2dx/platform/third_party/android/libraries,Android
 cocos2dx/platform/third_party/android/libraries/armeabi,Android
@@ -138,7 +67,7 @@ cocos2dx/platform/third_party/android/modules/libcurl/libs/armeabi,Android
 cocos2dx/platform/third_party/android/modules/libcurl/libs/armeabi-v7a,Android
 cocos2dx/platform/third_party/android/modules/libcurl/libs/x86,Android
 cocos2dx/platform/third_party/android/modules/libjpeg,Android
-cocos2dx/platform/third_party/android/modules/libjpeg/include,Android Linux Windows
+cocos2dx/platform/third_party/android/modules/libjpeg/include,Android
 cocos2dx/platform/third_party/android/modules/libjpeg/libs/armeabi,Android
 cocos2dx/platform/third_party/android/modules/libjpeg/libs/armeabi-v7a,Android
 cocos2dx/platform/third_party/android/modules/libjpeg/libs/x86,Android
@@ -192,20 +121,18 @@ cocos2dx/platform/third_party/android/prebuilt/libxml2/include/libxml,Android
 cocos2dx/platform/third_party/android/prebuilt/libxml2/libs/armeabi,Android
 cocos2dx/platform/third_party/android/prebuilt/libxml2/libs/armeabi-v7a,Android
 cocos2dx/platform/third_party/android/prebuilt/libxml2/libs/x86,Android
-cocos2dx/platform/third_party/android/skia/animator,Android
-cocos2dx/platform/third_party/android/skia/core,Android
-cocos2dx/platform/third_party/android/skia/effects,Android
-cocos2dx/platform/third_party/android/skia/graphics,Android
-cocos2dx/platform/third_party/android/skia/images,Android
-cocos2dx/platform/third_party/android/skia/pdf,Android
-cocos2dx/platform/third_party/android/skia/ports,Android
-cocos2dx/platform/third_party/android/skia/svg,Android
-cocos2dx/platform/third_party/android/skia/text,Android
-cocos2dx/platform/third_party/android/skia/utils,Android
-cocos2dx/platform/third_party/android/skia/utils/mac,macOS
-cocos2dx/platform/third_party/android/skia/views,Android
-cocos2dx/platform/third_party/android/skia/xml,Android
-cocos2dx/platform/third_party/blackberry/include/grskia,Linux Windows
+cocos2dx/platform/third_party/blackberry/include/grskia,Linux Independente Windows
+cocos2dx/platform/third_party/ios/curl,iPhone
+cocos2dx/platform/third_party/ios/libfreetype2,iPhone
+cocos2dx/platform/third_party/ios/libfreetype2/freetype,iPhone
+cocos2dx/platform/third_party/ios/libfreetype2/freetype/config,iPhone
+cocos2dx/platform/third_party/ios/libfreetype2/freetype/internal,iPhone
+cocos2dx/platform/third_party/ios/libfreetype2/freetype/internal/services,iPhone
+cocos2dx/platform/third_party/ios/libjpeg,iPhone
+cocos2dx/platform/third_party/ios/libpng,iPhone
+cocos2dx/platform/third_party/ios/libraries,iPhone
+cocos2dx/platform/third_party/ios/libtiff,iPhone
+cocos2dx/platform/third_party/ios/webp,iPhone
 cocos2dx/platform/third_party/linux/curl,Linux
 cocos2dx/platform/third_party/linux/glew-1.7.0,Linux
 cocos2dx/platform/third_party/linux/glfw,Linux
@@ -260,9 +187,12 @@ cocos2dx/platform/third_party/marmalade/libtiff/source,Windows
 cocos2dx/platform/third_party/marmalade/libxml2/include,Windows
 cocos2dx/platform/third_party/marmalade/libxml2/include/libxml,Windows
 cocos2dx/platform/third_party/marmalade/libxml2/lib/mips/linux,Linux
+cocos2dx/platform/third_party/marmalade/zlib/contrib/iostream,iPhone
+cocos2dx/platform/third_party/marmalade/zlib/contrib/iostream2,iPhone
+cocos2dx/platform/third_party/marmalade/zlib/contrib/iostream3,iPhone
 cocos2dx/platform/third_party/marmalade/zlib/contrib/minizip,Windows
-cocos2dx/platform/third_party/qnx/grskia,Linux Windows
-cocos2dx/platform/third_party/qnx/include/grskia,Linux Windows
+cocos2dx/platform/third_party/qnx/grskia,Linux Independente Windows
+cocos2dx/platform/third_party/qnx/include/grskia,Linux Independente Windows
 cocos2dx/platform/third_party/tizen/prebuilt/libcurl/include/curl,Linux
 cocos2dx/platform/third_party/tizen/prebuilt/libcurl/libs/x86,Linux
 cocos2dx/platform/third_party/tizen/prebuilt/libjpeg/include,Linux
@@ -333,42 +263,20 @@ cocos2dx/platform/third_party/win32/OGLES/KHR,Windows
 cocos2dx/platform/third_party/win32/pthread,Windows
 cocos2dx/platform/third_party/win32/zlib,Windows
 cocos2dx/platform/tizen,Linux
-cocos2d-x/platform/win32,Windows
 cocos2dx/platform/win32,Windows
 cocos2dx/platform/win32/compat,Windows
-cocos2d-x/platform/win32/third_party,Windows
-cocos2dx/platform/win32/third_party,Windows
-cocos2d-x/platform/win32/third_party/iconv,Windows
-cocos2dx/platform/win32/third_party/iconv,Windows
-cocos2d-x/platform/win32/third_party/libjpeg,Windows Linux
-cocos2dx/platform/win32/third_party/libjpeg,Windows Linux
-cocos2d-x/platform/win32/third_party/libpng,Windows
-cocos2dx/platform/win32/third_party/libpng,Windows
-cocos2d-x/platform/win32/third_party/libraries,Windows
-cocos2dx/platform/win32/third_party/libraries,Windows
-cocos2d-x/platform/win32/third_party/libxml2/libxml,Windows
-cocos2dx/platform/win32/third_party/libxml2/libxml,Windows
-cocos2d-x/platform/win32/third_party/OGLES/EGL,Windows
-cocos2dx/platform/win32/third_party/OGLES/EGL,Windows
-cocos2d-x/platform/win32/third_party/OGLES/GLES,Windows
-cocos2dx/platform/win32/third_party/OGLES/GLES,Windows
-cocos2d-x/platform/win32/third_party/OGLES/KHR,Windows
-cocos2dx/platform/win32/third_party/OGLES/KHR,Windows
-cocos2d-x/platform/win32/third_party/zlib,Windows
-cocos2dx/platform/win32/third_party/zlib,Windows
+cocos2dx/proj.ios,iPhone
+cocos2dx/proj.ios/cocos2dx/cocos2dx,iPhone
+cocos2dx/proj.ios/cocos2dx/cocos2dx.xcodeproj,iPhone
+cocos2dx/proj.ios/cocos2dx.xcodeproj,iPhone
+cocos2dx/proj.ios/libcocos2dx.xcodeproj,iPhone
 cocos2dx/proj.linux,Linux
 cocos2dx/proj.mac,macOS
 cocos2dx/proj.mac/cocos2dx.xcodeproj,macOS
 cocos2dx/proj.tizen,Linux
 cocos2dx/proj.tizen/src,Linux
-cocos2d-x/proj.win32,Windows
 cocos2dx/proj.win32,Windows
-cocos2dx/Release/cocoa,macOS
 cocos2dx/support/user_default,Android
-cocos2d-x.win32.sln,Windows
-cocos2dx-win32.sln,Windows
-cocos2dx.win32.sln,Windows
-cocos2dx-win32.vcproj.user,Windows
 cocos/3d,Android
 cocos/3d/proj.win32,Windows
 cocos/audio,Independente
@@ -382,7 +290,7 @@ cocos/audio/android/opensl,Android
 cocos/audio/android/utils,Android
 cocos/audio/apple,Independente
 cocos/audio/include,Independente
-cocos/audio/ios,Independente
+cocos/audio/ios,iPhone
 cocos/audio/linux,Linux
 cocos/audio/mac,macOS
 cocos/audio/openal,Independente
@@ -399,10 +307,11 @@ cocos/audio/tizen,Linux
 cocos/audio/win32,Windows
 cocos/audio/winrt,Windows
 cocos/audio/wp8,Independente
-cocos/base,Android Linux Windows
+cocos/base,Android Linux Windows iPhone
 cocos/base/cocoa,macOS
 cocosdenshion/android,Android
 cocosdenshion/android/jni,Android
+cocosdenshion/ios,iPhone
 cocosdenshion/proj.win32,Windows
 cocosdenshion/win32,Windows
 cocos/editor-support/cocosbuilder,Android
@@ -415,7 +324,7 @@ cocos/gui,Android
 cocos/gui/proj.win32,Windows
 cocos/math/kazmath/src,Independente
 cocos/math/kazmath/src/GL,Independente
-cocos/network,Android Windows
+cocos/network,Android Windows iPhone
 cocos/network/proj.win32,Windows
 cocos/platform/android,Android
 cocos/platform/android/ControllerAutoAdapter,Android
@@ -456,6 +365,7 @@ cocos/platform/android/jni,Android
 cocos/platform/android/libcocos2dx,Android
 cocos/platform/android/libcocos2dx-with-controller,Android
 cocos/platform/cocoa,macOS
+cocos/platform/ios,iPhone
 cocos/platform/linux,Linux
 cocos/platform/mac,macOS
 cocos/platform/tizen,Linux
@@ -472,6 +382,8 @@ cocos/scripting/javascript/bindings/gui,Android
 cocos/scripting/javascript/bindings/js,Independente
 cocos/scripting/javascript/bindings/localstorage,Android
 cocos/scripting/javascript/bindings/network,Android
+cocos/scripting/javascript/bindings/proj.ios,iPhone
+cocos/scripting/javascript/bindings/proj.ios/jsbindings.xcodeproj,iPhone
 cocos/scripting/javascript/bindings/proj.mac,macOS
 cocos/scripting/javascript/bindings/proj.mac/jsbindings.xcodeproj,macOS
 cocos/scripting/javascript/bindings/proj.win32,Windows
@@ -479,9 +391,10 @@ cocos/scripting/javascript/bindings/spine,Android
 cocos/scripting/javascript/script,Independente
 cocos/scripting/js-bindings/manual,Independente
 cocos/scripting/js-bindings/manual/platform/android,Android
+cocos/scripting/js-bindings/manual/platform/ios,iPhone
 cocos/scripting/js-bindings/proj.android,Android
-cocos/scripting/js-bindings/proj.ios_mac/cocos2d_js_bindings.xcodeproj,macOS
-cocos/scripting/js-bindings/proj.ios_mac/cocos2d_js_bindings.xcodeproj/xcshareddata/xcschemes,macOS
+cocos/scripting/js-bindings/proj.ios_mac/cocos2d_js_bindings.xcodeproj,Independente
+cocos/scripting/js-bindings/proj.ios_mac/cocos2d_js_bindings.xcodeproj/xcshareddata/xcschemes,Independente
 cocos/scripting/js-bindings/proj.win32,Windows
 cocos/scripting/js-bindings/script,Independente
 cocos/scripting/lua-bindings,Android
@@ -490,20 +403,24 @@ cocos/scripting/lua-bindings/auto/api,iPhone Independente
 cocos/scripting/lua-bindings/manual/opengl,Independente
 cocos/scripting/lua-bindings/manual/platform/android,Android
 cocos/scripting/lua-bindings/manual/platform/android/jni,Android
+cocos/scripting/lua-bindings/manual/platform/ios,iPhone
 cocos/scripting/lua/bindings/platform/android,Android
 cocos/scripting/lua/bindings/platform/android/jni,Android
+cocos/scripting/lua/bindings/platform/ios,iPhone
 cocos/scripting/lua-bindings/proj.android,Android
-cocos/scripting/lua-bindings/proj.ios_mac/cocos2d_lua_bindings.xcodeproj,macOS
-cocos/scripting/lua-bindings/proj.ios_mac/cocos2d_lua_bindings.xcodeproj/xcshareddata/xcschemes,macOS
+cocos/scripting/lua-bindings/proj.ios_mac/cocos2d_lua_bindings.xcodeproj,Independente
+cocos/scripting/lua-bindings/proj.ios_mac/cocos2d_lua_bindings.xcodeproj/xcshareddata/xcschemes,Independente
 cocos/scripting/lua-bindings/proj.tizen,Linux
 cocos/scripting/lua-bindings/proj.tizen/Build,Linux
 cocos/scripting/lua-bindings/proj.win32,Windows
 cocos/scripting/lua/cocos2dx_support/platform/android,Android
 cocos/scripting/lua/cocos2dx_support/platform/android/jni,Android
+cocos/scripting/lua/cocos2dx_support/platform/ios,iPhone
 cocos/scripting/lua/luajit,Android
 cocos/scripting/lua/luajit/android/armeabi,Android
 cocos/scripting/lua/luajit/android/armeabi-v7a,Android
 cocos/scripting/lua/luajit/android/x86,Android
+cocos/scripting/lua/luajit/ios,iPhone
 cocos/scripting/lua/luajit/LuaJIT-2.0.1/dynasm,Independente
 cocos/scripting/lua/luajit/LuaJIT-2.0.1/src,Independente
 cocos/scripting/lua/luajit/LuaJIT-2.0.1/src/host,Independente
@@ -511,10 +428,13 @@ cocos/scripting/lua/luajit/LuaJIT-2.0.1/src/jit,Independente
 cocos/scripting/lua/luajit/mac,macOS
 cocos/scripting/lua/luajit/win32,Windows
 cocos/scripting/lua/proj.android,Android
+cocos/scripting/lua/proj.ios,iPhone
+cocos/scripting/lua/proj.ios/luabindings.xcodeproj,iPhone
 cocos/scripting/lua/proj.linux,Linux
 cocos/scripting/lua/proj.win32,Windows
 cocos/storage/local-storage,Android
 cocos/storage/local-storage/proj.win32,Windows
-cocos/ui,Android Linux Windows
+cocos/ui,Android iPhone Linux Windows
 cocos/ui/proj.win32,Windows
-cocos/ui/UIEditBox,Windows Android Linux
+cocos/ui/UIEditBox,Windows Android iPhone Linux
+cocos/ui/UIEditBox/iOS,iPhone
