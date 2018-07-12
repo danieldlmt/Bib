@@ -1,16 +1,7 @@
+# Libraries
 library(dplyr, warn.conflicts = FALSE)
-
 library(stringr)
 
-
-################################
-# Carregamento do log de commits
-# Escolha apenas um log
-# 
-###############################
-#logs <- data.frame(sistema=c("Allegro", "SDL"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R'))
-#source('~/bib/log_SDL.R')
-#source('~/bib/log_allegro.R')
 
 ########################################
 ########################################
@@ -19,16 +10,26 @@ library(stringr)
 #######################################
 #######################################
 #######################################
-logs <- data.frame(sistema=c("Allegro", "SDL","SFML","Coco2dx"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R', '~/bib/log_SFML.R', '~/bib/log_coco2dx.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData', '~/bib/analise_SFML.RData', '~/bib/analise_coco2dx.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData', '~/bib/analisetemporal_SFML.RData', '~/bib/analisetemporal_coco2dx.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData', '~/bib/analisetemporaljanela_SFML.RData', '~/bib/analisetemporaljanela_coco2dx.RData')  )
-for (it in 1:length(logs$sistema)){
-  rm(list = ls()[!ls() %in% c("logs","it")])
-  source(as.character(logs$caminho[it]) )
-  
+
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("~/bib/paths.R")
+
+# Loop that walks through 'logs' and save the results of each system in 'logs$ws_analise'
+  for (it in 1:length(logs$sistema)){
+    rm(list = ls()[!ls() %in% c("logs","it")])
+    source(as.character(logs$caminho[it]) )
+    
+    # Filtro de desenvolvedores ativos 
+      # periodo de contribuição minimo de 24 semanas
+         # source("~/bib/devsativos.R")
+         # dev_ativo<-dev_ativo %>% select(author)
+        #  data<- right_join(data, dev_ativo,by="author")
+    
   
   ######################################
   # numero de plataformas modificadas em cada commit
   platform <- data %>%
-    select(rev, platform, author,n_line_add,n_line_del)%>%
+    select(rev, platform, author,n_line_add,n_line_del)%>% 
     group_by(rev) %>%
     summarise(n_plat = n_distinct(platform), platform = paste(unique(platform), collapse=", "), author=unique(author), n_line_add=max(n_line_add),n_line_del=max(n_line_del)) %>%
     arrange(rev)
@@ -105,176 +106,6 @@ for (it in 1:length(logs$sistema)){
   authors3_aux<- authors3 %>% select(author ,tipo)
   
 
-  ###########################################################3
-  ##########################################################
-  platform_new <- data %>%
-    select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
-    group_by(author,platform) %>%
-    summarise(n_line_add=sum(n_line_add),
-              n_line_del=sum(n_line_del), 
-              commits=n_distinct(rev),
-              files=n_distinct(path), 
-              first=min(as.POSIXct(date)),
-              last=max(as.POSIXct(date)) ) %>%
-    mutate( ind = if_else(platform == "Independente",1,0))
- 
-  # Limiares
-    # n_line_add - numero de linhas adicionadas por plataforma de todos os devs
-    # commits - numero de commits por plataforma (incluindo cod. independente) de todos os devs
-  limiares <- platform_new %>% 
-    ungroup() %>%
-    select(n_line_add,commits)
-  
-  aux <- platform_new %>%
-    select(author,ind)%>%
-    group_by(author)%>%
-    summarise(independente=max(ind),
-              n_plat = n()-independente)%>%
-    mutate(esp = if_else(n_plat ==1,1,0),
-           gen = if_else(n_plat >1,1,0))%>%
-    select(author, independente, n_plat)
-  
-  platform_new <- platform_new %>% 
-    inner_join(aux, by="author")
-  
-  platform_new$ind <- NULL
-  
-  # aqui precisarei de TRES platform_new
-  # uma para o calculo dos devs especialistas
-  # uma para o calculo dos generalistas tirando as médias dos parametros. 
-  # uma para independente
-  
-  
-  platform_new_gen <- platform_new %>%
-    group_by(author)%>%
-    summarise(platform = paste(platform, collapse = " "), 
-              n_line_add=mean(n_line_add),
-              n_line_del=mean(n_line_del), 
-              commits=mean(commits),
-              files=mean(files), 
-              first=min(as.POSIXct(first)),
-              last=max(as.POSIXct(last)),
-              independente = max(independente),
-              n_plat = max(n_plat)  )%>%
-    filter( n_plat > 1 )
-  
-  platform_new_esp <- platform_new %>%
-    filter(platform != "Independente")
-  
-  
-  
-  platform_new_ind <- platform_new %>% filter(platform == "Independente")
-  
-  
-  
-  # Considerarei 7 tipos de desenvolvedores de acordo com o tipo de codigo fonte que eles trabalham (Independente, Especifico)
-  # Esp - Desenvolvedor que trabalha com apenas uma plataforma
-  # Gen - Desenvolvedor que trabalha com mais de uma plataforma
-  # Ind - Desenvolvedor que trabalha apenas com o codigo independente
-  # Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma
-  # Ind - Esp - Desenvolvedor especialista que tbm trabalha com o codigo independente
-  # Ind - Gen - Desenvolvedor generalista que tbm trabalha com o codigo independente
-  # Ind - Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma e tbm trabalha com o codigo independente
-  
-  # Logica de classificação de desenvovedores
-  # Especialistas
-  # sem restrição de tempo (por causa dos bug fixers)
-  # n_lines_add > limiar ou commits > limiar
-  # limiar um pelin mais alto do que o do generalista
-  # Generalistas
-  # media(n_lines_add) > limiar ou  media(commits) > limiar
-  
-  
-  # vetor de probalidade de limiares
-  prob<- c(0.10,0.20,0.30,0.40,0.50,0.60,0.70)
-  
-  #proposital para opter matrix com 0 elements
-  platform_new_ind_bind <- platform_new_ind%>%filter(author=="")
-  platform_new_gen_bind <- platform_new_gen%>%filter(author=="")
-  platform_new_esp_bind <- platform_new_esp%>%filter(author=="")
-  platform_new_bind <- platform_new_esp%>%filter(author=="")
-  
-  for (itt in 1:length(prob)){
-    #independente 
-    aux <- platform_new_ind%>%
-      filter(n_line_add > quantile(limiares$n_line_add, prob[itt]) ||  commits > quantile(limiares$commits, prob[itt]))%>%
-      mutate(prob = prob[itt], 
-             ind = 1,
-             esp = 0,
-             gen = 0)
-    platform_new_ind_bind<-bind_rows(platform_new_ind_bind, aux)
-    
-    aux <- platform_new_esp %>% 
-      filter(n_line_add > quantile(limiares$n_line_add, prob[itt]*1.3) ||  commits > quantile(limiares$commits, prob[itt]*1.3) ) %>%
-      mutate(prob = prob[itt], 
-             ind = 0,
-             esp = 1,
-             gen = 0 )
-    platform_new_esp_bind<-bind_rows(platform_new_esp_bind, aux)
-    
-    aux <- platform_new_gen %>% filter(limiares$n_line_add > quantile(n_line_add, prob[itt]) ||  commits > quantile(limiares$commits, prob[itt]) ) %>%
-      mutate(prob = prob[itt], 
-             ind = 0,
-             esp = 0,
-             gen = 1 )
-    platform_new_gen_bind<-bind_rows(platform_new_gen_bind, aux)
-  }
-  
-  platform_new_bind<-bind_rows(platform_new_bind, platform_new_ind_bind)
-  platform_new_bind<-bind_rows(platform_new_bind, platform_new_esp_bind)
-  platform_new_bind<-bind_rows(platform_new_bind, platform_new_gen_bind)
-  
-  # adicao da analise mobile desktop para facilitar pra logo 
-  platform_new_bind<-platform_new_bind%>% 
-    rowwise()%>%
-    mutate(mobile = if_else( str_detect(platform,"Iphone|Android"),1,0 ),
-           desktop = if_else( str_detect(platform,"Windows|Linux|macOS"),1,0 ),
-           indd = if_else( str_detect(platform,"Independente"),1,0 ) )
-  
-  platform_new_bind<-platform_new_bind %>% 
-    group_by(author,prob)%>%
-    summarise(ind = max(ind),
-              esp = max(esp),
-              gen = max(gen),
-              mobile = max(mobile),
-              desktop = max(desktop),
-              indd = max(indd))
-  
-  # x1 e x2 sao as variaveis de saida  
-  x1 <- platform_new_bind%>%
-    mutate(tipo = if_else(esp==1&gen==0&ind==0,"esp",
-                          if_else(esp==0&gen==1&ind==0,"gen",
-                                  if_else(esp==0&gen==0&ind==1,"ind",
-                                          if_else(esp==1&gen==0&ind==1,"ind esp",
-                                                  if_else(esp==0&gen==1&ind==1,"ind gen",
-                                                          if_else(esp==1&gen==1&ind==1,"ind esp gen",
-                                                                  if_else(esp==1&gen==1&ind==0,"esp gen","nada") )))))))
-  
-  #%>%
-  # group_by(prob,tipo)%>%     
-  #summarise(n = n())
-  
-  x2 <- platform_new_bind%>%
-    mutate(tipo = if_else(desktop==1&mobile==0&indd==0,"desktop",
-                          if_else(desktop==0&mobile==1&indd==0,"mobile",
-                                  if_else(desktop==0&mobile==0&indd==1,"ind",
-                                          if_else(desktop==1&mobile==0&indd==1,"ind desktop",
-                                                  if_else(desktop==0&mobile==1&indd==1,"ind mobile",
-                                                          if_else(desktop==1&mobile==1&indd==1,"ind desktop mobile",
-                                                                  if_else(desktop==1&mobile==1&indd==0,"desktop mobile","nada") )))))))
-  #%>%
-  # group_by(prob,tipo)%>%     
-  #summarise(n = n())
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   # numero total de modificacoes realizadas em cada plataforma
   os_summary <- data.frame(n_commit = c(sum(android$android),sum(linux$linux),sum(win$win),sum(iphone$iphone),sum(macosx$macosx)), n_dev = c(nrow(android),nrow(linux),nrow(win),nrow(iphone),nrow(macosx)), row.names= c('Android', 'Linux', 'Windows', 'iPhone', 'macOS'))
   os_summary2 <- as.data.frame( t(os_summary))    
@@ -393,20 +224,192 @@ for (it in 1:length(logs$sistema)){
   
   
   
-  ########################
-  ########################
-  # inicio QP3
-  ########################
-  ########################
-
-
-  ########################
-  ########################
-  # fim QP3
-  ########################
-  ########################
   
+  
+  #
+  ####
+  #######
+  ##########
+  ############
+  # final script (rest is going to become obsolete)
+    # Generalist and Specialist developer
+    # Division by device type
+  #############
+  ###########
+  ########
+  #####
+  ##
+  #
 
+  # Remove outliers from 'commits' and 'added lines' to better calculate thresholds
+    # limiar_commit - vector for commits
+    # limiar_line - vector for added lines
+      source("~/bib/outliers.R" )
+  
+  # Transformation in 'data' to make the analysis
+    platform_new <- data %>%
+      select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
+      group_by(author,platform) %>%
+      summarise(n_line_add=sum(n_line_add),
+                n_line_del=sum(n_line_del), 
+                commits=n_distinct(rev),
+                files=n_distinct(path), 
+                first=min(as.POSIXct(date)),
+                last=max(as.POSIXct(date)) ) %>%
+      mutate( ind = if_else(platform == "Independente",1,0))
+   
+    aux <- platform_new %>%
+      select(author,ind)%>%
+      group_by(author)%>%
+      summarise(independente=max(ind),
+                n_plat = n()-independente)%>%
+      mutate(esp = if_else(n_plat ==1,1,0),
+             gen = if_else(n_plat >1,1,0))%>%
+      select(author, independente, n_plat)
+    
+    platform_new <- platform_new %>% 
+      inner_join(aux, by="author")
+    
+    platform_new$ind <- NULL
+  
+  # Generalist developers
+    platform_new_gen <- platform_new %>%
+      group_by(author)%>%
+      summarise(platform = paste(platform, collapse = " "), 
+                n_line_add=mean(n_line_add),
+                n_line_del=mean(n_line_del), 
+                commits=mean(commits),
+                files=mean(files), 
+                first=min(as.POSIXct(first)),
+                last=max(as.POSIXct(last)),
+                independente = max(independente),
+                n_plat = max(n_plat)  )%>%
+      filter( n_plat > 1 )
+  
+  # Specialist developers
+    platform_new_esp <- platform_new %>%
+      filter(platform != "Independente")
+
+  # Platform independent
+    platform_new_ind <- platform_new %>% filter(platform == "Independente")
+  
+  # We'll consider 7 developer types according to the part of the code (specific, independent) they support 
+    # Esp - Desenvolvedor que trabalha com apenas uma plataforma
+    # Gen - Desenvolvedor que trabalha com mais de uma plataforma
+    # Ind - Desenvolvedor que trabalha apenas com o codigo independente
+    # Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma
+    # Ind - Esp - Desenvolvedor especialista que tbm trabalha com o codigo independente
+    # Ind - Gen - Desenvolvedor generalista que tbm trabalha com o codigo independente
+    # Ind - Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma e tbm trabalha com o codigo independente
+    
+
+  # Threshold vector 
+   prob<- c(0.10,0.20,0.30,0.40,0.50,0.60,0.70)
+  
+  #proposital para opter matrix com 0 elements
+    platform_new_ind_bind <- platform_new_ind%>%filter(author=="")
+    platform_new_gen_bind <- platform_new_gen%>%filter(author=="")
+    platform_new_esp_bind <- platform_new_esp%>%filter(author=="")
+    platform_new_bind <- platform_new_esp%>%filter(author=="")
+    
+  
+  
+  # Developer classification loop
+    # Specialist logic
+      # n_lines_add > threshold OR commits > threshold
+      # treshold is 1.3 higher
+    # Generalistas
+      # mean(n_lines_add) > threshold OR  mean(commits) > threshold
+        for (itt in 1:length(prob)){
+          #independente 
+          aux <- platform_new_ind%>%
+            filter(n_line_add > quantile(limiar_line, prob[itt]) ||  commits > quantile(limiar_commit, prob[itt]))%>%
+            mutate(prob = prob[itt], 
+                   ind = 1,
+                   esp = 0,
+                   gen = 0)
+          platform_new_ind_bind<-bind_rows(platform_new_ind_bind, aux)
+          
+          aux <- platform_new_esp %>% 
+            filter(n_line_add > quantile(limiar_line, prob[itt]*1.3) ||  commits > quantile(limiar_commit, prob[itt]*1.3) ) %>%
+            mutate(prob = prob[itt], 
+                   ind = 0,
+                   esp = 1,
+                   gen = 0 )
+          platform_new_esp_bind<-bind_rows(platform_new_esp_bind, aux)
+          
+          aux <- platform_new_gen %>% filter(limiar_line > quantile(n_line_add, prob[itt]) ||  commits > quantile(limiar_commit, prob[itt]) ) %>%
+            mutate(prob = prob[itt], 
+                   ind = 0,
+                   esp = 0,
+                   gen = 1 )
+          platform_new_gen_bind<-bind_rows(platform_new_gen_bind, aux)
+        }
+  
+  platform_new_bind<-bind_rows(platform_new_bind, platform_new_ind_bind)
+  platform_new_bind<-bind_rows(platform_new_bind, platform_new_esp_bind)
+  platform_new_bind<-bind_rows(platform_new_bind, platform_new_gen_bind)
+  
+  # adicao da analise mobile desktop para facilitar pra logo 
+  platform_new_bind<-platform_new_bind%>% 
+    rowwise()%>%
+    mutate(mobile = if_else( str_detect(platform,"Iphone|Android"),1,0 ),
+           desktop = if_else( str_detect(platform,"Windows|Linux|macOS"),1,0 ),
+           indd = if_else( str_detect(platform,"Independente"),1,0 ) )
+  
+  platform_new_bind<-platform_new_bind %>% 
+    group_by(author,prob)%>%
+    summarise(ind = max(ind),
+              esp = max(esp),
+              gen = max(gen),
+              mobile = max(mobile),
+              desktop = max(desktop),
+              indd = max(indd))
+  
+  # x1 e x2 sao as variaveis de saida  
+  x1 <- platform_new_bind%>%
+    mutate(tipo = if_else(esp==1&gen==0&ind==0,"esp",
+                          if_else(esp==0&gen==1&ind==0,"gen",
+                                  if_else(esp==0&gen==0&ind==1,"ind",
+                                          if_else(esp==1&gen==0&ind==1,"ind esp",
+                                                  if_else(esp==0&gen==1&ind==1,"ind gen",
+                                                          if_else(esp==1&gen==1&ind==1,"ind esp gen",
+                                                                  if_else(esp==1&gen==1&ind==0,"esp gen","nada") )))))))
+  
+  #%>%
+  # group_by(prob,tipo)%>%     
+  #summarise(n = n())
+  
+  x2 <- platform_new_bind%>%
+    mutate(tipo = if_else(desktop==1&mobile==0&indd==0,"desktop",
+                          if_else(desktop==0&mobile==1&indd==0,"mobile",
+                                  if_else(desktop==0&mobile==0&indd==1,"ind",
+                                          if_else(desktop==1&mobile==0&indd==1,"ind desktop",
+                                                  if_else(desktop==0&mobile==1&indd==1,"ind mobile",
+                                                          if_else(desktop==1&mobile==1&indd==1,"ind desktop mobile",
+                                                                  if_else(desktop==1&mobile==1&indd==0,"desktop mobile","nada") )))))))
+  #%>%
+  # group_by(prob,tipo)%>%     
+  #summarise(n = n())
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  # save workspace .RData in 'logs$ws_analise'
   save.image(as.character(logs$ws_analise[it]))
 }
 

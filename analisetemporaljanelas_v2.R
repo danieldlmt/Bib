@@ -7,19 +7,20 @@ library(tseries)
 # Escolha apenas um log
 # 
 ###############################
-remove_outliers <- function(x, na.rm = TRUE, ...) {
-  qnt <- quantile(x, probs=c(.25, .75), na.rm = na.rm, ...)
-  H <- 1.5 * IQR(x, na.rm = na.rm)
-  y <- x
-  y[x < (qnt[1] - H)] <- NA
-  y[x > (qnt[2] + H)] <- NA
-  y
-}
 
-logs <- data.frame(sistema=c("Allegro", "SDL","SFML","Coco2dx"), caminho = c('~/bib/log_allegro.R', '~/bib/log_SDL.R', '~/bib/log_SFML.R', '~/bib/log_coco2dx.R'),ws_analise=c('~/bib/analise_allegro.RData', '~/bib/analise_SDL.RData', '~/bib/analise_SFML.RData', '~/bib/analise_coco2dx.RData'), ws_analisetemporal = c('~/bib/analisetemporal_allegro.RData', '~/bib/analisetemporal_SDL.RData', '~/bib/analisetemporal_SFML.RData', '~/bib/analisetemporal_coco2dx.RData'), ws_analisetemporaljanela = c('~/bib/analisetemporaljanela_allegro.RData', '~/bib/analisetemporaljanela_SDL.RData', '~/bib/analisetemporaljanela_SFML.RData', '~/bib/analisetemporaljanela_coco2dx.RData')  )
+
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("~/bib/paths.R")
+
 for (it in 1:length(logs$sistema)){
   rm(list = ls()[!ls() %in% c("logs","it")])
   source(as.character(logs$caminho[it]) )
+  
+  # Filtro de desenvolvedores ativos 
+    # periodo de contribuição minimo de 24 semanas
+      #  source("~/bib/devsativos.R")
+      #  dev_ativo<-dev_ativo %>% select(author)
+      #  data<- right_join(data, dev_ativo,by="author")
 
 ########################################
 ########################################
@@ -258,57 +259,18 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
       ###########################################################3
       ##########################################################
 
-    
+      # Remove outliers from 'commits' and 'added lines' to better calculate thresholds
+        # limiar_commit - vector for commits
+        # limiar_line - vector for added lines
+          source("~/bib/outliers.R" )
       
-      # Limiares
-        # n_line_add - numero de linhas adicionadas por plataforma de todos os devs
-        # commits - numero de commits por plataforma (incluindo cod. independente) de todos os devs
-      platform_new <- data %>%
-        select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
-        group_by(author,platform) %>%
-        summarise(n_line_add=sum(n_line_add),
-                  n_line_del=sum(n_line_del), 
-                  commits=n_distinct(rev),
-                  files=n_distinct(path), 
-                  first=min(as.POSIXct(date)),
-                  last=max(as.POSIXct(date)) ) %>%
-        mutate( ind = if_else(platform == "Independente",1,0))
-      
-      limiares <- platform_new %>% 
-        ungroup() %>%
-        select(n_line_add,commits)
+      # calculate the total number of developers in the window  
       data_aux <- data%>%
         filter(as.POSIXct(date)>=date_left  & as.POSIXct(date)<date_right )  
-      
-      #funcao que nao sei fazer funcinar no r
-        #  remove_outliers <- function(x, na.rm = TRUE) {
-        #    qnt <- quantile(x, probs=c(.25, .75), na.rm = TRUE)
-        #    H <- 1.5 * IQR(x, na.rm = TRUE)
-        #    y <- x
-        #    y[x < (qnt[1] - H)] <- NA
-        #    y[x > (qnt[2] + H)] <- NA
-        #    y
-        #  }        
-      qnt <- quantile(limiares$n_line_add, probs=c(.25, .75))
-      H <- 1.5 * IQR(limiares$n_line_add, na.rm = TRUE)
-      limiar_line <- limiares$n_line_add
-      limiar_line[limiares$n_line_add < (qnt[1] - H)] <- median(limiares$n_line_add)
-      limiar_line[limiares$n_line_add > (qnt[2] + H)] <- median(limiares$n_line_add)
-      
-      qnt <- quantile(limiares$commits, probs=c(.25, .75), na.rm = TRUE)
-      H <- 1.5 * IQR(limiares$commits, na.rm = TRUE)
-      limiar_commit <- limiares$commits
-      limiar_commit[limiares$commits < (qnt[1] - H)] <- median(limiares$commits)
-      limiar_commit[limiares$commits > (qnt[2] + H)] <- median(limiares$commits)
-      
-      # limiar_line<- remove_outliers(limiares$n_line_add) 
-      # limiar_commit<- remove_outliers(limiares$commits) 
-      
       n_dev<-n_distinct(data_aux$author)
       
       # Classificacao de desenvolvedores ativos 
         # periodo de contribuição minimo de 24 semanas
-      
       dev_ativo <-   data %>%
         select( author,n_line_add,n_line_del,rev,path,date)%>%
         group_by(author) %>%

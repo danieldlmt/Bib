@@ -1,0 +1,13 @@
+module,platform
+src,Independente Windows
+src/android,Android
+src/gp2xwiz,Independente
+src/iphone,iPhone
+src/linux,Linux
+src/macosx,macOS
+src/misc,Independente
+src/opengl,Independente
+src/sdl,Independente
+src/unix,Independente
+src/win,Windows
+src/x,Linux

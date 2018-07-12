@@ -1,8 +1,12 @@
 library(dplyr, warn.conflicts = FALSE)
+# Read log file .csv
+  # Log extractor is available at https://github.com/danieldlmt/Extrator-de-Log-GIT
+  # .csv file format
+    # cols: [rev];[author];[date];[added_line removed_line];[path]
 
 ######################################### Import
 #import data 
-data <- readLines('data/log_allegro.csv')
+data <- readLines('data/log_SFML.csv')
 data <- gsub(pattern="\t", replacement=";", data, fixed = TRUE)
 datatemp <- tempfile() 
 writeLines(data, con = datatemp) 
@@ -16,7 +20,7 @@ data <- data %>%
   mutate(module = gsub('/[^/]+$', '', path)) %>%
   #filter(grepl('([.]c|[.]h)', path))
   filter(grepl('^src.*', module)  ) %>%
-  filter(as.Date(date)>as.Date("2011-12-18 00:00:2016-11-05 -0000")) 
+  filter(as.Date(date)>as.Date("2014-04-20 00:00:2016-11-05 -0000")) 
 #%>%filter(n_line_add>=3)
 
 #########################################3
@@ -33,25 +37,6 @@ for (i in 1:dim(plats)[1]){
 
 data <- data %>% filter(platform=="Independente" |platform=="Windows"|platform=="Linux"|platform=="macOS"|platform=="Android"|platform=="iPhone" )
 
-# Filtro de desenvolvedores ativos 
-# periodo de contribuição minimo de 24 semanas
-dev_ativo <-   data %>%
-  select( author,n_line_add,n_line_del,rev,path,date)%>%
-  group_by(author) %>%
-  summarise(n_line_add=sum(n_line_add),
-            n_line_del=sum(n_line_del), 
-            commits=n_distinct(rev),
-            files=n_distinct(path), 
-            first=min(as.POSIXct(date)),
-            last=max(as.POSIXct(date)) )%>%
-  arrange(desc(n_line_add))%>%
-  mutate(periodo = difftime(as.POSIXct(last) ,as.POSIXct(first), units = "weeks"))%>% 
-  filter(as.numeric(periodo)>=24)     %>%
-  mutate(media_commit = commits/as.numeric(periodo),
-         porc_line_add= n_line_add*100/sum(n_line_add),
-         porc_line_add_cum = 100*cumsum(n_line_add)/sum(n_line_add))%>%
-  select(author)
-
-#data<- right_join(data, dev_ativo,by="author")
 
 remove(plats, i)
+save  (data, file ="~/bib/workspace/SFML_data.RData")

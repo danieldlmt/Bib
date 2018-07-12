@@ -14,6 +14,8 @@
 6,iphoneos,iPhone,1,
 6,iPhone,iPhone,1,
 6,ios/iPhone,1,
+6,-ios,1,
+6,iOS,1,
 7,x11,Linux,1,
 7,/x/,Linux,1,
 7,tizen,Linux,1
