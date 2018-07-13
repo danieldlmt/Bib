@@ -1,9 +1,11 @@
+library(tseries)
 
 # Outliers
   # Remove outliers from 'commits' and 'added lines' to better calculate tresholds
     # limiar_commit - threshold for commits
     # limiar_line - threshold for added lines
 
+# TODO: bug: Error: 'origin' must be supplied
 platform_new <- data %>%
   select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
   group_by(author,platform) %>%
@@ -12,8 +14,11 @@ platform_new <- data %>%
             commits=n_distinct(rev),
             files=n_distinct(path), 
             first=min(as.POSIXct(date)),
-            last=max(as.POSIXct(date)) ) %>%
-  mutate( ind = if_else(platform == "Independente",1,0))
+            last=max(as.POSIXct(date)),
+            periodo = difftime(last,first,units="weeks")) %>%
+  mutate( ind = if_else(platform == "Independente",1,0),
+          n_line_semana = n_line_add/as.numeric(periodo),
+          commit_semana= commits/as.numeric(periodo))
 
 limiares <- platform_new %>% 
   ungroup() %>%
