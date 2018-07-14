@@ -18,12 +18,13 @@ library(stringr)
   for (it in 1:length(logs$sistema)){
     rm(list = ls()[!ls() %in% c("logs","it")])
     source(as.character(logs$caminho[it]) )
+    #load (as.character(logs$data[it]))
     
     # Filtro de desenvolvedores ativos 
       # periodo de contribuição minimo de 24 semanas
-         # source("./devsativos.R")
-         # dev_ativo<-dev_ativo %>% select(author)
-        #  data<- right_join(data, dev_ativo,by="author")
+          source("./devsativos.R")
+          dev_ativo<-dev_ativo %>% select(author)
+          data<- right_join(data, dev_ativo,by="author")
     
   
   ######################################
@@ -244,127 +245,22 @@ library(stringr)
   # Remove outliers from 'commits' and 'added lines' to better calculate thresholds
     # limiar_commit - vector for commits
     # limiar_line - vector for added lines
-      source("./outliers.R" )
-  
-  # Transformation in 'data' to make the analysis
+      source("./tresholds.R" )
+ 
+    # Transformation in 'data' to make the analysis
     platform_new <- data %>%
       select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
       group_by(author,platform) %>%
-      summarise(n_line_add=sum(n_line_add),
-                n_line_del=sum(n_line_del), 
+      summarise(n_line_add=sum(n_line_add)/n_distinct(path), # mean line_add/file
+                n_line_del=sum(n_line_del)/n_distinct(path), # mean line_dell/file
                 commits=n_distinct(rev),
                 files=n_distinct(path), 
                 first=min(as.POSIXct(date)),
                 last=max(as.POSIXct(date)) ) %>%
       mutate( ind = if_else(platform == "Independente",1,0))
-   
-    aux <- platform_new %>%
-      select(author,ind)%>%
-      group_by(author)%>%
-      summarise(independente=max(ind),
-                n_plat = n()-independente)%>%
-      mutate(esp = if_else(n_plat ==1,1,0),
-             gen = if_else(n_plat >1,1,0))%>%
-      select(author, independente, n_plat)
-    
-    platform_new <- platform_new %>% 
-      inner_join(aux, by="author")
-    
-    platform_new$ind <- NULL
-  
-  # Generalist developers
-    platform_new_gen <- platform_new %>%
-      group_by(author)%>%
-      summarise(platform = paste(platform, collapse = " "), 
-                n_line_add=mean(n_line_add),
-                n_line_del=mean(n_line_del), 
-                commits=mean(commits),
-                files=mean(files), 
-                first=min(as.POSIXct(first)),
-                last=max(as.POSIXct(last)),
-                independente = max(independente),
-                n_plat = max(n_plat)  )%>%
-      filter( n_plat > 1 )
-  
-  # Specialist developers
-    platform_new_esp <- platform_new %>%
-      filter(platform != "Independente")
-
-  # Platform independent
-    platform_new_ind <- platform_new %>% filter(platform == "Independente")
-  
-  # We'll consider 7 developer types according to the part of the code (specific, independent) they support 
-    # Esp - Desenvolvedor que trabalha com apenas uma plataforma
-    # Gen - Desenvolvedor que trabalha com mais de uma plataforma
-    # Ind - Desenvolvedor que trabalha apenas com o codigo independente
-    # Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma
-    # Ind - Esp - Desenvolvedor especialista que tbm trabalha com o codigo independente
-    # Ind - Gen - Desenvolvedor generalista que tbm trabalha com o codigo independente
-    # Ind - Esp - Gen - Desenvolvedor generalista que possui alto conhecimento em pelo menos uma plataforma e tbm trabalha com o codigo independente
-    
-
-  # Threshold vector 
-   prob<- c(0.10,0.20,0.30,0.40,0.50,0.60,0.70)
-  
-  #proposital para opter matrix com 0 elements
-    platform_new_ind_bind <- platform_new_ind%>%filter(author=="")
-    platform_new_gen_bind <- platform_new_gen%>%filter(author=="")
-    platform_new_esp_bind <- platform_new_esp%>%filter(author=="")
-    platform_new_bind <- platform_new_esp%>%filter(author=="")
-    
-  
-  
-  # Developer classification loop
-    # Specialist logic
-      # n_lines_add > threshold OR commits > threshold
-      # treshold is 1.3 higher
-    # Generalistas
-      # mean(n_lines_add) > threshold OR  mean(commits) > threshold
-        for (itt in 1:length(prob)){
-          #independente 
-          aux <- platform_new_ind%>%
-            filter(n_line_add > quantile(limiar_line, prob[itt]) ||  commits > quantile(limiar_commit, prob[itt]))%>%
-            mutate(prob = prob[itt], 
-                   ind = 1,
-                   esp = 0,
-                   gen = 0)
-          platform_new_ind_bind<-bind_rows(platform_new_ind_bind, aux)
-          
-          aux <- platform_new_esp %>% 
-            filter(n_line_add > quantile(limiar_line, prob[itt]*1.3) ||  commits > quantile(limiar_commit, prob[itt]*1.3) ) %>%
-            mutate(prob = prob[itt], 
-                   ind = 0,
-                   esp = 1,
-                   gen = 0 )
-          platform_new_esp_bind<-bind_rows(platform_new_esp_bind, aux)
-          
-          aux <- platform_new_gen %>% filter(limiar_line > quantile(n_line_add, prob[itt]) ||  commits > quantile(limiar_commit, prob[itt]) ) %>%
-            mutate(prob = prob[itt], 
-                   ind = 0,
-                   esp = 0,
-                   gen = 1 )
-          platform_new_gen_bind<-bind_rows(platform_new_gen_bind, aux)
-        }
-  
-  platform_new_bind<-bind_rows(platform_new_bind, platform_new_ind_bind)
-  platform_new_bind<-bind_rows(platform_new_bind, platform_new_esp_bind)
-  platform_new_bind<-bind_rows(platform_new_bind, platform_new_gen_bind)
-  
-  # adicao da analise mobile desktop para facilitar pra logo 
-  platform_new_bind<-platform_new_bind%>% 
-    rowwise()%>%
-    mutate(mobile = if_else( str_detect(platform,"Iphone|Android"),1,0 ),
-           desktop = if_else( str_detect(platform,"Windows|Linux|macOS"),1,0 ),
-           indd = if_else( str_detect(platform,"Independente"),1,0 ) )
-  
-  platform_new_bind<-platform_new_bind %>% 
-    group_by(author,prob)%>%
-    summarise(ind = max(ind),
-              esp = max(esp),
-              gen = max(gen),
-              mobile = max(mobile),
-              desktop = max(desktop),
-              indd = max(indd))
+ 
+ #Classify the devs     
+ source("./devclassificacao.R")
   
   # x1 e x2 sao as variaveis de saida  
   x1 <- platform_new_bind%>%

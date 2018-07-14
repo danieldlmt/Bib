@@ -26,22 +26,10 @@ data <- data %>%
   filter(as.Date(date)>=as.Date("2010-06-26")) 
   #%>%filter(n_line_add>=3)
 
-#########################################3
-#add column platform (module is obsolete)
+data <- data %>% mutate(platform = "Independente")
 
-plats<- read.csv("data/plats.csv")
-plats<- plats %>% select(diretorio,plataforma)
+# platform association
+source("./associacao.R")
 
-data <- data %>% mutate(platform = "Outros")
-
-for (i in 1:dim(plats)[1]){
-  #print(plats[i,1]) 
-  data$platform <- ifelse(data$platform=="Outros" & grepl(plats[i,1],data$path),paste("", plats[i,2], sep=""),data$platform)
-}
-
-data <- data %>% filter(platform=="Independente" |platform=="Windows"|platform=="Linux"|platform=="macOS"|platform=="Android"|platform=="iPhone" )
-
-
-
-remove(plats, i)
+remove(plats,i)
 save  (data, file ="./workspace/SDL_data.RData")

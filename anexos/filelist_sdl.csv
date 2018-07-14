@@ -8,21 +8,27 @@ src/audio,Independente Windows
 src/audio/alsa,Linux
 src/audio/android,Android
 src/audio/arts,Linux
+src/audio/baudio,Independente
 src/audio/coreaudio,Independente
 src/audio/directsound,Windows
 src/audio/disk,Independente
 src/audio/dma,Independente
+src/audio/dsp,Independente
+src/audio/emscripten,Independente
 src/audio/esd,Linux
 src/audio/fusionsound,Independente
 src/audio/iphoneos,iPhone
 src/audio/jack,Independente
 src/audio/macosx,macOS
 src/audio/mme,Windows
+src/audio/nacl,Independente
 src/audio/nas,Independente
+src/audio/paudio,Independente
 src/audio/pulseaudio,Independente
 src/audio/sndio,Independente
 src/audio/ums,Independente
 src/audio/wasapi,Independente Windows
+src/audio/windib,Windows
 src/audio/windx5,Windows
 src/audio/winmm,Windows
 src/audio/xaudio2,Windows
@@ -33,11 +39,14 @@ src/core/windows,Windows
 src/core/windowsrt,Windows
 src/core/winrt,Windows
 src/cpuinfo,Independente
+src/dynapi,Independente
 src/events,Independente Windows Linux
 src/file,Independente
 src/file/cocoa,macOS
 src/filesystem/android,Android
 src/filesystem/cocoa,macOS
+src/filesystem/emscripten,Independente
+src/filesystem/nacl,Independente
 src/filesystem/unix,Independente
 src/filesystem/windows,Windows
 src/filesystem/winrt,Windows
@@ -52,6 +61,7 @@ src/joystick,Independente
 src/joystick/android,Android
 src/joystick/darwin,Independente
 src/joystick/darwin/10.3.9-FIX,Independente
+src/joystick/emscripten,Independente
 src/joystick/iphoneos,iPhone
 src/joystick/linux,Linux
 src/joystick/steam,Independente
@@ -60,16 +70,19 @@ src/joystick/windows,Windows
 src/joystick/windowsrt,Windows
 src/joystick/winrt,Windows
 src/libm,Independente
+src/loadso/dlopen,Independente
 src/loadso/macosx,macOS
 src/loadso/win32,Windows
 src/loadso/windows,Windows
 src/main/android,Android
+src/main/nacl,Independente
 src/main/win32,Windows
 src/main/windows,Windows
 src/main/windowsrt,Windows
 src/main/winrt,Windows
 src/power,Independente
 src/power/android,Android
+src/power/emscripten,Independente
 src/power/linux,Linux
 src/power/macosx,macOS
 src/power/uikit,iPhone
@@ -78,7 +91,7 @@ src/power/winrt,Windows
 src/render,Independente
 src/render/direct3d,Windows
 src/render/direct3d11,Windows
-src/render/metal,Independente
+src/render/metal,Independente macOS
 src/render/opengl,Independente
 src/render/opengles,Independente
 src/render/opengles2,Independente
@@ -99,6 +112,7 @@ src/video,Independente
 src/video/android,Android
 src/video/cocoa,macOS
 src/video/directfb,Independente Windows
+src/video/emscripten,Independente
 src/video/fbcon,Linux
 src/video/khronos/EGL,Independente Windows
 src/video/khronos/GLES2,Independente
@@ -106,10 +120,11 @@ src/video/khronos/KHR,Independente
 src/video/khronos/vulkan,Independente
 src/video/kmsdrm,Independente
 src/video/mir,Linux
-src/video/ps3,Independente
-src/video/qnxgf,Independente
+src/video/mx6,Independente
+src/video/nacl,Independente
 src/video/svga,Independente
 src/video/uikit,iPhone
+src/video/vivante,Independente
 src/video/wayland,Linux
 src/video/win32,Windows
 src/video/windows,Windows

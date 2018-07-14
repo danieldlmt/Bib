@@ -1,21 +1,21 @@
 module,platform
 src/SFML,Android Independente
-src/SFML/Audio,Independente
-src/SFML/Graphics,Independente
+src/SFML/Audio,Independente Android
+src/SFML/Graphics,Independente Android
 src/SFML/Graphics/stb_image,Independente
 src/SFML/Main,Android Windows Independente iPhone
-src/SFML/Network,Independente
-src/SFML/Network/Unix,Independente
+src/SFML/Network,Independente Android
+src/SFML/Network/Unix,Linux
 src/SFML/Network/Win32,Windows
-src/SFML/System,Independente
+src/SFML/System,Independente Android
 src/SFML/System/Android,Android
-src/SFML/System/Unix,Independente
+src/SFML/System/Unix,Linux
 src/SFML/System/Win32,Windows
-src/SFML/Window,Independente
+src/SFML/Window,Independente Android
 src/SFML/Window/Android,Android
 src/SFML/Window/glext,Windows
 src/SFML/Window/iOS,iPhone
 src/SFML/Window/Linux,Linux
 src/SFML/Window/OSX,macOS
-src/SFML/Window/Unix,Independente
+src/SFML/Window/Unix,Linux
 src/SFML/Window/Win32,Windows
