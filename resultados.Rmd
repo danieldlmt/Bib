@@ -19,7 +19,7 @@ library(knitr)
 library(dplyr)
 library(ggplot2)
 # Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
-  source("~/bib/paths.R")
+  source("./paths.R")
 
 ```
 
@@ -46,7 +46,7 @@ for (it in 1:length(logs$sistema)){
   cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
   rm(list = ls()[!ls() %in% c("logs","it")])
   #source(as.character(logs$caminho[it]) , verbose=FALSE)
-  #source( '~/bib/analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  #source( './analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
   load (as.character(logs$ws_analise[it]))
 ########
 ########
@@ -132,7 +132,7 @@ for (it in 1:length(logs$sistema)){
 ########   
   cat ("\n\n#### Análise temporal com janela deslizante\n")
   rm(list = ls()[!ls() %in% c("logs","it","data")])
-  #source( '~/bib/analisetemporaljanela.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  #source( './analisetemporaljanela.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
   load (as.character(logs$ws_analisetemporaljanela[it]))
   
 

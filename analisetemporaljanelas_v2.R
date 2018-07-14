@@ -10,7 +10,7 @@ library(tseries)
 
 
 # Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
-  source("~/bib/paths.R")
+  source("./paths.R")
 
 for (it in 1:length(logs$sistema)){
   rm(list = ls()[!ls() %in% c("logs","it")])
@@ -18,7 +18,7 @@ for (it in 1:length(logs$sistema)){
   
   # Filtro de desenvolvedores ativos 
     # periodo de contribuição minimo de 24 semanas
-      #  source("~/bib/devsativos.R")
+      #  source("./devsativos.R")
       #  dev_ativo<-dev_ativo %>% select(author)
       #  data<- right_join(data, dev_ativo,by="author")
 
@@ -262,56 +262,14 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
       # Remove outliers from 'commits' and 'added lines' to better calculate thresholds
         # limiar_commit - vector for commits
         # limiar_line - vector for added lines
-          source("~/bib/outliers.R" )
+          source("./outliers.R" )
       
       # calculate the total number of developers in the window  
       data_aux <- data%>%
         filter(as.POSIXct(date)>=date_left  & as.POSIXct(date)<date_right )  
       n_dev<-n_distinct(data_aux$author)
       
-      # Classificacao de desenvolvedores ativos 
-        # periodo de contribuição minimo de 24 semanas
-      dev_ativo <-   data %>%
-        select( author,n_line_add,n_line_del,rev,path,date)%>%
-        group_by(author) %>%
-        summarise(n_line_add=sum(n_line_add),
-                  n_line_del=sum(n_line_del), 
-                  commits=n_distinct(rev),
-                  files=n_distinct(path), 
-                  first=min(as.POSIXct(date)),
-                  last=max(as.POSIXct(date)) )%>%
-        arrange(desc(n_line_add))%>%
-        mutate(periodo = difftime(as.POSIXct(last) ,as.POSIXct(first), units = "weeks"))%>% 
-        filter(as.numeric(periodo)>=24)     %>%
-        mutate(media_commit = commits/as.numeric(periodo),
-                 porc_line_add= n_line_add*100/sum(n_line_add),
-                 porc_line_add_cum = 100*cumsum(n_line_add)/sum(n_line_add))
-      
-      
-  #Como filtrar os desenvolvedores ? (talvez melhor não filtrar)
-      # A case study apache, Mockus 2000
-        # core : 88% line add
-        # non core: rest
-      # Analysis biodiversity, Maltragas 2014, MSR 2014
-        # cluster para agrupar desenvolvedores com perfis similares
-      # Process mining soft rep, ponein 2011
-        # ativos: 1commit/30dias
-      # OSSMETER report, 2014
-        # ativo: 1commit/15dias
-        # inativo: no commit in 3 months but 1 every 6 months
-        # core: people with highest loc changes 
-      
-      
-      
-      
-        #Plot de porcentagem acumulada
-   #   plot(c(1:nrow(dev_ativo)),dev_ativo$porc_line_add_cum, type = "l", ylab = "% de linhas modificadas", xlab= "Numero de desenvolvedores")
-      
-      #%>%              filter(as.numeric(periodo)>=24 & media>=1/6)
-      
-      
-      
-      
+
       #Classificao de devs de acordo com os limiares
       # nova variavel para classificacao do desenvolvedor entre generalista e especialista em plataformas
       platform_new <- data_aux %>%

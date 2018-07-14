@@ -12,7 +12,7 @@ library(stringr)
 #######################################
 
 # Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
-  source("~/bib/paths.R")
+  source("./paths.R")
 
 # Loop that walks through 'logs' and save the results of each system in 'logs$ws_analise'
   for (it in 1:length(logs$sistema)){
@@ -21,7 +21,7 @@ library(stringr)
     
     # Filtro de desenvolvedores ativos 
       # periodo de contribuição minimo de 24 semanas
-         # source("~/bib/devsativos.R")
+         # source("./devsativos.R")
          # dev_ativo<-dev_ativo %>% select(author)
         #  data<- right_join(data, dev_ativo,by="author")
     
@@ -244,7 +244,7 @@ library(stringr)
   # Remove outliers from 'commits' and 'added lines' to better calculate thresholds
     # limiar_commit - vector for commits
     # limiar_line - vector for added lines
-      source("~/bib/outliers.R" )
+      source("./outliers.R" )
   
   # Transformation in 'data' to make the analysis
     platform_new <- data %>%

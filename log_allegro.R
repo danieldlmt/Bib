@@ -7,7 +7,7 @@ library(dplyr, warn.conflicts = FALSE)
 
 ######################################### Import
 #import data 
-data <- readLines('data/log_allegro.csv')
+data <- readLines('./data/log_allegro.csv')
 data <- gsub(pattern="\t", replacement=";", data, fixed = TRUE)
 datatemp <- tempfile() 
 writeLines(data, con = datatemp) 
@@ -40,4 +40,4 @@ data <- data %>% filter(platform=="Independente" |platform=="Windows"|platform==
 
 
 remove(plats, i)
-save  (data, file ="~/bib/workspace/allegro_data.RData")
+save  (data, file ="./workspace/allegro_data.RData")

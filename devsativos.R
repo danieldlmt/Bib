@@ -20,3 +20,24 @@
       filter(as.numeric(periodo)>=24)    
     
     #data<- right_join(data, dev_ativo,by="author")
+    
+    #Como filtrar os desenvolvedores ? (talvez melhor não filtrar)
+      # A case study apache, Mockus 2000
+        # core : 88% line add
+        # non core: rest
+      # Analysis biodiversity, Maltragas 2014, MSR 2014
+        # cluster para agrupar desenvolvedores com perfis similares
+      # Process mining soft rep, ponein 2011
+        # ativos: 1commit/30dias
+      # OSSMETER report, 2014
+        # ativo: 1commit/15dias
+        # inativo: no commit in 3 months but 1 every 6 months
+        # core: people with highest loc changes 
+    
+    
+    #Plot de porcentagem acumulada
+    #   plot(c(1:nrow(dev_ativo)),dev_ativo$porc_line_add_cum, type = "l", ylab = "% de linhas modificadas", xlab= "Numero de desenvolvedores")
+    
+    #%>%              filter(as.numeric(periodo)>=24 & media>=1/6)
+    
+    

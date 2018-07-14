@@ -2,7 +2,7 @@ library(dplyr, warn.conflicts = FALSE)
 # Generate the appendix 
 
   # Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
-       source("~/bib/paths.R")
+       source("./paths.R")
 
     # Loop that walks through 'logs' to generate the appendix 
        # appendix contains a list with the association of platform we did for each file
@@ -24,7 +24,7 @@ library(dplyr, warn.conflicts = FALSE)
       #gsub('^([^/]*/[^/]*)/.*$','\1',sample1)
       
 
-      path<-paste("~/bib/anexos/filelist_",tolower(as.character(logs$sistema[it])),".csv",sep = "")
+      path<-paste("./anexos/filelist_",tolower(as.character(logs$sistema[it])),".csv",sep = "")
       write.csv(x, file = , path, quote = FALSE,row.names = FALSE)
     }
     

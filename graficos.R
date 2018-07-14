@@ -13,7 +13,7 @@ library(stringr)
 #
 
 # Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
-   source("~/bib/paths.R")
+   source("./paths.R")
 
 # Loop that walks through 'logs' to get .RData of each library
 for (it in 1:length(logs$sistema)){
@@ -23,7 +23,7 @@ for (it in 1:length(logs$sistema)){
   ##################################################################################################################
   load (as.character(logs$ws_analise[it]))
               # Portugues
-                name <- paste ( "~/bib/graficos/pt/qp1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
+                name <- paste ( "./graficos/pt/qp1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
                 pdf ( name , width = 8 , height = 6 )
                 par(mar=c(5.1, 5, 4.1, 2.1)) 
                 barplot(os_summary3$n_commit, names.arg =c("Independente","Específico","Ambos") , xlab = "Tipo", col=c("blue","orange","darkgreen"), ylab = "Número de modificações", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
@@ -36,7 +36,7 @@ for (it in 1:length(logs$sistema)){
                 dev.off()
               
               #Ingles
-                name <- paste ( "~/bib/graficos/en/qp1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
+                name <- paste ( "./graficos/en/qp1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
                 pdf ( name )
                 pdf ( name , width = 8 , height = 6 )
                 barplot(os_summary3$n_commit, names.arg =c("Independent","Specific","Both") , xlab = "Type", col=c("blue","orange","darkgreen"), ylab = "Number of commits", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
@@ -51,7 +51,7 @@ for (it in 1:length(logs$sistema)){
   
               # QP1.1 Qual plataforma é modificada com mais frequência?.\n")
                       # Portugues
-                        name <- paste ( "~/bib/graficos/pt/qp1_1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
+                        name <- paste ( "./graficos/pt/qp1_1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
                         pdf ( name , width = 8 , height = 6 )
                         par(mar=c(5.1, 5, 4.1, 2.1)) 
                         barplot(os_summary$n_commit, names.arg = row.names(os_summary) ,col=rainbow(5), xlab = "Plataforma", ylab = "Número de modificações",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
@@ -68,7 +68,7 @@ for (it in 1:length(logs$sistema)){
                         dev.off()
                         
                       # Ingles
-                        name <- paste ( "~/bib/graficos/en/qp1_1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
+                        name <- paste ( "./graficos/en/qp1_1_",tolower( as.character( logs$sistema[it] ) ),".pdf",sep = "" )
                         pdf ( name , width = 8 , height = 6 )
                         par(mar=c(5.1, 5, 4.1, 2.1)) 
                         barplot(os_summary$n_commit, names.arg = row.names(os_summary) ,col=rainbow(5), xlab = "Platform", ylab = "Number of commits",cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)

@@ -7,7 +7,7 @@ library(dplyr)
 
 ######################################### Import
 #import data 
-data <- readLines('data/log_SDL.csv')
+data <- readLines('./data/log_SDL.csv')
 data <- gsub(pattern="\t", replacement=";", data, fixed = TRUE)
 datatemp <- tempfile() 
 writeLines(data, con = datatemp) 
@@ -44,4 +44,4 @@ data <- data %>% filter(platform=="Independente" |platform=="Windows"|platform==
 
 
 remove(plats, i)
-save  (data, file ="~/bib/workspace/SDL_data.RData")
+save  (data, file ="./workspace/SDL_data.RData")

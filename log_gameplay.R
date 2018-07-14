@@ -7,7 +7,7 @@ library(dplyr, warn.conflicts = FALSE)
 
 ######################################### Import
 #import data 
-data <- readLines('data/log_gameplay.csv')
+data <- readLines('./data/log_gameplay.csv')
 data <- gsub(pattern="\t", replacement=";", data, fixed = TRUE)
 datatemp <- tempfile() 
 writeLines(data, con = datatemp) 
@@ -40,4 +40,4 @@ for (i in 1:dim(plats)[1]){
 data <- data %>% filter(platform=="Independente" |platform=="Windows"|platform=="Linux"|platform=="macOS"|platform=="Android"|platform=="iPhone" )
 
 remove(plats, i)
-save  (data, file = "~/bib/workspace/gameplay_data.RData" )
+save  (data, file = "./workspace/gameplay_data.RData" )
