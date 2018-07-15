@@ -73,7 +73,6 @@ demos/misc/udp_chat,Independente
 demos/misc/window_management,Independente
 demos/misc/window_management/observer,Independente
 demos/plugins,Independente
-demos/plugins/custom_dock,Independente
 demos/plugins/custom_import_plugin,Independente
 demos/plugins/custom_node,Independente
 demos/viewport/2d_in_3d,Independente
@@ -349,7 +348,6 @@ drivers/png/arm,Independente
 drivers/pnm,Independente
 drivers/pulseaudio,Independente
 drivers/pvr,Independente
-drivers/rtaudio,Independente
 drivers/speex,Independente
 drivers/squish,Independente
 drivers/theora,Independente
@@ -416,8 +414,6 @@ makerel.bat,Independente
 methods.py,Independente
 misc/dist,Independente
 misc/dist/appimage,Independente
-misc/dist/docker,Independente
-misc/dist/docker/scripts,Android
 misc/dist/html,Independente
 misc/dist/html_fs,Independente
 misc/dist/ios_xcode,iPhone
@@ -444,16 +440,13 @@ misc/travis,macOS Independente Android
 modules,Independente
 modules/bmp,Independente
 modules/bullet,Independente
-modules/bullet/doc_classes,Independente
 modules/chibi,Independente
 modules/cscript,Independente
 modules/csg,Independente
-modules/csg/doc_classes,Independente
 modules/dds,Independente
 modules/dlscript,Independente
 modules/dlscript/godot,Independente
 modules/enet,Independente Windows
-modules/enet/doc_classes,Independente
 modules/enet/enet,Independente Windows
 modules/etc,Independente
 modules/etc1,Independente
@@ -461,7 +454,6 @@ modules/freetype,Independente Windows
 modules/gdnative,Independente
 modules/gdnative/android,Android
 modules/gdnative/arvr,Independente
-modules/gdnative/doc_classes,Independente
 modules/gdnative/gdnative,Independente
 modules/gdnative/godot,Independente
 modules/gdnative/include,Independente
@@ -477,18 +469,14 @@ modules/gdnative/nativescript,Independente
 modules/gdnative/net,Independente
 modules/gdnative/pluginscript,Independente
 modules/gdscript,Independente
-modules/gdscript/doc_classes,Independente
 modules/gridmap,Independente
-modules/gridmap/doc_classes,Independente
 modules/hdr,Independente
 modules/ik,Independente
 modules/jpg,Independente
 modules/mbedtls,Independente
 modules/mobile_vr,Independente
-modules/mobile_vr/doc_classes,Independente
 modules/mobile_vr/shaders,Independente
 modules/mono,Independente
-modules/mono/doc_classes,Independente
 modules/mono/glue,Independente
 modules/mono/glue/cs_files,Independente
 modules/mono/mono_gd,Independente
@@ -504,28 +492,21 @@ modules/pbm,Independente
 modules/pvr,Independente
 modules/recast,Independente
 modules/regex,Independente
-modules/regex/doc_classes,Independente
 modules/squish,Independente
 modules/stb_vorbis,Independente
-modules/stb_vorbis/doc_classes,Independente
 modules/svg,Independente
 modules/tga,Independente
 modules/thekla_unwrap,Independente
 modules/theora,Independente
-modules/theora/doc_classes,Independente
 modules/tinyexr,Independente
 modules/upnp,Independente
-modules/upnp/doc_classes,Independente
 modules/visual_script,Independente
-modules/visual_script/doc_classes,Independente Windows
 modules/vorbis,Independente
 modules/vorbis/stub,Independente
 modules/webm,Independente
-modules/webm/doc_classes,Independente
 modules/webm/libvpx,Independente macOS
 modules/webp,Independente
 modules/websocket,Independente
-modules/websocket/doc_classes,Independente
 platform,Independente
 platform/android,Android
 platform/android/export,Android
@@ -754,8 +735,6 @@ tools/addheader,Independente
 tools/bmfhdr,Independente
 tools/certs,Independente
 tools/collada,Independente
-tools/dist/docker,Independente
-tools/dist/docker/scripts,Android
 tools/dist/html_fs,Independente
 tools/dist/ios_xcode/godot_xcode,iPhone
 tools/dist/ios_xcode/godot_xcode/godot_ios,iPhone
@@ -765,11 +744,6 @@ tools/dist/ios_xcode/godot_xcode/godot_ios.xcodeproj,iPhone
 tools/dist/ios_xcode/godot_xcode/godot_ios.xcodeproj/project.xcworkspace,iPhone
 tools/dist/osx_template.app/Contents,macOS
 tools/dist/osx_tools.app/Contents,macOS
-tools/doc,Independente
-tools/docdump,Independente
-tools/docdump/locales/es/LC_MESSAGES,Independente
-tools/docker,Independente
-tools/docker/scripts,Android
 tools/editor_fonts,Independente
 tools/export,Independente
 tools/export/blender25,Independente

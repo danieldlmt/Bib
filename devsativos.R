@@ -15,6 +15,7 @@
       mutate(media_commit = commits/as.numeric(periodo),
              porc_line_add= n_line_add*100/sum(n_line_add),
              porc_line_add_cum = 100*cumsum(n_line_add)/sum(n_line_add),
+             porc_line_del= n_line_del*100/sum(n_line_del),
              porc_commits= commits*100/sum(commits),
              porc_commits_cum = 100*cumsum(commits)/sum(commits) )%>%
       filter(as.numeric(periodo)>=24)    

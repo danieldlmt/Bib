@@ -9,7 +9,7 @@
 logs <- data.frame(sistema=c("Allegro", 
                              "SDL",
                              "SFML",
-                             "Coco2dx", 
+                             "Cocos2d-x", 
                              # "Ogre3D", cannot identify linux files
                              # "Gameplay" iphone do not have commits
                              "Godot"
