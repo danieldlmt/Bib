@@ -12,8 +12,8 @@ library(dplyr, warn.conflicts = FALSE)
       #load (as.character(logs$data[it]))
       
       x<-data %>%select(module, platform,path) %>% group_by(module) %>% summarise(platform = paste(unique(platform), collapse=" "),path = paste(unique(path), collapse=", "))
-      x<-x%>% select (module,platform) #%>%
-      #  mutate(module = gsub('^([^/]*(?:/[^/]*){2})/.*$','',module) ) 
+      x<-x%>% select (module,platform) %>%
+        mutate(module = gsub('^((.*?/){4}).*$','\\1',module) ) 
       
     #    group_by ( module ) %>%
     #    summarise ( platform = paste ( unique ( platform ) , collapse = " " ) )%>%
