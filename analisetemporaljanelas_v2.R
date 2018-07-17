@@ -55,7 +55,7 @@ date_ini<- min(as.POSIXct(platform3$date))
 date_left<- min(as.POSIXct(platform3$date))
 date_right<- max(as.POSIXct(platform3$date))
 nperiods <- difftime(date_right,date_left, units = "weeks")/4
-date_right<- seq.POSIXt( date_left, length=2, by='4 weeks')[2] 
+date_right<- seq.POSIXt( date_left, length=2, by='24 weeks')[2] 
 
 ###########################################################3
 ##########################################################
@@ -101,8 +101,8 @@ authors3_aux<- authors3 %>% select(author ,tipo)
 
 
 #variaveis bind
-saida_plat_bind <- data.frame(iteracao=NA,author=NA,prob=NA, ind=NA,esp=NA, gen=NA, mobile=NA, desktop=NA, indd=NA, tipo=NA,ndev=NA)
-saida_device_bind <- data.frame(iteracao=NA,author=NA,prob=NA, ind=NA,esp=NA, gen=NA, mobile=NA, desktop=NA, indd=NA, tipo=NA,ndev=NA)
+saida_plat_bind <- data.frame()
+saida_device_bind <- data.frame()
 
 dev_all_time24<-data.frame(tipo=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
 dev_gen_time24<-data.frame(n_platform=NA,n=NA, porcentage=NA,iteracao=NA, date_left=NA, date_right=NA)
@@ -270,7 +270,7 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
         filter(as.POSIXct(date)>=date_left  & as.POSIXct(date)<date_right )  
       n_dev<-n_distinct(data_aux$author)
       
-
+      
       #Classificao de devs de acordo com os limiares
       # nova variavel para classificacao do desenvolvedor entre generalista e especialista em plataformas
       platform_new <- data_aux %>%
@@ -284,38 +284,39 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
                   last=max(as.POSIXct(date)) ) %>%
         mutate( ind = if_else(platform == "Independente",1,0))    
       
-      #Classify the devs     
+      #Classify the devs  
       source("./devclassificacao.R")
-      platform_new_bind<-platform_new_bind %>% 
-        mutate(ndev=n_dev)
-      # saida_plat_bind e saida_device_bind sao as variaveis de saida  
-      saida_plat <- platform_new_bind%>%
-        mutate(iteracao=j,
-               tipo = if_else(esp==1&gen==0&ind==0,"esp",
-                              if_else(esp==0&gen==1&ind==0,"gen",
-                                      if_else(esp==0&gen==0&ind==1,"ind",
-                                              if_else(esp==1&gen==0&ind==1,"ind esp",
-                                                      if_else(esp==0&gen==1&ind==1,"ind gen",
-                                                              if_else(esp==1&gen==1&ind==1,"ind esp gen",
-                                                                      if_else(esp==1&gen==1&ind==0,"esp gen","nada") )))))))%>%
-        select(iteracao,author,prob,ind,esp,gen,mobile,desktop,indd,tipo,ndev)
+      rm(platform_new)
+      
+      saida_plat<-saida_plat%>%
+        group_by(tipo,prob)%>%
+        summarise(iteracao= max(iteracao),n=n(), ndev=max(ndev))%>%
+        mutate(porc=n*100/ndev)%>%
+        select(iteracao,prob,tipo, n, porc, ndev)
+      #select(iteracao,author,prob,ind,esp,gen,mobile,desktop,indd,tipo,ndev)
       #%>%
       # group_by(prob,tipo)%>%     
       #summarise(n = n())
       saida_plat_bind<-bind_rows(saida_plat_bind,saida_plat)
+      rm(saida_plat)
       
       saida_device <- platform_new_bind%>%
         mutate(iteracao = j,
-               tipo = if_else(desktop==1&mobile==0&indd==0,"desktop",
-                              if_else(desktop==0&mobile==1&indd==0,"mobile",
-                                      if_else(desktop==0&mobile==0&indd==1,"ind",
-                                              if_else(desktop==1&mobile==0&indd==1,"ind desktop",
-                                                      if_else(desktop==0&mobile==1&indd==1,"ind mobile",
-                                                              if_else(desktop==1&mobile==1&indd==1,"ind desktop mobile",
-                                                                      if_else(desktop==1&mobile==1&indd==0,"desktop mobile","nada") )))))))%>%
-        select(iteracao,author,prob,ind,esp,gen,mobile,desktop,indd,tipo,ndev)
+               tipo = if_else(desktop==1&mobile==0,"desktop",
+                              if_else(desktop==0&mobile==1,"mobile",
+                                      if_else(desktop==1&mobile==1,"desktop mobile","nada") )))
+      
+      
+      
+      saida_device<-saida_device%>%
+        group_by(tipo,prob)%>%
+        summarise(iteracao= max(iteracao),n=n(), ndev=max(ndev))%>%
+        mutate(porc=n*100/ndev)%>%
+        select(iteracao,prob,tipo, n, porc, ndev)      
+      
       
       saida_device_bind<-bind_rows(saida_device_bind,saida_device)
+      rm(platform_new_bind, saida_device, data_aux)
       #%>%
       # group_by(prob,tipo)%>%     
       #summarise(n = n())
@@ -358,69 +359,6 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
 
 
 #######################################3
-
-# analise de devs 
-#gen
-#esp e 
-#esp gen  
-
-xa<-saida_plat_bind %>%
-  mutate( tipo = if_else( esp==1 & gen==0,"esp",
-                          if_else( esp==0 & gen==1, "gen",
-                                   if_else( esp==1 & gen==1 & ind==1, "esp gen", tipo ))))%>%
-  filter(tipo!="ind") %>%
-  group_by( iteracao, prob, tipo ) %>%
-  summarise(n = n(),ndev=n_dev) %>%
-  mutate(porc = n*100/ndev) %>%
-  select (iteracao,prob, tipo, n, ndev, porc)
-
-
-esp_bind <- xa %>% filter(tipo=="esp")
-
-gen_bind <- xa %>% filter(tipo=="gen")
-
-espgen_bind <-  xa %>% filter(tipo=="esp gen")
-
-
-xb<-saida_device_bind %>%
-  mutate( tipo = if_else( mobile==1 & desktop==0,"mobile",
-                          if_else( mobile==0 & desktop==1, "desktop",
-                                   if_else( mobile==1 & desktop==1 & indd==1, "mobile desktop", tipo ))))%>%
-  filter(tipo!="indd")%>%
-  group_by( iteracao, prob, tipo ) %>%
-  summarise(n = n(),ndev=n_dev)%>%
-  mutate(porc = n*100/ndev)%>%
-  select (iteracao,prob, tipo, n, ndev, porc)
-
-
-mobile_bind <- xb %>% filter(tipo=="mobile")
-
-desktop_bind <- xb %>% filter(tipo=="desktop")
-
-desktopmobile_bind <-  xb %>% filter(tipo=="mobile desktop")
-
-
-
-# analise de devs 
-#gen
-#esp  
-
-
-
-xc<-saida_plat_bind %>%
-  mutate( tipo = if_else( esp==1 & gen==0,"esp",
-                          if_else( esp==0 & gen==1, "gen",
-                                   if_else( esp==1 & gen==1, "gen", tipo ))))%>%
-  filter(tipo!="ind") %>%
-  group_by( iteracao, prob, tipo ) %>%
-  summarise(n = n(),ndev=n_dev) %>%
-  mutate(porc = n*100/ndev) %>%
-  select (iteracao,prob, tipo, n, ndev, porc)
-
-
-esp_bind2 <- xc %>% filter(tipo=="esp")
-
-gen_bind2 <- xc %>% filter(tipo=="gen")
 
 
 

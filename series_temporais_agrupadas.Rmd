@@ -1,0 +1,76 @@
+---
+title: "Caracterização do desenvolvimento de bibliotecas multiplataforma"
+author: "Daniel Moreira, Rodrigo Rocha"
+date: "August 31, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+<style type="text/css"> 
+.table {    width: 40%; margin: 0px auto; }
+.caption {    text-align: center; padding-bottom: 40px;}
+.figure {width: 70%; margin: 0px auto;}
+img {text-align: center; display: block;margin-left: auto;margin-right: auto; margin: 0px auto; }
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+
+```
+
+
+
+# Comparacao de series temporais originais e com agrupamento com janelas de tempo deslizante
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE,out.width='1200px', dpi=200}
+
+prob<- c(0.0,0.10,0.20,0.30,0.40,0.50)
+
+for (it in 1:length(logs$sistema)){
+  
+  cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
+  rm(list = ls()[!ls() %in% c("logs","it","prob")])
+  #source(as.character(logs$caminho[it]) , verbose=FALSE)
+  #source( './analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  #load (as.character(logs$ws_analise[it]))
+########
+########
+########
+
+  cat ("\n#### Análise temporal com limiares\n")
+  #source( '~/bib/analisetemporal.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_series_agrupadas[it]))
+
+  
+      for (itt in 1:length(prob)){ 
+          cat("  \n###",  as.character( prob[itt] ) ,"\n")
+           gen <-saida_plat_bind%>% filter(prob==prob[itt])%>%filter(tipo=="gen")  
+           esp <-saida_plat_bind%>% filter(prob==prob[itt])%>%filter(tipo=="esp")  
+        plot(gen$iteracao, gen$porc, col="black", type="l", xlab="Tempo (semanas)", ylim=c(0,100),ylab="Porcentagem")         
+        lines(esp$iteracao,esp$porc,col="green" ,type= "l")  
+         legend("topright",c("Generalista", "Especialista"), col=c("black","green"),lty=1)
+            
+          cat("  \n###",  as.character( prob[itt] ) ,"\n")
+          mobiledesktop <- saida_device_bind%>% filter(prob==prob[itt])  %>%filter(tipo=="desktop mobile")  
+          mobile<- saida_device_bind%>% filter(prob==prob[itt])  %>%filter(tipo=="mobile")
+          desktop <- saida_device_bind%>% filter(prob==prob[itt])  %>%filter(tipo=="desktop") 
+          plot(mobiledesktop$iteracao, mobiledesktop$porc, col="black", type="l", xlab="Tempo (semanas)",ylim=c(0,100), ylab="Porcentagem")
+        lines(mobile$iteracao,mobile$porc,col="green" ,type= "l")     
+        lines(desktop$iteracao,desktop$porc,col="red" ,type= "l")
+       legend("topright",c("Mobile e Desktop", "Mobile", "Desktop"), col=c("black","green", "red"),lty=1)
+
+    }
+########
+########   
+
+
+}
+
+```
+
+
+

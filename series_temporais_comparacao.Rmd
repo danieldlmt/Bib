@@ -1,0 +1,101 @@
+---
+title: "Caracterização do desenvolvimento de bibliotecas multiplataforma"
+author: "Daniel Moreira, Rodrigo Rocha"
+date: "August 31, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+<style type="text/css"> 
+.table {    width: 40%; margin: 0px auto; }
+.caption {    text-align: center; padding-bottom: 40px;}
+.figure {width: 70%; margin: 0px auto;}
+img {text-align: center; display: block;margin-left: auto;margin-right: auto; margin: 0px auto; }
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+
+```
+
+
+
+# Comparacao de series temporais originais e com agrupamento com janelas de tempo deslizante
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+
+# change the threshold here
+limiar<-0.7
+
+for (it in 1:length(logs$sistema)){
+  aux<-it
+  cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
+  rm(list = ls()[!ls() %in% c("logs","it","limiar")])
+  #source(as.character(logs$caminho[it]) , verbose=FALSE)
+  #source( './analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  #load (as.character(logs$ws_analise[it]))
+########
+########
+########
+
+  cat ("\n#### Análise temporal\n")
+  #source( '~/bib/analisetemporal.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_series_acumuladas[it]))
+  
+    cat ("\n\n#### QP - A equipe de desenvolvimento de bibliotecas multiplataforma tende a tornar-se mais generalista ou especialista ao longo do tempo?\n")
+     gen <-saida_plat_bind%>% filter(prob==0.0)%>%filter(tipo=="gen")  
+  plot(gen$iteracao, gen$porcentage, col="darkslateblue", type="l", xlab="Tempo (semanas)", ylim=c(0,100),ylab="Porcentagem")  
+  
+      rm(list = ls()[!ls() %in% c("logs","it","data","limiar")])
+  #source( './analisetemporaljanela.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_series_agrupadas[it]))
+  
+  gen <-saida_plat_bind%>% filter(prob==0.0)%>%filter(tipo=="gen")  
+  lines(gen$iteracao,gen$porc,col="green",type = "l" )
+  
+  gen <-saida_plat_bind%>% filter(prob==limiar)%>%filter(tipo=="gen")  
+  lines(gen$iteracao,gen$porc,col="red",type = "l" )
+ legend("topright",c("Série acumulada", "Série agrupada", "Série agrupada com limiar"), col=c("black","green", "red"),lty=1)
+  
+  cat ("\n#### Análise temporal\n")
+  rm(list = ls()[!ls() %in% c("logs","it","data","limiar")])
+  #source( '~/bib/analisetemporal.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+   load (as.character(logs$ws_series_acumuladas[it]))
+
+    cat ("\n\n#### QP - Os desenvolvedores de bibliotecas multiplataforma tendem a especializar-se em dispositivos desktop ou mobile ao longo do tempo?\n")
+   mobiledesktop <- saida_device_bind%>% filter(prob==0.0)  %>%filter(tipo=="desktop mobile")  
+    plot(mobiledesktop$iteracao, mobiledesktop$porcentage, col="darkslateblue", type="l", xlab="Tempo (semanas)",ylim=c(0,100), ylab="Porcentagem")
+  cat("\n")
+  
+  
+  rm(list = ls()[!ls() %in% c("logs","it","data","limiar")])
+  #source( './analisetemporaljanela.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_series_agrupadas[it]))
+ 
+   
+ mobiledesktop <- saida_device_bind%>% filter(prob==0.0)  %>%filter(tipo=="desktop mobile")   
+ # lines(devicetype_time24_2$iteracao, devicetype_time24_2$porcentage, type="l",col="green") 
+ lines(mobiledesktop$iteracao,mobiledesktop$porc,col="green" ,type= "l")      
+
+  mobiledesktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop mobile")   
+ # lines(devicetype_time24_2$iteracao, devicetype_time24_2$porcentage, type="l",col="green") 
+ lines(mobiledesktop$iteracao,mobiledesktop$porc,col="red" ,type= "l")
+ 
+ legend("topright",c("Série acumulada", "Série agrupada", "Série agrupada com limiar"), col=c("black","green", "red"),lty=1)
+
+ 
+########
+########
+########   
+
+
+}
+
+```
+
+
+

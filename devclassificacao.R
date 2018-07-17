@@ -17,7 +17,6 @@
     # desktop
     # mobile and desktop
 #######################################################################################
-
 # count the number of platform of each developer and verify if the dev support the independent code
 aux <- platform_new %>%
   select(author,ind)%>%
@@ -31,7 +30,7 @@ aux <- platform_new %>%
 #add column independente and n_plat in platform_new 
 platform_new <- platform_new %>% 
   inner_join(aux, by="author")
-
+rm(aux)
 #remove column 'ind'
 platform_new$ind <- NULL
 
@@ -53,7 +52,7 @@ platform_new_gen <- platform_new %>%
 # filter to analyse the specialists
 platform_new_esp <- platform_new %>%
   mutate(lineadd_file = n_line_add/files)%>%
-  filter(platform != "Independente")
+  filter(platform != "Independente" &n_plat==1)
 
 # filter to analyse the devs who support the independent code
 platform_new_ind <- platform_new %>%
@@ -61,7 +60,7 @@ platform_new_ind <- platform_new %>%
   filter(platform == "Independente")
 
 # probabiblity vector
-prob<- c(0.10,0.20,0.30,0.40,0.50,0.60,0.70)
+prob<- c(0.0,0.10,0.20,0.30,0.40,0.50,0.60,0.70)
 
 # empty matrix
 platform_new_ind_bind <- platform_new_ind%>%filter(author=="")
@@ -70,54 +69,53 @@ platform_new_esp_bind <- platform_new_esp%>%filter(author=="")
 platform_new_bind <- platform_new_esp%>%filter(author=="")
 
 # Testing multiple probabilities
-  # Developer classification loop
-    # Specialist logic
-     # n_lines_add > threshold OR commits > threshold
-     # treshold is 1.3 higher
-  # Generalistas
-    # mean(n_lines_add) > threshold OR  mean(commits) > threshold
-    for (itt in 1:length(prob)){
-      #independente 
-      aux <- platform_new_ind%>%
-        filter(lineadd_file > quantile(limiar_line, prob[itt]) )%>%
-        mutate(prob = prob[itt], 
-               ind = 1,
-               esp = 0,
-               gen = 0)
-      platform_new_ind_bind<-bind_rows(platform_new_ind_bind, aux)
-      #specialist
-      aux <- platform_new_esp %>% 
-        filter(lineadd_file > quantile(limiar_line, prob[itt]*1.3)  ) %>%
-        mutate(prob = prob[itt], 
-               ind = 0,
-               esp = 1,
-               gen = 0 )
-      platform_new_esp_bind<-bind_rows(platform_new_esp_bind, aux)
-      #generalist
-      aux <- platform_new_gen %>% filter(lineadd_file > quantile(limiar_line, prob[itt])  ) %>%
-        mutate(prob = prob[itt], 
-               ind = 0,
-               esp = 0,
-               gen = 1 )
-      platform_new_gen_bind<-bind_rows(platform_new_gen_bind, aux)
-    }
+# Developer classification loop
+# Specialist logic
+# n_lines_add > threshold OR commits > threshold
+# treshold is 1.3 higher
+# Generalistas
+# mean(n_lines_add) > threshold OR  mean(commits) > threshold
+for (itt in 1:length(prob)){
+  #independente 
+  aux <- platform_new_ind%>%
+    filter(lineadd_file > quantile(limiar_line, prob[itt]) )%>%
+    mutate(prob = prob[itt], 
+           ind = 1,
+           esp = 0,
+           gen = 0)
+  platform_new_ind_bind<-bind_rows(platform_new_ind_bind, aux)
+  rm(aux)
+  #specialist
+  aux <- platform_new_esp %>% 
+    filter(lineadd_file > quantile(limiar_line, prob[itt]*1.3)  ) %>%
+    mutate(prob = prob[itt], 
+           ind = 0,
+           esp = 1,
+           gen = 0 )
+  platform_new_esp_bind<-bind_rows(platform_new_esp_bind, aux)
+  rm(aux)
+  #generalist
+  aux <- platform_new_gen %>% filter(lineadd_file > quantile(limiar_line, prob[itt])  ) %>%
+    mutate(prob = prob[itt], 
+           ind = 0,
+           esp = 0,
+           gen = 1 )
+  platform_new_gen_bind<-bind_rows(platform_new_gen_bind, aux)
+}
+rm(aux)
 #join all results
-platform_new_bind<-bind_rows(platform_new_bind, platform_new_ind_bind,platform_new_esp_bind,platform_new_gen_bind)
-
+platform_new_bind<-bind_rows(platform_new_bind, platform_new_esp_bind,platform_new_gen_bind)
+rm(platform_new_esp_bind,platform_new_gen_bind,platform_new_ind_bind, platform_new_esp,platform_new_gen,platform_new_ind)
 # Mobile and desktop analysis
 platform_new_bind<-platform_new_bind%>% 
   rowwise()%>%
   mutate(mobile = if_else( str_detect(platform,"Iphone|Android"),1,0 ),
-         desktop = if_else( str_detect(platform,"Windows|Linux|macOS"),1,0 ),
-         indd = if_else( str_detect(platform,"Independente"),1,0 ) )
+         desktop = if_else( str_detect(platform,"Windows|Linux|macOS"),1,0 ) )
 
 platform_new_bind<-platform_new_bind %>% 
-  group_by(author,prob)%>%
-  summarise(ind = max(ind),
-            esp = max(esp),
-            gen = max(gen),
-            mobile = max(mobile),
-            desktop = max(desktop),
-            indd = max(indd))
-
-
+  mutate(ndev=n_dev)
+# saida_plat_bind e saida_device_bind sao as variaveis de saida  
+saida_plat <- platform_new_bind%>%
+  mutate(iteracao=j,
+         tipo = if_else(esp==1&gen==0,"esp",
+                        if_else(esp==0&gen==1,"gen", "nada")))
