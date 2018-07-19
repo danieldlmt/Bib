@@ -1,0 +1,53 @@
+---
+title: "limiares"
+output: html_document
+---
+
+```{r setup, include=FALSE, results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, warn.conflicts = FALSE)
+library(venn)
+library(stringr)
+library(knitr)
+library(ggplot2)
+library(trend)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+limiar<- 0.0
+```
+
+
+
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+for (it in 1:length(logs$sistema)){
+  aux<-it
+  #cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
+  rm(list = ls()[!ls() %in% c("logs","it","limiar")])
+  #source(as.character(logs$caminho[it]) , verbose=FALSE)
+  #source( './analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_series_agrupadas[it]))
+
+        cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
+       
+  gen <-saida_plat_bind%>% filter(prob==limiar)%>%filter(tipo=="gen")  
+  esp <-saida_plat_bind%>% filter(prob==limiar)%>%filter(tipo=="esp") 
+  
+ plot(gen$iteracao, gen$porc, col="black", type="l", xlab="Tempo (semanas)", ylim=c(0,100),ylab="Porcentagem") 
+ lines(esp$iteracao, esp$porc, col="blue", type="l") 
+ 
+ esptwo <-data.frame(esptwo=unlist(mk.test(esp$porc, alternative = c("two.sided"), continuity = TRUE)))
+ espup <- data.frame(espup=unlist(mk.test(esp$porc, alternative = c("greater"), continuity = TRUE)))
+ espdown <- data.frame(espdown=unlist(mk.test(esp$porc, alternative = c("less"), continuity = TRUE)))
+ gentwo <- data.frame(gentwo=unlist(mk.test(gen$porc, alternative = c("two.sided"), continuity = TRUE)))
+ genup <- data.frame(genup=unlist(mk.test(gen$porc, alternative = c("greater"), continuity = TRUE)))
+ gendown <-data.frame(gendown=unlist( mk.test(gen$porc, alternative = c("less"), continuity = TRUE)))
+ 
+ x<-data.frame(esptwo,espup,espdown,gentwo,genup, gendown )
+print (kable( x ))
+
+ 
+  
+}
+
+```
+

@@ -1,0 +1,62 @@
+---
+title: "limiares"
+output: html_document
+---
+
+```{r setup, include=FALSE, results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, warn.conflicts = FALSE)
+library(venn)
+library(stringr)
+library(knitr)
+library(ggplot2)
+library(trend)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+limiar<- 0.0
+```
+
+
+
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+for (it in 1:length(logs$sistema)){
+  aux<-it
+  #cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
+  rm(list = ls()[!ls() %in% c("logs","it","limiar")])
+  #source(as.character(logs$caminho[it]) , verbose=FALSE)
+  #source( './analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
+  load (as.character(logs$ws_series_agrupadas[it]))
+
+        cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
+       
+          mobiledesktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop mobile")  
+          mobile<- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="mobile")
+          desktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop") 
+
+   plot(mobiledesktop$iteracao, mobiledesktop$porc, col="black", type="l", xlab="Tempo (semanas)",ylim=c(0,100), ylab="Porcentagem")
+        lines(mobile$iteracao,mobile$porc,col="green" ,type= "l")     
+        lines(desktop$iteracao,desktop$porc,col="red" ,type= "l")
+       legend("topright",c("Mobile e Desktop", "Mobile", "Desktop"), col=c("black","green", "red"),lty=1)
+ 
+mobtwo <-data.frame(mobtwo=unlist(mk.test(mobile$porc, alternative = c("two.sided"), continuity = TRUE)))
+ mobup <- data.frame(mobup=unlist(mk.test(mobile$porc, alternative = c("greater"), continuity = TRUE)))
+ mobdown <- data.frame(mobdown=unlist(mk.test(mobile$porc, alternative = c("less"), continuity = TRUE)))
+
+destwo <-data.frame(destwo=unlist(mk.test(desktop$porc, alternative = c("two.sided"), continuity = TRUE)))
+ desup <- data.frame(desup=unlist(mk.test(desktop$porc, alternative = c("greater"), continuity = TRUE)))
+ desdown <- data.frame(desdown=unlist(mk.test(desktop$porc, alternative = c("less"), continuity = TRUE)))
+
+mobdestwo <-data.frame(mobdestwo=unlist(mk.test(mobiledesktop$porc, alternative = c("two.sided"), continuity = TRUE)))
+ mobdesup <- data.frame(mobdesup=unlist(mk.test(mobiledesktop$porc, alternative = c("greater"), continuity = TRUE)))
+ mobdesdown <- data.frame(mobdesdown=unlist(mk.test(mobiledesktop$porc, alternative = c("less"), continuity = TRUE)))
+
+ 
+ x<-data.frame(mobtwo,mobup,mobdown,destwo,desup, desdown, mobdestwo,mobdesup,mobdesdown)
+print (kable( x ))
+
+ 
+  
+}
+
+```
+

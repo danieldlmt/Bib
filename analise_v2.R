@@ -17,8 +17,8 @@ library(stringr)
 # Loop that walks through 'logs' and save the results of each system in 'logs$ws_analise'
   for (it in 1:length(logs$sistema)){
     rm(list = ls()[!ls() %in% c("logs","it")])
-    source(as.character(logs$caminho[it]) )
-    #load (as.character(logs$data[it]))
+    #source(as.character(logs$caminho[it]) )
+    load (as.character(logs$data[it]))
     
     # Filtro de desenvolvedores ativos 
       # periodo de contribuição minimo de 24 semanas
@@ -152,11 +152,13 @@ library(stringr)
     mutate(porcentage = round(n/sum(n) * 100, 1)) 
   colnames(devgen) <- c("n_platform", "n_dev_gen", "porc_gen")
   
-  #devesp<- authors3%>% 
-   # filter (tipo=="esp") %>%
-  #  select(android,linux,win,iphone,macosx) 
-  #devesp <- ifelse(devesp>0, 1, 0)
-  #devesp <- colSums(devesp,na.rm=T)
+  devesp<- authors3%>% 
+    filter (tipo=="esp") %>%
+    select(android,linux,win,iphone,macosx) 
+  if(length(devesp$android)){
+     devesp <- ifelse(devesp>0, 1, 0)
+  }
+  devesp <- colSums(devesp,na.rm=T)
   
   
   authors3_plats<-authors3 %>%select(n_platform)%>% filter(n_platform>0) %>%group_by(n_platform) %>%summarise(n = n())
@@ -246,7 +248,11 @@ library(stringr)
     # limiar_commit - vector for commits
     # limiar_line - vector for added lines
       source("./tresholds.R" )
- 
+
+  # calculate the total number of developers in the window  
+  n_dev<-n_distinct(data$author)
+  j<-1
+   
     # Transformation in 'data' to make the analysis
     platform_new <- data %>%
       select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
@@ -263,27 +269,19 @@ library(stringr)
  source("./devclassificacao.R")
   
   # x1 e x2 sao as variaveis de saida  
-  x1 <- platform_new_bind%>%
-    mutate(tipo = if_else(esp==1&gen==0&ind==0,"esp",
-                          if_else(esp==0&gen==1&ind==0,"gen",
-                                  if_else(esp==0&gen==0&ind==1,"ind",
-                                          if_else(esp==1&gen==0&ind==1,"ind esp",
-                                                  if_else(esp==0&gen==1&ind==1,"ind gen",
-                                                          if_else(esp==1&gen==1&ind==1,"ind esp gen",
-                                                                  if_else(esp==1&gen==1&ind==0,"esp gen","nada") )))))))
+  saida_plat <- platform_new_bind%>%
+    mutate(tipo = if_else(esp==1&gen==0,"esp",
+                          if_else(esp==0&gen==1,"gen",
+                                    if_else(esp==1&gen==1,"esp gen","nada") )))
   
   #%>%
   # group_by(prob,tipo)%>%     
   #summarise(n = n())
   
-  x2 <- platform_new_bind%>%
-    mutate(tipo = if_else(desktop==1&mobile==0&indd==0,"desktop",
-                          if_else(desktop==0&mobile==1&indd==0,"mobile",
-                                  if_else(desktop==0&mobile==0&indd==1,"ind",
-                                          if_else(desktop==1&mobile==0&indd==1,"ind desktop",
-                                                  if_else(desktop==0&mobile==1&indd==1,"ind mobile",
-                                                          if_else(desktop==1&mobile==1&indd==1,"ind desktop mobile",
-                                                                  if_else(desktop==1&mobile==1&indd==0,"desktop mobile","nada") )))))))
+  saida_device <- platform_new_bind%>%
+    mutate(tipo = if_else(desktop==1&mobile==0,"desktop",
+                          if_else(desktop==0&mobile==1,"mobile",
+                                  if_else(desktop==1&mobile==1,"desktop mobile","nada") )))
   #%>%
   # group_by(prob,tipo)%>%     
   #summarise(n = n())
