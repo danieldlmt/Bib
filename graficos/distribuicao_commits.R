@@ -162,7 +162,7 @@ ggplot(dist_cipcep) +
   ylim(0,100)+
   theme(text = element_text(size=16))+
   labs(fill = "Tipo", x=element_blank(), y="Porcentagem")+
-  scale_fill_brewer(palette="Dark2",labels  = c("CIP e CEP","CIP","CEP"))
+  scale_fill_brewer(palette="Dark2",labels  = c("CIP e CEP","CEP","CIP"))
 dev.off()
 #en
 name <- paste ( "./graficos/en/dist_cipcep.pdf",sep = "" )
@@ -173,7 +173,7 @@ ggplot(dist_cipcep) +
   ylim(0,100)+
   theme(text = element_text(size=16))+
   labs(fill = "Type", x=element_blank(), y="Percentage")+
-  scale_fill_brewer(palette="Dark2",labels  = c("PIC and PSC","PIC","PSC"))
+  scale_fill_brewer(palette="Dark2",labels  = c("PIC and PSC","PSC","PIC"))
 dev.off()
 
 

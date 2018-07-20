@@ -1,0 +1,104 @@
+---
+title: "limiares"
+output: html_document
+---
+
+```{r setup, include=FALSE, results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, warn.conflicts = FALSE)
+library(venn)
+library(stringr)
+library(knitr)
+library(ggplot2)
+library(trend)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+
+z<-data.frame(row.names=c("Especialista","Generalista"))
+z1<-data.frame()
+z2<-data.frame()
+w<-data.frame(row.names=c("Desktop","Mobile","Desktop e Mobile"))
+w1<-data.frame()
+w2<-data.frame()
+w3<-data.frame()
+
+ge<-data.frame()
+dm<-data.frame()
+```
+
+
+
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+for (it in 1:length(logs$sistema)){
+
+    rm(list = ls()[!ls() %in% c("logs","it","z","w","z1","z2","w1","w2","w3","ge","dm")])
+      #source(as.character(logs$caminho[it]) )
+      load (as.character(logs$ws_analise[it]))
+
+
+        cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
+
+  x<-saida_plat%>% 
+      filter(prob==0.00)
+    
+    ndev<-max(saida_plat$ndev)  
+    gen<-nrow((filter(x, tipo == "gen")))*100/ndev   
+    esp<-nrow((filter(x, tipo == "esp")))*100/ndev    
+    x<-data.frame(porc=c(gen,esp),tipo=c("gen","esp"),sistema= c(as.character(logs$sistema[it]),as.character(logs$sistema[it])))
+   # x<-x%>% mutate(sistema=as.character(logs$sistema[it]))
+    ge<-rbind(ge,x)
+    x<-x%>%select(porc)
+    z<-cbind(z,x)
+    z1<- rbind(z1,gen)
+    z2<- rbind(z2,esp)
+
+    
+    
+# Discutions about ttest and sd for two observations        
+# https://math.stackexchange.com/questions/1584608/is-it-valid-to-calculate-standard-deviation-for-n-2
+# https://stats.stackexchange.com/questions/230171/is-it-meaningful-to-calculate-standard-deviation-of-two-numbers
+         s<- data.frame (parametros=sd(x$porc), row.names = "sd")
+         t<- data.frame(parametros=c("T.TEST",unlist(t.test(x))))
+         testes<-rbind(s,t)
+         
+         barplot(x$porc, names.arg =c("Especialista","Generalista") , ylim=c(0,100), xlab = "Tipo", col=c("blue","orange"), ylab = "Porcentagem", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+         cat("\n\n\n")  
+         print(kable(testes))   
+
+
+}
+  cat("\n\n\n") 
+  
+colnames(z1) <- "Generalista"
+colnames(z2) <- "Especialista"
+
+
+Sistemas <- as.character(logs$sistema)
+
+###################
+##################
+#Generalista e especialista
+###################
+###################
+      dados1<-data.frame(Sistemas,z1,z2)
+      #pt
+     ggplot(ge) +
+       aes(x = sistema, y = porc, fill = tipo) +
+       geom_col()+
+       ylim(0,100)+
+       theme(text = element_text(size=16))+
+       labs(fill = "Tipo", x=element_blank(), y="Porcentagem")+
+       scale_fill_brewer(palette="Set1",labels  = c("Especialista","Generalista"))
+
+  cat("\n\n\n") 
+
+   wilcoxtest<- data.frame(unlist(wilcox.test(porc ~ tipo, data=ge) ))
+   print(kable(wilcoxtest))
+
+
+cat("\n\n\n") 
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ sistema, data = ge) ))
+print(kable(kruskaltest))
+
+```
+

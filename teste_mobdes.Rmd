@@ -1,0 +1,111 @@
+---
+title: "limiares"
+output: html_document
+---
+
+```{r setup, include=FALSE, results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, warn.conflicts = FALSE)
+library(venn)
+library(stringr)
+library(knitr)
+library(ggplot2)
+library(trend)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+
+
+w<-data.frame(row.names=c("Desktop","Mobile","Desktop e Mobile"))
+w1<-data.frame()
+w2<-data.frame()
+w3<-data.frame()
+
+dm<-data.frame()
+```
+
+
+
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+for (it in 1:length(logs$sistema)){
+
+    rm(list = ls()[!ls() %in% c("logs","it","z","w","z1","z2","w1","w2","w3","ge","dm")])
+      #source(as.character(logs$caminho[it]) )
+      load (as.character(logs$ws_analise[it]))
+
+
+        cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
+    ndev<-max(saida_plat$ndev)  
+    y<-saida_device%>% 
+      filter(prob==0.00)
+    mobdes<-nrow((filter(y, tipo == "desktop mobile")))*100/ndev      
+    mob<-nrow((filter(y, tipo == "mobile")))*100/ndev   
+    des<-nrow((filter(y, tipo == "desktop")))*100/ndev    
+    y<-data.frame(porc=c(des,mob,mobdes))
+    
+    y<-data.frame(porc=c(mobdes,mob,des),tipo=c("mobdes","mob","des"),sistema=c(as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it])))
+   # y<-y%>% mutate(sistema=as.character(logs$sistema[it]))
+    dm<-rbind(dm,y)
+    y<-y%>%select(porc)    
+    
+    w<-cbind(w,y)
+    w1<- rbind(w1,mobdes)
+    w2<- rbind(w2,mob)
+    w3<- rbind(w3,des)
+        
+  barplot(y$porc, names.arg = c("Desktop Mobile","Mobile", "Desktop") , ylim=c(0,100), xlab = "Tipo", col=c("blue","orange","pink"), ylab = "Porcentagem", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+        
+    x<-y$porc    
+    shapiro <-data.frame(parametros=c("SHAPIRO",unlist(shapiro.test(x))))
+    t<- data.frame(parametros=c("T.TEST",unlist(t.test(x))))
+        #x: a numeric vector containing your data values
+        #mu: the theoretical mean. Default is 0 but you can change it.
+        #alternative: the alternative hypothesis. Allowed value is one of “two.sided” (default), “greater” or “less”.
+    testes<-rbind(shapiro,t)
+  cat("\n\n\n") 
+    print(kable(testes))
+    rm(shapiro,t,testes,x)
+     cat("\n\n\n") 
+
+}
+
+   cat("\n\n\n")        
+
+
+
+  
+
+colnames(w1) <- "DesktopMobile"
+colnames(w2) <- "Mobile"
+colnames(w3) <- "Desktop"
+
+Sistemas <- as.character(logs$sistema)
+
+  
+ ###################
+##################
+# Mobile Desktop
+###################
+################### 
+     
+       cat("\n\n\n") 
+  #pt
+
+    ggplot(dm) +
+      aes(x = sistema, y = porc, fill = tipo) +
+      geom_col()+
+      ylim(0,100)+
+      theme(text = element_text(size=16))+
+      labs(fill = "Tipo", x=element_blank(), y="Porcentagem")+
+      scale_fill_brewer(palette="Set1",labels  = c("Desktop","Mobile", "Desktop e Mobile"))
+
+
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ tipo, data = dm) ))
+print(kable(kruskaltest))
+    
+cat("\n\n\n") 
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ sistema, data = dm) ))
+print(kable(kruskaltest))
+    
+    
+```
+

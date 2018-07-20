@@ -45,8 +45,8 @@ for (it in 1:length(logs$sistema)){
  x<-data.frame(esptwo,espup,espdown,gentwo,genup, gendown )
 print (kable( x ))
 
- 
-  
+# P value < 0.05 tells that there is (monotonic)trend 
+# P value > 0.05  no monotonic trend
 }
 
 ```
