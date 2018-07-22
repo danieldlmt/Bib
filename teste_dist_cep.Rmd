@@ -1,0 +1,69 @@
+---
+title: "limiares"
+output: html_document
+---
+
+```{r setup, include=FALSE, results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, warn.conflicts = FALSE)
+library(venn)
+library(stringr)
+library(knitr)
+library(ggplot2)
+library(trend)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+
+```
+
+
+
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+dist_cep<-data.frame()
+
+# Loop that walks through 'logs' to get .RData of each library
+for (it in 1:length(logs$sistema)){
+
+  load (as.character(logs$ws_analise[it]))
+
+     cat("\n\n\n",as.character(logs$sistema[it]),"\n\n")
+   barplot(os_summary$n_commit, 
+                                names.arg = row.names(os_summary),
+                                col=rainbow(5), 
+                                xlab = "Plataforma", 
+                                ylab = "Número de modificações",
+                                cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+                        legend(0.7,os_summary$n_commit[1]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+                        legend(1.92,os_summary$n_commit[2]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+                        legend(3.1,os_summary$n_commit[3]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+                        legend(4.3,os_summary$n_commit[4]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+                        legend(5.5,os_summary$n_commit[5]/2,"      ",bg="white",yjust = 0.5,       xjust = 0.5) 
+                        text(0.7,os_summary$n_commit[1]/2,os_summary$n_commit[1],cex=1.7, bg="white")
+                        text(1.92,os_summary$n_commit[2]/2,os_summary$n_commit[2],cex=1.7, bg="white")
+                        text(3.1,os_summary$n_commit[3]/2,os_summary$n_commit[3],cex=1.7, bg="white")
+                        text(4.3,os_summary$n_commit[4]/2,os_summary$n_commit[4],cex=1.7, bg="white")
+                        text(5.5,os_summary$n_commit[5]/2,os_summary$n_commit[5],cex=1.7, bg="white")
+  
+  x<-data.frame (porc = os_summary$n_commit*100/sum(os_summary$n_commit),
+                 tipo = rownames(os_summary),
+                 sistema = c(as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it])))
+  dist_cep<-rbind(dist_cep,x)
+  
+  
+  rm(list = ls()[!ls() %in% c("logs","it","data","dist_cep")])                    
+}
+
+
+   cat("\n\n\n")
+
+
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ tipo, data = dist_cep) ))
+print(kable(kruskaltest))
+
+ cat("\n\n\n")
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ sistema, data = dist_cep) ))
+print(kable(kruskaltest))
+
+
+```
+

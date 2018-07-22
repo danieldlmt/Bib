@@ -1,0 +1,64 @@
+---
+title: "limiares"
+output: html_document
+---
+
+```{r setup, include=FALSE, results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr, warn.conflicts = FALSE)
+library(ggplot2)
+library(stringr)
+library(knitr)
+# Create variable 'log'  that contains the paths of the scripts and workspaces (.RData)
+  source("./paths.R")
+
+```
+
+
+
+```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
+nplat<-data.frame()
+
+# Loop that walks through 'logs' to get .RData of each library
+for (it in 1:length(logs$sistema)){
+
+  load (as.character(logs$ws_analise[it]))
+
+     cat("\n\n\n",as.character(logs$sistema[it]),"\n\n")
+     
+ p<-ggplot(data=authors3, aes(authors3$n_platform)) + 
+    geom_histogram(binwidth=.5)+
+    labs(x="Número de plataformas", y="Número de desenvolvedores")+
+    theme(text = element_text(size=16))+
+    scale_x_continuous(breaks = c(0:5))
+ cat("\n\n\n")
+ print (p)
+  cat("\n\n\n")
+ 
+ x<-authors3
+ 
+ x<- authors3%>% select(n_platform) %>% group_by(n_platform) %>% summarise(porc=n()*100/n_dev) 
+ y<- data.frame(n_platform = c(0:5), sistema=c(as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]))) 
+ x<-right_join(x,y, by="n_platform" )
+ 
+ 
+  nplat<-rbind(nplat,x)
+  
+  
+  rm(list = ls()[!ls() %in% c("logs","it","data","nplat")])                    
+}
+
+
+   cat("\n\n\n")
+
+
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ n_platform, data = nplat) ))
+print(kable(kruskaltest))
+
+ cat("\n\n\n")
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ sistema, data = nplat) ))
+print(kable(kruskaltest))
+
+
+```
+
