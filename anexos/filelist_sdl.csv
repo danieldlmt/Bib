@@ -60,7 +60,6 @@ src/input/evdev,Independente
 src/joystick,Independente
 src/joystick/android,Android
 src/joystick/darwin,Independente
-src/joystick/darwin/10.3.9-FIX,Independente
 src/joystick/emscripten,Independente
 src/joystick/iphoneos,iPhone
 src/joystick/linux,Linux
@@ -114,10 +113,7 @@ src/video/cocoa,macOS
 src/video/directfb,Independente Windows
 src/video/emscripten,Independente
 src/video/fbcon,Linux
-src/video/khronos/EGL,Independente Windows
-src/video/khronos/GLES2,Independente
-src/video/khronos/KHR,Independente
-src/video/khronos/vulkan,Independente
+src/video/khronos,Independente Windows
 src/video/kmsdrm,Independente
 src/video/mir,Linux
 src/video/mx6,Independente
@@ -132,10 +128,4 @@ src/video/windowsrt,Windows
 src/video/winrt,Windows
 src/video/x11,Linux
 src/video/Xext,Linux
-src/video/Xext/extensions,Linux
-src/video/Xext/Xinerama,Linux
-src/video/Xext/XME,Linux
-src/video/Xext/XmuStdCmap,Linux
-src/video/Xext/Xv,Linux
-src/video/Xext/Xxf86vm,Linux
 src/video/yuv2rgb,Independente

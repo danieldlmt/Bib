@@ -1,0 +1,122 @@
+module,platform
+cocos,Independente Android
+cocos/2d,Independente Windows Android
+cocos/2d/actions,Independente
+cocos/2d/base-nodes,Independente
+cocos/2d/draw-nodes,Independente
+cocos/2d/effects,Independente
+cocos/2d/event-dispatcher,Independente
+cocos/2d/include,Independente
+cocos2d-ios.xcworkspace,iPhone
+cocos/2d/label-nodes,Independente
+cocos/2d/layers-scenes-transitions-nodes,Independente
+cocos/2d/libcocos2d_8_1,Windows
+cocos/2d/menu-nodes,Independente
+cocos/2d/misc-nodes,Independente
+cocos/2d/particle-nodes,Independente
+cocos/2d/platform,Independente Android iPhone Linux macOS Windows
+cocos/2d/proj.linux,Linux
+cocos/2d/proj.win32,Windows
+cocos/2d/renderer,Independente
+cocos/2d/script-support,Independente
+cocos/2d/shaders,Independente
+cocos/2d/sprite-nodes,Independente
+cocos/2d/support,Independente Android
+cocos/2d/text-input-node,Independente
+cocos/2d/textures,Independente
+cocos/2d/tilemap-parallax-nodes,Independente
+cocos2d-win32.vc2010.sdf.REMOVED.git-id,Windows
+cocos/2d/winrt_8.1_props,Windows
+cocos/2d/winrt_props,Windows
+cocos2dx,Android
+cocos2dx/cocoa,macOS
+cocos2dx/platform/android,Android
+cocos2dx/platform/bada,Windows
+cocos2dx/platform/ios,iPhone
+cocos2dx/platform/linux,Linux
+cocos2dx/platform/Linux,Linux
+cocos2dx/platform/mac,macOS
+cocos2dx/platform/third_party,Windows Linux iPhone Android macOS
+cocos2dx/platform/tizen,Linux
+cocos2dx/platform/win32,Windows
+cocos2dx/proj.ios/cocos2dx,iPhone
+cocos2dx/proj.ios/cocos2dx.xcodeproj,iPhone
+cocos2dx/proj.ios/libcocos2dx.xcodeproj,iPhone
+cocos2dx/proj.linux,Linux
+cocos2dx/proj.mac/cocos2dx.xcodeproj,macOS
+cocos2dx/proj.tizen,Linux
+cocos2dx/proj.tizen/src,Linux
+cocos2dx/proj.win32,Windows
+cocos2dx/support/user_default,Android
+cocos/3d,Independente Android
+cocos/3d/proj.win32,Windows
+cocos/audio,Independente
+cocos/audio/android,Android
+cocos/audio/apple,Independente
+cocos/audio/include,Independente
+cocos/audio/ios,iPhone
+cocos/audio/linux,Linux
+cocos/audio/mac,macOS
+cocos/audio/openal,Independente
+cocos/audio/proj.linux,Linux
+cocos/audio/proj.win32,Windows
+cocos/audio/third-party,Independente Linux
+cocos/audio/tizen,Linux
+cocos/audio/win32,Windows
+cocos/audio/winrt,Windows
+cocos/base,Independente Android Linux Windows iPhone
+cocos/base/allocator,Independente
+cocos/base/atitc,Independente
+cocos/base/cocoa,macOS
+cocos/base/etc1,Independente
+cocos/base/s3tc,Independente
+cocosdenshion/android,Android
+cocosdenshion/android/jni,Android
+cocosdenshion/include,Independente
+cocosdenshion/ios,iPhone
+cocosdenshion/proj.win32,Windows
+cocosdenshion/win32,Windows
+cocos/deprecated,Independente
+cocos/editor-support/cocosbuilder,Independente Android Windows
+cocos/editor-support/cocostudio,Independente Android Windows
+cocos/editor-support/spine,Independente Android Windows
+cocos/gui,Android Independente
+cocos/gui/base-classes,Independente
+cocos/gui/layouts,Independente
+cocos/gui/proj.win32,Windows
+cocos/gui/system,Independente
+cocos/gui/widgets,Independente
+cocos/math,Independente
+cocos/math/kazmath,Independente
+cocos/navmesh,Independente
+cocos/network,Independente Android Windows iPhone
+cocos/network/proj.win32,Windows
+cocos/physics,Independente
+cocos/physics3d,Independente
+cocos/physics/box2d,Independente
+cocos/physics/Box2D,Independente
+cocos/physics/chipmunk,Independente
+cocos/platform,Independente
+cocos/platform/android,Android
+cocos/platform/apple,Independente
+cocos/platform/cocoa,macOS
+cocos/platform/desktop,Independente
+cocos/platform/ios,iPhone
+cocos/platform/linux,Linux
+cocos/platform/mac,macOS
+cocos/platform/tizen,Linux
+cocos/platform/win32,Windows
+cocos/platform/winrt,Windows
+cocos/renderer,Independente
+cocos/scripting,Independente
+cocos/scripting/javascript,Independente Android iPhone macOS Windows
+cocos/scripting/js-bindings,Independente Android iPhone macOS Windows
+cocos/scripting/lua,Independente Android iPhone macOS Windows Linux
+cocos/scripting/lua-bindings,Independente Android iPhone macOS Linux Windows
+cocos/storage,Independente
+cocos/storage/local-storage,Android Independente Windows
+cocos/ui,Independente Android iPhone Linux Windows
+cocos/ui/proj.win32,Windows
+cocos/ui/shaders,Independente
+cocos/ui/UIEditBox,Independente Windows Android iPhone Linux
+cocos/vr,Independente

@@ -23,8 +23,8 @@ data <- data %>%
   #filter(grepl('([.]c|[.]h)', path))
   filter(!grepl('^thirdparty*', module)  )%>%
   filter(!grepl('.haiku*', module)  )%>%
-filter(!grepl('.demos/*', module)  )%>%
-  filter(!grepl('.doc/*', module)  )
+filter(!grepl('^demos/*', module)  )%>%
+  filter(!grepl('^doc/*', module)  )
 
  # filter(as.Date(date)>=as.Date("2014-02-09")) #Godot iniciou com todas as plataformas
 #%>%filter(n_line_add>=3)
