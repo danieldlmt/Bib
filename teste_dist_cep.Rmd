@@ -20,7 +20,7 @@ library(trend)
 
 ```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
 dist_cep<-data.frame()
-
+commits_total<-data.frame()
 # Loop that walks through 'logs' to get .RData of each library
 for (it in 1:length(logs$sistema)){
 
@@ -49,8 +49,22 @@ for (it in 1:length(logs$sistema)){
                  sistema = c(as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it])))
   dist_cep<-rbind(dist_cep,x)
   
+    
+  qw <-data %>%filter(platform!="Independente")%>% mutate(sistema= as.character(logs$sistema[it]))
+  commits_total<- rbind(commits_total,qw) 
+
   
-  rm(list = ls()[!ls() %in% c("logs","it","data","dist_cep")])                    
+# Comparando distribuições dos sistemas
+
+#t <- table(saida_plat_total$sistema,saida_plat_total$tipo)
+t <- xtabs(~ sistema + platform, data=qw)
+ cat("\n\n\n")
+mosaicplot(t)
+ cat("\n\n\n")
+quiquadrado<- data.frame(quiquadrado=unlist(chisq.test(t) ))
+print(kable(quiquadrado))  
+    
+  rm(list = ls()[!ls() %in% c("logs","it","data","dist_cep","commits_total")])                    
 }
 
 
@@ -63,6 +77,15 @@ print(kable(kruskaltest))
  cat("\n\n\n")
 kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ sistema, data = dist_cep) ))
 print(kable(kruskaltest))
+
+
+#t <- table(saida_plat_total$sistema,saida_plat_total$tipo)
+t <- xtabs(~ sistema + platform, data=commits_total)
+ cat("\n\n\n")
+mosaicplot(t)
+ cat("\n\n\n")
+quiquadrado<- data.frame(quiquadrado=unlist(chisq.test(t) ))
+print(kable(quiquadrado))
 
 
 ```

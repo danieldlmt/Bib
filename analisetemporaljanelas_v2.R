@@ -267,8 +267,10 @@ qtd_dev24 <- data_frame(iteracao=rep(0,as.integer(nperiods)),n_dev=rep(0,as.inte
       
       # calculate the total number of developers in the window  
       data_aux <- data%>%
+        filter(platform!="Independente") %>% #filter devs that work with independent code
         filter(as.POSIXct(date)>=date_left  & as.POSIXct(date)<date_right )  
       n_dev<-n_distinct(data_aux$author)
+     
       
       
       #Classificao de devs de acordo com os limiares

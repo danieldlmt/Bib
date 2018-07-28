@@ -36,6 +36,7 @@ for (it in 1:length(logs$sistema)){
   #######################################
   
   platform3 <- data %>%
+    filter(platform!="Independente") %>% #filter devs that work with independent code
     select(rev, platform,author, date,n_line_add,n_line_del,path) %>%
     group_by(rev) %>%
     arrange(platform)%>%
@@ -43,9 +44,11 @@ for (it in 1:length(logs$sistema)){
     arrange(n_plat,platform, rev)
   
   #upgrading module3 table
-  platform3 <- platform3 %>% arrange (rev)
+  platform3 <- platform3 %>% 
+    arrange (rev)
   #modules3 [,"n_files"]  <- revs %>% arrange(rev) %>% select (n_files)
   file_list <- data %>%
+    filter(platform!="Independente") %>% #filter devs that work with independent code
     select(rev, path) %>%
     group_by(rev) %>%
     arrange(path)%>%
@@ -88,6 +91,7 @@ for (it in 1:length(logs$sistema)){
     #limiar_line<-xlimiar_line
     # calculate the total number of developers in the window  
     data_aux <- data%>%
+      filter(platform!="Independente") %>% #filter devs that work with independent code
       filter(as.POSIXct(date)>=date_left  & as.POSIXct(date)<date_right )  
     n_dev<-n_distinct(data_aux$author)
     

@@ -27,6 +27,11 @@ library(stringr)
           data<- right_join(data, dev_ativo,by="author")
     
   
+          
+  commits <- as.data.frame.matrix(xtabs(~ rev + platform, data=data[c('platform', 'rev')]))
+  commits <- commits %>% select (Android, Linux, Windows, iPhone, macOS, Independente)  %>%  filter (  !(rowSums(commits) == 0) )
+  rownames(commits)<-NULL
+  commits<- ifelse(commits>0, 1, 0)
   ######################################
   # numero de plataformas modificadas em cada commit
   platform <- data %>%
@@ -250,11 +255,13 @@ library(stringr)
       source("./tresholds.R" )
 
   # calculate the total number of developers in the window  
-  n_dev<-n_distinct(data$author)
+  data_aux<- data%>% filter(platform!="Independente") #filter devs that work with independent code
+  n_dev<-n_distinct(data_aux$author)
   j<-1
+  
    
     # Transformation in 'data' to make the analysis
-    platform_new <- data %>%
+    platform_new <- data_aux %>%
       select( platform, author,n_line_add,n_line_del,rev,path,date)%>%
       group_by(author,platform) %>%
       summarise(n_line_add=sum(n_line_add)/n_distinct(path), # mean line_add/file

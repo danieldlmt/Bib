@@ -16,6 +16,7 @@ library(trend)
 
 dist_cipcep<-data.frame()
 dist_cipcep2<-data.frame(row.names = c("cip","cep","cipcep"))
+commits_total<-data.frame()
 ```
 
 
@@ -24,7 +25,7 @@ dist_cipcep2<-data.frame(row.names = c("cip","cep","cipcep"))
 for (it in 1:length(logs$sistema)){
   aux<-it
   #cat("  \n###",  as.character( logs$sistema[it] ) ,"\n")
-  rm(list = ls()[!ls() %in% c("logs","it","dist_cipcep2","dist_cipcep")])
+  rm(list = ls()[!ls() %in% c("logs","it","dist_cipcep2","dist_cipcep","commits_total")])
   #source(as.character(logs$caminho[it]) , verbose=FALSE)
   #source( './analise.R', echo=FALSE, verbose=FALSE, prompt.echo=FALSE)
   load (as.character(logs$ws_analise[it]))
@@ -54,17 +55,36 @@ dist_cipcep2<-cbind(dist_cipcep2,x)
       # normality teste
     #if p-value which is less than the significance level alpha = 0.05, We can conclude that the they are significantly different 
 
-x<-os_summary3$n_commit*100/sum(os_summary3$n_commit)
+x<-os_summary3$n_commit
     shapiro <-data.frame(parametros=c("SHAPIRO",unlist(shapiro.test(x))))
     t<- data.frame(parametros=c("T.TEST",unlist(t.test(x))))
         #x: a numeric vector containing your data values
         #mu: the theoretical mean. Default is 0 but you can change it.
         #alternative: the alternative hypothesis. Allowed value is one of “two.sided” (default), “greater” or “less”.
     testes<-rbind(shapiro,t)
-    barplot(x, names.arg =c("Independente","Específico","Ambos") , ylim=c(0,100), xlab = "Tipo", col=c("blue","orange","darkgreen"), ylab = "Porcentagem", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+    barplot(x, names.arg =c("Independente","Específico","Ambos") ,  xlab = "Tipo", col=c("blue","orange","darkgreen"), ylab = "Quantidade", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
     print(kable(testes))
     rm(shapiro,t,testes)
 
+    
+    
+  qw <-as.data.frame(commits) %>% mutate(sistema= as.character(logs$sistema[it]),count =if_else(Android>0|iPhone>0|Windows>0|macOS>0|Linux>0,1,0))
+  qw <- qw %>% mutate(count2 = count-Independente)
+  qw<- qw %>% mutate(tipo = if_else(count2==-1,"cip",if_else(count2==0, "cipcep","cep")))
+  commits_total<- rbind(commits_total,qw) 
+
+  
+# Comparando distribuições dos sistemas
+
+#t <- table(saida_plat_total$sistema,saida_plat_total$tipo)
+t <- xtabs(~ sistema + tipo, data=qw)
+ cat("\n\n\n")
+mosaicplot(t)
+ cat("\n\n\n")
+quiquadrado<- data.frame(quiquadrado=unlist(chisq.test(t) ))
+print(kable(quiquadrado))  
+  
+      
 }
 
    cat("\n\n\n")
@@ -72,9 +92,9 @@ x<-os_summary3$n_commit*100/sum(os_summary3$n_commit)
 p<-ggplot(dist_cipcep) +
   aes(x = sistema, y = porc, fill = tipo) +
   geom_col()+
-  ylim(0,100)+
+ # ylim(0,100)+
   theme(text = element_text(size=16))+
-  labs(fill = "Tipo", x=element_blank(), y="Porcentagem")
+  labs(fill = "Tipo", x=element_blank(), y="Quantidade")
   scale_fill_brewer(palette="Dark2",labels  = c("CIP e CEP","CEP","CIP"))
   
    
@@ -92,6 +112,16 @@ print(kable(kruskaltest))
 kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ sistema, data = dist_cipcep) ))
 print(kable(kruskaltest))
 
+
+# Comparando distribuições dos sistemas
+
+#t <- table(saida_plat_total$sistema,saida_plat_total$tipo)
+t <- xtabs(~ sistema + tipo, data=commits_total)
+ cat("\n\n\n")
+mosaicplot(t)
+ cat("\n\n\n")
+quiquadrado<- data.frame(quiquadrado=unlist(chisq.test(t) ))
+print(kable(quiquadrado))
 
 ```
 

@@ -21,6 +21,7 @@ w2<-data.frame()
 w3<-data.frame()
 
 dm<-data.frame()
+saida_device_total<-data.frame()
 ```
 
 
@@ -28,7 +29,7 @@ dm<-data.frame()
 ```{r results="asis", echo=FALSE,message=FALSE,warning=FALSE}
 for (it in 1:length(logs$sistema)){
 
-    rm(list = ls()[!ls() %in% c("logs","it","z","w","z1","z2","w1","w2","w3","ge","dm")])
+    rm(list = ls()[!ls() %in% c("logs","it","z","w","z1","z2","w1","w2","w3","ge","dm","saida_device_total")])
       #source(as.character(logs$caminho[it]) )
       load (as.character(logs$ws_analise[it]))
 
@@ -36,25 +37,32 @@ for (it in 1:length(logs$sistema)){
         cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
     ndev<-max(saida_plat$ndev)  
     y<-saida_device%>% 
-      filter(prob==0.00)
-    mobdes<-nrow((filter(y, tipo == "desktop mobile")))*100/ndev      
-    mob<-nrow((filter(y, tipo == "mobile")))*100/ndev   
-    des<-nrow((filter(y, tipo == "desktop")))*100/ndev    
-    y<-data.frame(porc=c(des,mob,mobdes))
+      filter(prob==0.00)%>% 
+      filter(tipo!="nada")
     
-    y<-data.frame(porc=c(mobdes,mob,des),tipo=c("mobdes","mob","des"),sistema=c(as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it])))
+    
+  xx<-y %>% mutate(sistema=as.character( logs$sistema[it] ) )
+  saida_device_total<-rbind(saida_device_total,xx)
+  
+  
+    mobdes<-nrow((filter(y, tipo == "desktop mobile")))   
+    mob<-nrow((filter(y, tipo == "mobile"))) 
+    des<-nrow((filter(y, tipo == "desktop")))  
+    y<-data.frame(count=c(des,mob,mobdes))
+    
+    y<-data.frame(count=c(mobdes,mob,des),tipo=c("mobdes","mob","des"),sistema=c(as.character(logs$sistema[it]),as.character(logs$sistema[it]),as.character(logs$sistema[it])))
    # y<-y%>% mutate(sistema=as.character(logs$sistema[it]))
     dm<-rbind(dm,y)
-    y<-y%>%select(porc)    
+    y<-y%>%select(count)    
     
     w<-cbind(w,y)
     w1<- rbind(w1,mobdes)
     w2<- rbind(w2,mob)
     w3<- rbind(w3,des)
         
-  barplot(y$porc, names.arg = c("Desktop Mobile","Mobile", "Desktop") , ylim=c(0,100), xlab = "Tipo", col=c("blue","orange","pink"), ylab = "Porcentagem", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
+  barplot(y$count, names.arg = c("Desktop Mobile","Mobile", "Desktop") ,  xlab = "Tipo", col=c("blue","orange","pink"), ylab = "Quantidade", cex.names = 1.7,cex.axis = 1.7,cex.lab=1.7)
         
-    x<-y$porc    
+    x<-y$count    
     shapiro <-data.frame(parametros=c("SHAPIRO",unlist(shapiro.test(x))))
     t<- data.frame(parametros=c("T.TEST",unlist(t.test(x))))
         #x: a numeric vector containing your data values
@@ -66,6 +74,18 @@ for (it in 1:length(logs$sistema)){
     rm(shapiro,t,testes,x)
      cat("\n\n\n") 
 
+     
+if( mobdes >4 & mob >4 & des>4)
+{
+  r <- xtabs(~ sistema + tipo, data=xx)
+  #xxx<-xtabs(xxx)
+  quiquadrado<- data.frame(quiquadrado=unlist(chisq.test(r )))
+  print(kable(quiquadrado))
+  cat("\n\n\n") 
+  #rm("r","quiquadrado")
+}
+     
+     
 }
 
    cat("\n\n\n")        
@@ -91,21 +111,38 @@ Sistemas <- as.character(logs$sistema)
   #pt
 
     ggplot(dm) +
-      aes(x = sistema, y = porc, fill = tipo) +
+      aes(x = sistema, y = count, fill = tipo) +
       geom_col()+
-      ylim(0,100)+
+     # ylim(0,100)+
       theme(text = element_text(size=16))+
-      labs(fill = "Tipo", x=element_blank(), y="Porcentagem")+
+      labs(fill = "Tipo", x=element_blank(), y="Quantidade")+
       scale_fill_brewer(palette="Set1",labels  = c("Desktop","Mobile", "Desktop e Mobile"))
 
 
-kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ tipo, data = dm) ))
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(count ~ tipo, data = dm) ))
 print(kable(kruskaltest))
     
 cat("\n\n\n") 
-kruskaltest<- data.frame(kruskal=unlist(kruskal.test(porc ~ sistema, data = dm) ))
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(count ~ sistema, data = dm) ))
 print(kable(kruskaltest))
     
+
+
+# Comparando distribuições dos sistemas
+
+#t <- table(saida_plat_total$sistema,saida_plat_total$tipo)
+r <- xtabs(~ sistema + tipo, data=saida_device_total)
+#print(kable(t))
+cat("\n\n\n") 
+mosaicplot(r)
+
+#Valor-p ≤ α: as variáveis apresentam uma associação estatisticamente significativa (rejeite H0)
+#    Se o valor-p for menor ou igual ao nível de significância, rejeite a hipótese nula e conclua que há uma associação estatisticamente significativa entre as variáveis. 
+#Valor-p > α: não é possível concluir que as variáveis estão associadas (não deve rejeitar H0)
+#    Se o valor-p for maior do que o nível de significância, você não deve rejeitar a hipótese nula porque não há evidências suficientes para concluir que as variáveis estão associadas. 
+cat("\n\n\n") 
+#fishertest<- data.frame(fishertest=unlist(fisher.test(r)))
+#print(kable(fishertest))
     
 ```
 
