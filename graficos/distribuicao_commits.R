@@ -16,6 +16,7 @@ library(stringr)
    source("./paths.R")
 dist_cipcep<-data.frame()
 nplat<-data.frame()
+cep_bind<-data.frame()
 # Loop that walks through 'logs' to get .RData of each library
 for (it in 1:length(logs$sistema)){
   
@@ -100,8 +101,10 @@ for (it in 1:length(logs$sistema)){
                         text(5.5,os_summary$n_commit[5]/2,os_summary$n_commit[5],cex=1.7, bg="white")
               dev.off()
                         
-          
-                        
+          aux <- data.frame(os_summary)
+          aux <- aux %>% mutate(porc=n_commit*100/sum(n_commit),sistema=as.character(logs$sistema[it]))
+          aux <- cbind(aux, platform=rownames(os_summary) )
+          cep_bind<-rbind(cep_bind,aux)              
                                       
           ##### QP2.1 - Dos desenvolvedores   que trabalham com uma plataforma, como é a distribuição das plataformas?\n")
                   
@@ -151,8 +154,10 @@ for (it in 1:length(logs$sistema)){
                    text(5.5,devesp[5]/2,devesp[5],cex=1.7) }
     dev.off()
     
- rm(list = ls()[!ls() %in% c("logs","it","data","dist_cipcep")])                    
+ rm(list = ls()[!ls() %in% c("logs","it","data","dist_cipcep","cep_bind")])                    
 }
+
+
 #pt
 name <- paste ( "./graficos/pt/dist_cipcep.pdf",sep = "" )
 pdf ( name , width = 8 , height = 6 )
@@ -177,4 +182,28 @@ ggplot(dist_cipcep) +
 dev.off()
 
 
+
+
+#pt
+name <- paste ( "./graficos/pt/dist_cep.pdf",sep = "" )
+pdf ( name , width = 8 , height = 6 )
+ggplot(cep_bind) +
+  aes(x = sistema , y = porc, fill = platform) +
+  geom_col()+
+  ylim(0,105)+
+  theme(text = element_text(size=16))+
+  labs(fill = "Plataforma", x=element_blank(), y="Porcentagem")+
+  scale_fill_brewer(palette="Dark2",labels  = c("Android","iPhone","Linux","macOS","Windows"))
+dev.off()
+#en
+name <- paste ( "./graficos/en/dist_cep.pdf",sep = "" )
+pdf ( name , width = 8 , height = 6 )
+ggplot(dist_cipcep) +
+  aes(x = sistema, y = porc, fill = tipo) +
+  geom_col()+
+  ylim(0,100)+
+  theme(text = element_text(size=16))+
+  labs(fill = "Platform", x=element_blank(), y="Percentage")+
+  scale_fill_brewer(palette="Dark2",labels  = c("Android","iPhone","Linux","macOS","Windows"))
+dev.off()
 
