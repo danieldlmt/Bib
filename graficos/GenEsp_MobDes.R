@@ -36,9 +36,10 @@ for (it in 1:length(logs$sistema)){
     z1<- rbind(z1,gen)
     z2<- rbind(z2,esp)
 
-    
+    ndev<-max(saida_device$ndev)  
     y<-saida_device%>% 
       filter(prob==0.00)
+    ndev<-max(saida_device$ndev)  
     mobdes<-nrow((filter(y, tipo == "desktop mobile")))*100/ndev      
     mob<-nrow((filter(y, tipo == "mobile")))*100/ndev   
     des<-nrow((filter(y, tipo == "desktop")))*100/ndev    
@@ -103,7 +104,7 @@ Sistemas <- as.character(logs$sistema)
     ggplot(dm) +
       aes(x = sistema, y = porc, fill = tipo) +
       geom_col()+
-      ylim(0,100)+
+      ylim(0,105)+
       theme(text = element_text(size=16))+
       labs(fill = "Tipo", x=element_blank(), y="Porcentagem")+
       scale_fill_brewer(palette="Set1",labels  = c("Desktop","Mobile", "Desktop e Mobile"))
@@ -115,7 +116,7 @@ Sistemas <- as.character(logs$sistema)
     ggplot(dm) +
       aes(x = sistema, y = porc, fill = tipo) +
       geom_col()+
-      ylim(0,100)+
+      ylim(0,105)+
       theme(text = element_text(size=16))+
       labs(fill = "Type", x=element_blank(), y="Percentage")+
       scale_fill_brewer(palette="Set1",labels  = c("Desktop","Mobile", "Desktop and Mobile"))

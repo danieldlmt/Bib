@@ -109,11 +109,12 @@ rm(platform_new_esp_bind,platform_new_gen_bind,platform_new_ind_bind, platform_n
 # Mobile and desktop analysis
 platform_new_bind<-platform_new_bind%>% 
   rowwise()%>%
-  mutate(mobile = if_else( str_detect(platform,"Iphone|Android"),1,0 ),
+  mutate(mobile = if_else( str_detect(platform,"iPhone|Android"),1,0 ),
          desktop = if_else( str_detect(platform,"Windows|Linux|macOS"),1,0 ) )
 
 platform_new_bind<-platform_new_bind %>% 
-  mutate(ndev=n_dev)
+  mutate(ndev=n_dev)#%>%
+  #filter(esp != 0 || gen != 0 || mobile != 0 || desktop != 0)
 # saida_plat_bind e saida_device_bind sao as variaveis de saida  
 saida_plat <- platform_new_bind%>%
   mutate(iteracao=j,

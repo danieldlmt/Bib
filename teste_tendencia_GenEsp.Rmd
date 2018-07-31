@@ -28,9 +28,13 @@ for (it in 1:length(logs$sistema)){
   load (as.character(logs$ws_series_agrupadas[it]))
 
         cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
-       
+  aux<-data.frame(iteracao=c(1:max(saida_plat_bind$iteracao)))#igualar tamanho do vetor
   gen <-saida_plat_bind%>% filter(prob==limiar)%>%filter(tipo=="gen")  
+  gen<-right_join(gen,aux,by="iteracao",rm.na=TRUE)
+  gen<-gen%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
   esp <-saida_plat_bind%>% filter(prob==limiar)%>%filter(tipo=="esp") 
+  esp<-right_join(esp,aux,by="iteracao",rm.na=TRUE)
+  esp<-esp%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
   
  plot(gen$iteracao, gen$porc, col="black", type="l", xlab="Tempo (semanas)", ylim=c(0,100),ylab="Porcentagem") 
  lines(esp$iteracao, esp$porc, col="blue", type="l") 
@@ -42,7 +46,7 @@ for (it in 1:length(logs$sistema)){
  genup <- data.frame(genup=unlist(mk.test(gen$porc, alternative = c("greater"), continuity = TRUE)))
  gendown <-data.frame(gendown=unlist( mk.test(gen$porc, alternative = c("less"), continuity = TRUE)))
  
- x<-data.frame(esptwo,espup,espdown,gentwo,genup, gendown )
+ x<-data.frame(esptwo,gentwo, espup,espdown,genup, gendown )
 print (kable( x ))
 
 # P value < 0.05 tells that there is (monotonic)trend 

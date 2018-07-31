@@ -14,8 +14,13 @@ for (it in 1:length(logs$sistema)){
 #######################
   # Generalist vs Specialist
 ##########################
+  aux<-data.frame(iteracao=c(1:max(saida_plat_bind$iteracao)))#igualar tamanho do vetor
   gen <-saida_plat_bind%>% filter(prob==limiar)%>%filter(tipo=="gen")  
+  gen<-right_join(gen,aux,by="iteracao",rm.na=TRUE)
+  gen<-gen%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
   esp <-saida_plat_bind%>% filter(prob==limiar)%>%filter(tipo=="esp") 
+  esp<-right_join(esp,aux,by="iteracao",rm.na=TRUE)
+  esp<-esp%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
   #pt
   name <- paste ( "./graficos/pt/serie_gen_",tolower(as.character(logs$sistema[it])),".pdf",sep = "" )
   pdf ( name , width = 8 , height = 6 ) 
@@ -53,9 +58,16 @@ for (it in 1:length(logs$sistema)){
   #######################
   # Mobile vs Desktop
   ##########################
-    mobiledesktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop mobile")  
-    mobile<- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="mobile")
-    desktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop") 
+  aux<-data.frame(iteracao=c(1:max(saida_device_bind$iteracao)))#igualar tamanho do vetor
+  mobiledesktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop mobile")  
+  mobiledesktop<-right_join(mobiledesktop,aux,by="iteracao",rm.na=TRUE)
+  mobiledesktop<-mobiledesktop%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
+  mobile<- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="mobile")
+  mobile<-right_join(mobile,aux,by="iteracao",rm.na=TRUE)
+  mobile<-mobile%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
+  desktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop") 
+  desktop<-right_join(desktop,aux,by="iteracao",rm.na=TRUE)
+  desktop<-desktop%>% mutate(porc= if_else(is.na(porc),0,porc) )  
     
     #pt
     name <- paste ( "./graficos/pt/serie_mobdes_",tolower(as.character(logs$sistema[it])),".pdf",sep = "" )

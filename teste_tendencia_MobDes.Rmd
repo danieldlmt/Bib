@@ -28,10 +28,17 @@ for (it in 1:length(logs$sistema)){
   load (as.character(logs$ws_series_agrupadas[it]))
 
         cat("\n\n####",  as.character( logs$sistema[it] ) ,"\n")
-       
+        
+       aux<-data.frame(iteracao=c(1:max(saida_device_bind$iteracao)))#igualar tamanho do vetor
           mobiledesktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop mobile")  
+          mobiledesktop<-right_join(mobiledesktop,aux,by="iteracao",rm.na=TRUE)
+          mobiledesktop<-mobiledesktop%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
           mobile<- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="mobile")
+          mobile<-right_join(mobile,aux,by="iteracao",rm.na=TRUE)
+          mobile<-mobile%>% mutate(porc= if_else(is.na(porc),0,porc) ) 
           desktop <- saida_device_bind%>% filter(prob==limiar)  %>%filter(tipo=="desktop") 
+          desktop<-right_join(desktop,aux,by="iteracao",rm.na=TRUE)
+          desktop<-desktop%>% mutate(porc= if_else(is.na(porc),0,porc) )           
 
    plot(mobiledesktop$iteracao, mobiledesktop$porc, col="black", type="l", xlab="Tempo (semanas)",ylim=c(0,100), ylab="Porcentagem")
         lines(mobile$iteracao,mobile$porc,col="green" ,type= "l")     
@@ -51,7 +58,7 @@ mobdestwo <-data.frame(mobdestwo=unlist(mk.test(mobiledesktop$porc, alternative 
  mobdesdown <- data.frame(mobdesdown=unlist(mk.test(mobiledesktop$porc, alternative = c("less"), continuity = TRUE)))
 
  
- x<-data.frame(mobtwo,mobup,mobdown,destwo,desup, desdown, mobdestwo,mobdesup,mobdesdown)
+ x<-data.frame(mobtwo,destwo, mobdestwo,mobup,mobdown,desup, desdown, mobdesup,mobdesdown)
 print (kable( x ))
 
  
