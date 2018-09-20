@@ -41,12 +41,12 @@ for (it in 1:length(logs$sistema)){
       filter(tipo!="nada")
     
     
-  xx<-y %>% mutate(sistema=as.character( logs$sistema[it] ) )
+  xx<-y %>% mutate(sistema=as.factor( logs$sistema[it] ),tipofac=as.factor(tipo) )
   saida_device_total<-rbind(saida_device_total,xx)
-  
+  xxx<-y %>% mutate(sistema=as.character(logs$sistema[it]) )
   
     mobdes<-nrow((filter(y, tipo == "desktop mobile")))   
-    mob<-nrow((filter(y, tipo == "mobile"))) 
+    mob<-nrow((filter(y, tipo == "mobile")))  
     des<-nrow((filter(y, tipo == "desktop")))  
     y<-data.frame(count=c(des,mob,mobdes))
     
@@ -75,9 +75,9 @@ for (it in 1:length(logs$sistema)){
      cat("\n\n\n") 
 
      
-if( mobdes >4 & mob >4 & des>4)
+if( mobdes >0 & mob >0 & des>0)
 {
-  r <- xtabs(~ sistema + tipo, data=xx)
+  r <- xtabs(~ sistema + tipo, data=xxx)
   #xxx<-xtabs(xxx)
   quiquadrado<- data.frame(quiquadrado=unlist(chisq.test(r )))
   print(kable(quiquadrado))
@@ -90,7 +90,18 @@ if( mobdes >4 & mob >4 & des>4)
 
    cat("\n\n\n")        
 
-
+dm_mobdes<-dm%>% filter(tipo == "mobdes")
+dm_mob<-dm%>% filter(tipo == "mob")
+dm_des<-dm%>% filter(tipo == "des")
+t_mobdes <- data.frame(parametros=c("T.TEST mobdes",unlist(kruskal.test(count ~ sistema, data = dm_mobdes))))
+t_mob <- data.frame(parametros=c("T.TEST mob",unlist(kruskal.test(count ~ sistema, data = dm_mob))))
+t_des <- data.frame(parametros=c("T.TEST des",unlist(kruskal.test(count ~ sistema, data = dm_des))))
+   print(kable(t_mobdes))
+     cat("\n\n\n") 
+   print(kable(t_mob))
+     cat("\n\n\n") 
+   print(kable(t_des))
+     cat("\n\n\n") 
 
   
 
@@ -119,12 +130,10 @@ Sistemas <- as.character(logs$sistema)
       scale_fill_brewer(palette="Set1",labels  = c("Desktop","Mobile", "Desktop e Mobile"))
 
 
-kruskaltest<- data.frame(kruskal=unlist(kruskal.test(count ~ tipo, data = dm) ))
+kruskaltest<- data.frame(kruskal=unlist(kruskal.test(tipofac ~ sistema, data = saida_device_total) ))
 print(kable(kruskaltest))
     
-cat("\n\n\n") 
-kruskaltest<- data.frame(kruskal=unlist(kruskal.test(count ~ sistema, data = dm) ))
-print(kable(kruskaltest))
+
     
 
 

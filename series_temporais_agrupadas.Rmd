@@ -46,22 +46,22 @@ for (it in 1:length(logs$sistema)){
   load (as.character(logs$ws_series_agrupadas[it]))
 
   
-      for (itt in 1:length(prob)){ 
+      for (itt in 1:1){ 
           cat("  \n###",  as.character( prob[itt] ) ,"\n")
            gen <-saida_plat_bind%>% filter(prob==prob[itt])%>%filter(tipo=="gen")  
            esp <-saida_plat_bind%>% filter(prob==prob[itt])%>%filter(tipo=="esp")  
-        plot(gen$iteracao, gen$porc, col="black", type="l", xlab="Tempo (semanas)", ylim=c(0,100),ylab="Porcentagem")         
+        plot(gen$iteracao, gen$porc, col="black", type="l", xlab="Time (weeks)", ylim=c(0,100),ylab="Percentage")         
         lines(esp$iteracao,esp$porc,col="green" ,type= "l")  
-         legend("topright",c("Generalista", "Especialista"), col=c("black","green"),lty=1)
+         legend("topright",c("Generalist", "Specialist"), col=c("black","green"),lty=1)
             
           cat("  \n###",  as.character( prob[itt] ) ,"\n")
           mobiledesktop <- saida_device_bind%>% filter(prob==prob[itt])  %>%filter(tipo=="desktop mobile")  
           mobile<- saida_device_bind%>% filter(prob==prob[itt])  %>%filter(tipo=="mobile")
           desktop <- saida_device_bind%>% filter(prob==prob[itt])  %>%filter(tipo=="desktop") 
-          plot(mobiledesktop$iteracao, mobiledesktop$porc, col="black", type="l", xlab="Tempo (semanas)",ylim=c(0,100), ylab="Porcentagem")
+          plot(mobiledesktop$iteracao, mobiledesktop$porc, col="black", type="l", xlab="Time (weeks)",ylim=c(0,100), ylab="Percentage")
         lines(mobile$iteracao,mobile$porc,col="green" ,type= "l")     
         lines(desktop$iteracao,desktop$porc,col="red" ,type= "l")
-       legend("topright",c("Mobile e Desktop", "Mobile", "Desktop"), col=c("black","green", "red"),lty=1)
+       legend("topright",c("Mobile and Desktop", "Mobile", "Desktop"), col=c("black","green", "red"),lty=1)
 
     }
 ########
